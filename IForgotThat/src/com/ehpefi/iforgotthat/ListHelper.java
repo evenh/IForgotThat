@@ -1,5 +1,6 @@
 package com.ehpefi.iforgotthat;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,8 +9,14 @@ import android.util.Log;
 
 public class ListHelper extends SQLiteOpenHelper {
 	// Important constants for handling the database
-	static final int VERSION = 1;
-	static final String DATABASE_NAME = "ift.db";
+	private static final int VERSION = 1;
+	private static final String DATABASE_NAME = "ift.db";
+	private static final String TABLE_NAME = "list";
+
+	// Column names in the database
+	private static final String COL_ID = "_id";
+	private static final String COL_TITLE = "title";
+	private static final String COL_TIMESTAMP = "created_timestamp";
 
 	// Specify which class which logs messages
 	private static final String TAG = "ListHelper";
@@ -24,11 +31,15 @@ public class ListHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onCreate() was called. Creating a database...");
 
 		// SQL to create the 'list' table
-		String createListsSQL = "CREATE TABLE list (_id integer PRIMARY KEY AUTOINCREMENT NOT NULL, title varchar(255) NOT NULL, created_timestamp integer(128) NOT NULL);";
+		String createListsSQL = String
+				.format("CREATE TABLE %s (%s integer PRIMARY KEY AUTOINCREMENT NOT NULL, %s varchar(255) NOT NULL, %s DATETIME DEFAULT CURRENT_TIMESTAMP)",
+						TABLE_NAME, COL_ID, COL_TITLE, COL_TIMESTAMP);
 
+		// Create the table
 		try {
 			db.execSQL(createListsSQL);
-			Log.d(TAG, "The table 'list' was successfully created");
+			Log.i(TAG, "The table '" + TABLE_NAME
+					+ "' was successfully created");
 		} catch (SQLException sqle) {
 			Log.e(TAG, "Invalid SQL detected", sqle);
 		}
@@ -39,4 +50,50 @@ public class ListHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onUpgrade() was called, but nothing to upgrade...");
 	}
 
+	/**
+	 * Creates a new list in the database.
+	 * 
+	 * @param listTitle The title of the list
+	 * @return A boolean indication whether a new list was created or not
+	 */
+	public boolean createNewList(String listTitle) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Create the data to insert
+		ContentValues values = new ContentValues();
+		values.put(COL_TITLE, listTitle);
+		
+		// Try to save the list
+		try {
+			// Check for success
+			if (db.insertOrThrow(TABLE_NAME, null, values) != -1) {
+				// Success
+				Log.i(TAG, "The list '" + listTitle
+						+ "' was successfully saved");
+
+				// Close the database connection
+				db.close();
+
+				return true;
+			}
+
+			// Failure
+			Log.e(TAG, "Could not save the list '" + listTitle
+						+ "'. That's all I know...");
+
+			// Close the database connection
+			db.close();
+
+			return false;
+		} catch (SQLException sqle) {
+			// Something wrong with the SQL
+			Log.e(TAG, "Error in inserting the list named " + listTitle, sqle);
+
+			// Close the database connection
+			db.close();
+
+			return false;
+		}
+	}
 }
