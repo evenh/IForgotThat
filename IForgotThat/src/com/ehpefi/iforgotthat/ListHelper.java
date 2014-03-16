@@ -214,15 +214,15 @@ public class ListHelper extends SQLiteOpenHelper {
 
 			// Return the list
 			return list;
-		} else {
-			Log.e(TAG, "The cursor in getList() contains an unexpected value: "
-					+ cursor.getCount() + ". Returning a null object!");
-
-			// Close the database connection
-			db.close();
-
-			// Fail
-			return null;
 		}
+
+		Log.e(TAG, "The cursor in getList() contains an unexpected value: "
+				+ cursor.getCount() + ". Returning a null object!");
+
+		// Close the database connection
+		db.close();
+
+		// Fail
+		return null;
 	}
 }
