@@ -1,7 +1,10 @@
 package com.ehpefi.iforgotthat;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -139,5 +142,47 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		// Close the database connection
 		db.close();
+	}
+
+	/**
+	 * Returns all the lists existing in the database
+	 * 
+	 * @param OrderBy A static string from the ListHelper class (COL_ID, COL_TITLE, COL_TIMESTAMP)
+	 * @since 1.0
+	 * 
+	 * @return A list of to do lists
+	 */
+	public ArrayList<ListObject> getAllLists(String OrderBy) {
+		// Create an ArrayList to hold our list elements
+		ArrayList<ListObject> lists = new ArrayList<ListObject>();
+		
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting all lists from the database
+		String sql = String.format("SELECT %s, %s, %s FROM %s ORDER BY %s",
+				COL_ID, COL_TITLE, COL_TIMESTAMP, TABLE_NAME,
+				OrderBy);
+
+		// Cursor who points at the current record
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// Iterate over the results
+		while (cursor.moveToNext()) {
+			try {
+				lists.add(new ListObject(cursor.getInt(0), cursor.getString(1),
+						cursor.getString(2)));
+			} catch (Exception e) {
+				Log.e(TAG,
+						"Could not create ListObject in getAllLists(), the following exception was thrown",
+						e);
+			}
+		}
+
+		// Close the database connection
+		db.close();
+
+		// Return the list
+		return lists;
 	}
 }
