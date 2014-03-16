@@ -145,9 +145,8 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Returns all the lists existing in the database
 	 * 
 	 * @param OrderBy A static string from the ListHelper class (COL_ID, COL_TITLE, COL_TIMESTAMP)
-	 * @since 1.0
-	 * 
 	 * @return A list of to do lists
+	 * @since 1.0
 	 */
 	public ArrayList<ListObject> getAllLists(String OrderBy) {
 		// Create an ArrayList to hold our list elements
@@ -181,5 +180,49 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		// Return the list
 		return lists;
+	}
+	
+	/**
+	 * Retrieves one list from the database based on the input id
+	 * 
+	 * @param id The id of the list from the database
+	 * @return A ListObject if successful, null on failure
+	 * @since 1.0
+	 */
+	public ListObject getList(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting one list from the database
+		String sql = String.format("SELECT %s, %s, %s FROM %s WHERE %s = %d",
+				COL_ID, COL_TITLE, COL_TIMESTAMP, TABLE_NAME, COL_ID, id);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// As long as we have exactly one result
+		if (cursor.getCount() == 1) {
+			// Move to the only record
+			cursor.moveToFirst();
+
+			// Create the list object
+			ListObject list = new ListObject(cursor.getInt(0),
+					cursor.getString(1), cursor.getString(2));
+
+			// Close the database connection
+			db.close();
+
+			// Return the list
+			return list;
+		} else {
+			Log.e(TAG, "The cursor in getList() contains an unexpected value: "
+					+ cursor.getCount() + ". Returning a null object!");
+
+			// Close the database connection
+			db.close();
+
+			// Fail
+			return null;
+		}
 	}
 }
