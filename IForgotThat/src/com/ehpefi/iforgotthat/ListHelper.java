@@ -28,7 +28,8 @@ public class ListHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(TAG, "onCreate() was called. Creating a database...");
+		Log.d(TAG, "onCreate() was called. Creating the table '" + TABLE_NAME
+				+ "'...");
 
 		// SQL to create the 'list' table
 		String createListsSQL = String
@@ -95,5 +96,30 @@ public class ListHelper extends SQLiteOpenHelper {
 
 			return false;
 		}
+	}
+
+	/**
+	 * Drops the list table completely (including all data) and re-creates a blank list table - use for
+	 * testing/debugging purposes only!
+	 * 
+	 */
+	public void dropAndRecreateListTable() {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Try to drop the table
+		try {
+			db.execSQL("DROP TABLE " + TABLE_NAME);
+			Log.d(TAG, "The table '" + TABLE_NAME
+ + "' was dropped");
+		} catch (SQLException sqle) {
+			Log.e(TAG, "Invalid SQL detected", sqle);
+		}
+
+		// Recreate
+		this.onCreate(db);
+
+		// Close the database connection
+		db.close();
 	}
 }
