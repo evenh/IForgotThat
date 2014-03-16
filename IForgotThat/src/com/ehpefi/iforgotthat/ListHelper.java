@@ -7,6 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * Performs CRUD operations on lists in the 'I Forgot This' app.
+ * 
+ * @author Even Holthe
+ * @since 1.0
+ */
 public class ListHelper extends SQLiteOpenHelper {
 	// Important constants for handling the database
 	private static final int VERSION = 1;
