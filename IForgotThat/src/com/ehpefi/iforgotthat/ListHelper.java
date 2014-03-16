@@ -13,6 +13,7 @@ import android.util.Log;
  * @author Even Holthe
  * @since 1.0
  */
+
 public class ListHelper extends SQLiteOpenHelper {
 	// Important constants for handling the database
 	private static final int VERSION = 1;
@@ -27,6 +28,12 @@ public class ListHelper extends SQLiteOpenHelper {
 	// Specify which class which logs messages
 	private static final String TAG = "ListHelper";
 
+	/**
+	 * Constructs a new instance of the ListHelper class
+	 * 
+	 * @param context The context in which the new instance should be created, usually 'this'.
+	 * @since 1.0
+	 */
 	public ListHelper(Context context) {
 		// Call the super class' constructor
 		super(context, DATABASE_NAME, null, VERSION);
@@ -62,6 +69,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param listTitle The title of the list
 	 * @return A boolean indication whether a new list was created or not
+	 * @since 1.0
 	 */
 	public boolean createNewList(String listTitle) {
 		// Create a pointer to the database
@@ -108,6 +116,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Drops the list table completely (including all data) and re-creates a blank list table - use for
 	 * testing/debugging purposes only!
 	 * 
+	 * @since 1.0
 	 */
 	public void dropAndRecreateListTable() {
 		// Create a pointer to the database
