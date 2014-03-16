@@ -24,6 +24,9 @@ public class ListHelper extends SQLiteOpenHelper {
 	private static final String COL_ID = "_id";
 	private static final String COL_TITLE = "title";
 	private static final String COL_TIMESTAMP = "created_timestamp";
+	public static final String COL_ID = "_id";
+	public static final String COL_TITLE = "title";
+	public static final String COL_TIMESTAMP = "created_timestamp";
 
 	// Specify which class which logs messages
 	private static final String TAG = "ListHelper";
