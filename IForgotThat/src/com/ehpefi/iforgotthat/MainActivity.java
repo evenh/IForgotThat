@@ -1,52 +1,60 @@
 package com.ehpefi.iforgotthat;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends Activity {
-	TableLayout lv_lists;
+	// public final static String LIST_NAME = com.ehpefi.iforgotthat.MESSAGE;
+	ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		lv_lists = (TableLayout) findViewById(R.id.lv_lists_sv_table);
-		fillListsTable();
+
+		listView = (ListView) findViewById(R.id.mainView);
+		
+		// for development only. the array will get its data from the database
+		// in prod
+		String[] values = new String[] { "Important", "Weekend reminders",
+				"Today", "Before I go to bed" };
+
+		// Define a new Adapter
+		// First parameter - Context
+		// Second parameter - Layout for the row
+		// Third parameter - ID of the TextView to which the data is written
+		// Forth - the Array of data
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+
+		// assign adapter to listView
+		listView.setAdapter(adapter);
+		
+		//set clicklsitener
+		listView.setOnItemClickListener(new OnItemClickListener(){
+			
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long id) {
+
+				// call sublist activty
+				
+				Intent intent = new Intent(null, SubListActivity.class);
+
+				startActivityForResult(intent, 0);
+
+
+			}
+		});
 	}
 
-	void fillListsTable() {
-		TableRow row;
-		TextView t1;
+}// end of activity
 
-		for (int i = 1; i <= 50; i++) {
-			row = new TableRow(this);
-			// row.setBackgroundColor(Color.parseColor("#333333"));
-
-			t1 = new TextView(this);
-			t1.setTextColor(Color.parseColor("#000000"));
-			t1.setText("List #" + i);
-			t1.setTypeface(Typeface.MONOSPACE);
-			t1.setTextSize(30);
-
-			row.addView(t1);
-
-			lv_lists.addView(row, new TableLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		}
-
-		row = new TableRow(this);
-		t1 = new TextView(this);
-		t1.setText(getResources().getString(R.string.completed_items) + " →");
-		t1.setTypeface(Typeface.DEFAULT_BOLD);
-		t1.setTextSize(30);
-		row.addView(t1);
-		lv_lists.addView(row, new TableLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-	}
-}

@@ -4,5 +4,7 @@
     <string name="app_name">I Forgot That</string>
     <string name="action_settings">Settings</string>
     <string name="completed_items">Completed items</string>
+    <string name="title_activity_sub_list">SubListActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

@@ -1,26 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
 
-    tools:context=".MainActivity">
-
-    <ScrollView android:id="@+id/scrollview"
-            android:layout_width="fill_parent" android:layout_height="fill_parent"
-            android:fillViewport="true">
-
-        <TableLayout
-            android:id="@+id/lv_lists_sv_table"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:showDividers="middle"
-            android:shrinkColumns="0"
-            android:stretchColumns="1" >
-
-       </TableLayout>
-</ScrollView>
-   
+    <ListView
+        android1:id="@+id/mainView"
+        android1:layout_width="match_parent"
+        android1:layout_height="wrap_content" >
+    </ListView>
  
 </LinearLayout>
