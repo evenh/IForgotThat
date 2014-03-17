@@ -225,4 +225,38 @@ public class ListHelper extends SQLiteOpenHelper {
 		// Fail
 		return null;
 	}
+
+	/**
+	 * Deletes a list from the database
+	 * 
+	 * @param id The id of the list to be deleted
+	 * @return True if success, false otherwise
+	 * @since 1.0
+	 */
+	public boolean deleteList(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Log that we are deleting a list
+		Log.i(TAG, "Deletion of list id " + id + " requested");
+
+		// Try to delete the list
+		if (db.delete(TABLE_NAME, COL_ID + "=?",
+				new String[] { Integer.toString(id) }) == 1) {
+			Log.i(TAG, "List with id " + id + " was successfully deleted");
+
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+
+		// Couldn't delete list
+		Log.e(TAG, "Could not delete list with id " + id);
+
+		// Close the database connection
+		db.close();
+
+		return false;
+	}
 }
