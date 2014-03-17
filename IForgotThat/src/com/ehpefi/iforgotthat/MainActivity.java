@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ViewSwitcher;
 
 public class MainActivity extends Activity {
 	ListView listView;
@@ -50,6 +51,16 @@ public class MainActivity extends Activity {
 				overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			}
 		});// end of clicklistener
+	}
+
+
+	// function to switch from textView to Editable
+	public void TextViewClicked(View view) {
+		ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.add_item_switcher);
+		switcher.showNext(); // or switcher.showPrevious();
+		// TextView myTV = (TextView)
+		// switcher.findViewById(R.id.clickable_add_list_item);
+		// myTV.setText("");
 	}
 
 }// end of activity

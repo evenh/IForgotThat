@@ -7,5 +7,6 @@
     <string name="title_activity_sub_list">SubListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="add_new_list_item">Add new list \t\t\t\t\t\t\t\t\t\t\t +</string>
 
 </resources>

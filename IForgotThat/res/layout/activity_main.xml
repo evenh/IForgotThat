@@ -6,6 +6,41 @@
     android:orientation="vertical"
     android1:background="#ddd"
     tools:context=".MainActivity" >
+    
+    <ViewSwitcher
+        android:id="@+id/add_item_switcher"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android1:layout_gravity="center_vertical"
+        android1:background="#3d3d3d"
+        android1:textAlignment="gravity" >
+
+        <TextView
+            android:id="@+id/clickable_add_list_item"
+            android1:layout_width="fill_parent"
+            android1:layout_height="wrap_content"
+            android1:layout_gravity="center_vertical"
+            android1:layout_marginLeft="5dp"
+            android:clickable="true"
+            android:onClick="TextViewClicked"
+            android:text="@string/add_new_list_item"
+            android1:textColor="#fefefe"
+            android1:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/editable_add_list_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Give your new list a name" 
+            android:singleLine="true"
+    		android:lines="1"
+            android:clickable="true"
+            android:onClick="TextViewClicked"
+            android1:textColor="#fefefe"
+            >
+
+        </EditText>
+    </ViewSwitcher>
 
     <ListView
         android1:id="@+id/mainView"
