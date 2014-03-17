@@ -152,4 +152,36 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	/**
+	 * Deletes a list element
+	 * 
+	 * @param id The list element's identifier
+	 * @return True on success, otherwise false
+	 * @since 1.0
+	 */
+	public boolean deleteListElement(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Log that we are deleting a list element
+		Log.i(TAG, "Deletion of list element with id " + id + " requested");
+
+		// Try to delete the list element
+		if (db.delete(TABLE_NAME, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
+			Log.i(TAG, "List element with id " + id + " was successfully deleted");
+
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+
+		// Couldn't delete list element
+		Log.e(TAG, "Could not delete list element with id " + id);
+
+		// Close the database connection
+		db.close();
+
+		return false;
+	}
 }
