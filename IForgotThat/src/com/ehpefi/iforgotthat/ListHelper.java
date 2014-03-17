@@ -259,4 +259,44 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		return false;
 	}
+
+	/**
+	 * Renames an existing list
+	 * 
+	 * @param id The id of the existing list
+	 * @param newTitle The new title of the existing list
+	 * @return True if success, false otherwise
+	 * @since 1.0
+	 */
+	public boolean renameList(int id, String newTitle) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Log that we are renaming a list
+		Log.i(TAG, "Renaming the list with id: " + id + " to " + newTitle);
+
+		// Provide new data
+		ContentValues values = new ContentValues();
+		values.put(COL_TITLE, newTitle);
+
+		if (db.update(TABLE_NAME, values, COL_ID + "=?",
+				new String[] { Integer.toString(id) }) == 1) {
+
+			Log.i(TAG, "The list with id " + id
+					+ " was successfully renamed to " + newTitle);
+
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+
+		// Couldn't rename the list
+		Log.e(TAG, "Could not rename the list with id " + id);
+
+		// Close the database connection
+		db.close();
+
+		return false;
+	}
 }
