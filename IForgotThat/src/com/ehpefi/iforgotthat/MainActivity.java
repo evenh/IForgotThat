@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends Activity {
-	// public final static String LIST_NAME = com.ehpefi.iforgotthat.MESSAGE;
 	ListView listView;
 
 	@Override
@@ -21,8 +20,10 @@ public class MainActivity extends Activity {
 		listView = (ListView) findViewById(R.id.mainView);
 		
 		// for development only. the array will get its data from the database in prod
-		String[] values = new String[] { "Important", "Weekend reminders",
-				"Today", "Before I go to bed", "Before next week" };
+		String[] values = new String[] { "Important", 
+														"Weekend reminders",
+														"Today", "Before I go to bed", 
+														"Before next week" };
 
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
@@ -44,7 +45,9 @@ public class MainActivity extends Activity {
 				intent.putExtra("name", itemValue);//add the item name to the intent
 
 				startActivity(intent);
-			
+
+				//transition
+				overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			}
 		});// end of clicklistener
 	}
