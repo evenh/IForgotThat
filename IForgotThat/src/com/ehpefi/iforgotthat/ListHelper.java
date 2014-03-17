@@ -28,7 +28,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	public static final String COL_TITLE = "title";
 	public static final String COL_TIMESTAMP = "created_timestamp";
 
-	// Specify which class which logs messages
+	// Specify which class that logs messages
 	private static final String TAG = "ListHelper";
 
 	/**
@@ -293,7 +293,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * @return True if the title is unique (not used), false otherwise
 	 * @since 1.0
 	 */
-	public boolean isTitleUnique(String title) {
+	public boolean doesListWithTitleExist(String title) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -309,12 +309,36 @@ public class ListHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return true;
+			return false;
 		}
 		
 		// Close the database connection
 		db.close();
 
-		return false;
+		return true;
+	}
+
+	/**
+	 * Checks whether a lists exists or not
+	 * 
+	 * @param id The list id
+	 * @return True if the list exists, otherwise false
+	 * @since 1.0
+	 */
+	public boolean doesListWithIdExist(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// Ask the database
+		Cursor cursor = db.rawQuery(String.format("SELECT COUNT(*) FROM %s WHERE _id = %d", TABLE_NAME, id), null);
+
+		cursor.moveToFirst();
+
+		// The list doesn't exist
+		if (cursor.getInt(0) == 0) {
+			return false;
+		}
+
+		return true;
 	}
 }
