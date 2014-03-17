@@ -299,4 +299,37 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		return false;
 	}
+
+	/**
+	 * Checks whether a list title is unique
+	 * 
+	 * @param title The list title to check if is unique (case insensitive)
+	 * @return True if the title is unique (not used), false otherwise
+	 * @since 1.0
+	 */
+	public boolean isTitleUnique(String title) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting one list from the database
+		String sql = String.format(
+				"SELECT %s FROM %s WHERE %s = '%s' COLLATE NOCASE", COL_ID,
+				TABLE_NAME, COL_TITLE, title);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// The title doesn't exist
+		if (cursor.getCount() == 0) {
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+		
+		// Close the database connection
+		db.close();
+
+		return false;
+	}
 }
