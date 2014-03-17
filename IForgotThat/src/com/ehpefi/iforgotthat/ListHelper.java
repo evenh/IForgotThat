@@ -44,8 +44,7 @@ public class ListHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(TAG, "onCreate() was called. Creating the table '" + TABLE_NAME
-				+ "'...");
+		Log.d(TAG, "onCreate() was called. Creating the table '" + TABLE_NAME + "'...");
 
 		// SQL to create the 'list' table
 		String createListsSQL = String
@@ -55,8 +54,7 @@ public class ListHelper extends SQLiteOpenHelper {
 		// Create the table
 		try {
 			db.execSQL(createListsSQL);
-			Log.i(TAG, "The table '" + TABLE_NAME
-					+ "' was successfully created");
+			Log.i(TAG, "The table '" + TABLE_NAME + "' was successfully created");
 		} catch (SQLException sqle) {
 			Log.e(TAG, "Invalid SQL detected", sqle);
 		}
@@ -87,8 +85,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			// Check for success
 			if (db.insertOrThrow(TABLE_NAME, null, values) != -1) {
 				// Success
-				Log.i(TAG, "The list '" + listTitle
-						+ "' was successfully saved");
+				Log.i(TAG, "The list '" + listTitle + "' was successfully saved");
 
 				// Close the database connection
 				db.close();
@@ -97,8 +94,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			}
 
 			// Failure
-			Log.e(TAG, "Could not save the list '" + listTitle
-						+ "'. That's all I know...");
+			Log.e(TAG, "Could not save the list '" + listTitle + "'. That's all I know...");
 
 			// Close the database connection
 			db.close();
@@ -128,8 +124,7 @@ public class ListHelper extends SQLiteOpenHelper {
 		// Try to drop the table
 		try {
 			db.execSQL("DROP TABLE " + TABLE_NAME);
-			Log.d(TAG, "The table '" + TABLE_NAME
- + "' was dropped");
+			Log.d(TAG, "The table '" + TABLE_NAME + "' was dropped");
 		} catch (SQLException sqle) {
 			Log.e(TAG, "Invalid SQL detected", sqle);
 		}
@@ -156,9 +151,8 @@ public class ListHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting all lists from the database
-		String sql = String.format("SELECT %s, %s, %s FROM %s ORDER BY %s",
-				COL_ID, COL_TITLE, COL_TIMESTAMP, TABLE_NAME,
-				OrderBy);
+		String sql = String.format("SELECT %s, %s, %s FROM %s ORDER BY %s", COL_ID, COL_TITLE, COL_TIMESTAMP,
+				TABLE_NAME, OrderBy);
 
 		// Cursor who points at the current record
 		Cursor cursor = db.rawQuery(sql, null);
@@ -166,12 +160,9 @@ public class ListHelper extends SQLiteOpenHelper {
 		// Iterate over the results
 		while (cursor.moveToNext()) {
 			try {
-				lists.add(new ListObject(cursor.getInt(0), cursor.getString(1),
-						cursor.getString(2)));
+				lists.add(new ListObject(cursor.getInt(0), cursor.getString(1), cursor.getString(2)));
 			} catch (Exception e) {
-				Log.e(TAG,
-						"Could not create ListObject in getAllLists(), the following exception was thrown",
-						e);
+				Log.e(TAG, "Could not create ListObject in getAllLists(), the following exception was thrown", e);
 			}
 		}
 
@@ -194,8 +185,8 @@ public class ListHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting one list from the database
-		String sql = String.format("SELECT %s, %s, %s FROM %s WHERE %s = %d",
-				COL_ID, COL_TITLE, COL_TIMESTAMP, TABLE_NAME, COL_ID, id);
+		String sql = String.format("SELECT %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_TITLE, COL_TIMESTAMP,
+				TABLE_NAME, COL_ID, id);
 
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
@@ -206,8 +197,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 
 			// Create the list object
-			ListObject list = new ListObject(cursor.getInt(0),
-					cursor.getString(1), cursor.getString(2));
+			ListObject list = new ListObject(cursor.getInt(0), cursor.getString(1), cursor.getString(2));
 
 			// Close the database connection
 			db.close();
@@ -216,8 +206,8 @@ public class ListHelper extends SQLiteOpenHelper {
 			return list;
 		}
 
-		Log.e(TAG, "The cursor in getList() contains an unexpected value: "
-				+ cursor.getCount() + ". Returning a null object!");
+		Log.e(TAG, "The cursor in getList() contains an unexpected value: " + cursor.getCount()
+				+ ". Returning a null object!");
 
 		// Close the database connection
 		db.close();
@@ -241,8 +231,7 @@ public class ListHelper extends SQLiteOpenHelper {
 		Log.i(TAG, "Deletion of list id " + id + " requested");
 
 		// Try to delete the list
-		if (db.delete(TABLE_NAME, COL_ID + "=?",
-				new String[] { Integer.toString(id) }) == 1) {
+		if (db.delete(TABLE_NAME, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
 			Log.i(TAG, "List with id " + id + " was successfully deleted");
 
 			// Close the database connection
@@ -279,11 +268,8 @@ public class ListHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(COL_TITLE, newTitle);
 
-		if (db.update(TABLE_NAME, values, COL_ID + "=?",
-				new String[] { Integer.toString(id) }) == 1) {
-
-			Log.i(TAG, "The list with id " + id
-					+ " was successfully renamed to " + newTitle);
+		if (db.update(TABLE_NAME, values, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
+			Log.i(TAG, "The list with id " + id + " was successfully renamed to " + newTitle);
 
 			// Close the database connection
 			db.close();
@@ -312,9 +298,8 @@ public class ListHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting one list from the database
-		String sql = String.format(
-				"SELECT %s FROM %s WHERE %s = '%s' COLLATE NOCASE", COL_ID,
-				TABLE_NAME, COL_TITLE, title);
+		String sql = String.format("SELECT %s FROM %s WHERE %s = '%s' COLLATE NOCASE", COL_ID, TABLE_NAME, COL_TITLE,
+				title);
 
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
