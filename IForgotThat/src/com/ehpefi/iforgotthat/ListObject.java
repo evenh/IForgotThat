@@ -52,8 +52,7 @@ public class ListObject {
 
 	@Override
 	public String toString() {
-		return "ID: " + getId() + "\nTitle: " + getTitle() + "\nTimestamp: "
-				+ getTimestamp() + "\n\n";
+		return "ID: " + getId() + "\nTitle: " + getTitle() + "\nTimestamp: " + getTimestamp() + "\n\n";
 	}
 
 }
