@@ -69,10 +69,10 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Creates a new list in the database.
 	 * 
 	 * @param listTitle The title of the list
-	 * @return A boolean indication whether a new list was created or not
+	 * @return The id of the inserted list on success, 0 on failure
 	 * @since 1.0
 	 */
-	public boolean createNewList(String listTitle) {
+	public int createNewList(String listTitle) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
 
@@ -83,14 +83,17 @@ public class ListHelper extends SQLiteOpenHelper {
 		// Try to save the list
 		try {
 			// Check for success
-			if (db.insertOrThrow(TABLE_NAME, null, values) != -1) {
+			long returnId = db.insertOrThrow(TABLE_NAME, null, values);
+
+			// Check for success
+			if (returnId != -1) {
 				// Success
 				Log.i(TAG, "The list '" + listTitle + "' was successfully saved");
 
 				// Close the database connection
 				db.close();
 
-				return true;
+				return (int) returnId;
 			}
 
 			// Failure
@@ -99,7 +102,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return false;
+			return 0;
 		} catch (SQLException sqle) {
 			// Something wrong with the SQL
 			Log.e(TAG, "Error in inserting the list named " + listTitle, sqle);
@@ -107,7 +110,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return false;
+			return 0;
 		}
 	}
 
