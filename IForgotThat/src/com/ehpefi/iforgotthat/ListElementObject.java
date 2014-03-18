@@ -100,10 +100,6 @@ public class ListElementObject {
 		return image;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public void setListId(int listId) {
 		this.listId = listId;
 	}
