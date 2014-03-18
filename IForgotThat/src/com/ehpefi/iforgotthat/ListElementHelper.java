@@ -368,4 +368,67 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		// Return the list
 		return completedItems;
 	}
+
+	/**
+	 * Updates the database with an updated object
+	 * 
+	 * @param updatedListElement The object with updated information
+	 * @return On success it returns the updated object back, on failure the return value is null
+	 * @since 1.0
+	 */
+	public ListElementObject updateListElement(ListElementObject updatedListElement) {
+		// Check if the incoming object has the correct type
+		if (!(updatedListElement instanceof ListElementObject)) {
+			Log.e(TAG, "The object passed to updateListElement() was not of type ListElementObject");
+			return null;
+		}
+		// Fetches the existing object from the database if it exists
+		ListElementObject storedObject = getListElement(updatedListElement.getId());
+
+		// If the list element doesn't exist in the database
+		if (storedObject == null || !(storedObject instanceof ListElementObject)) {
+			Log.w(TAG, "There is no list element in the database with id " + updatedListElement.getId());
+			return null;
+		}
+
+		// If the there is no updates
+		if (storedObject.equals(updatedListElement)) {
+			Log.w(TAG, "The list element with id " + updatedListElement.getId() + " contains no updates. Ignoring!");
+			return null;
+		}
+
+		// Provide updated data
+		ContentValues values = new ContentValues();
+
+		values.put(COL_LIST_ID, updatedListElement.getListId());
+		values.put(COL_DESCRIPTION, updatedListElement.getDescription());
+		values.put(COL_CREATED_TIMESTAMP, updatedListElement.getCreatedAsString());
+		values.put(COL_ALARM_TIMESTAMP, updatedListElement.getAlarmAsString());
+		values.put(COL_COMPLETED, (updatedListElement.isCompleted() == true ? 1 : 0));
+		// If there is a new image
+		if (updatedListElement.getImage() != null) {
+			values.put(COL_IMAGE, updatedListElement.getImage());
+		}
+
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Try to update the list element
+		if (db.update(TABLE_NAME, values, COL_ID + "=?", new String[] { Integer.toString(updatedListElement.getId()) }) == 1) {
+			Log.i(TAG, "The list element with id " + updatedListElement.getId() + " was successfully updated!");
+
+			// Close the database connection
+			db.close();
+
+			return updatedListElement;
+		}
+
+		// Couldn't update the list element
+		Log.e(TAG, "Could not update the list element with id " + updatedListElement.getId());
+
+		// Close the database connection
+		db.close();
+
+		return null;
+	}
 }
