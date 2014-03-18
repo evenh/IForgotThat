@@ -2,6 +2,7 @@ package com.ehpefi.iforgotthat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import android.util.Log;
@@ -17,7 +18,7 @@ public class ListElementObject {
 
 	private final SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final String TAG = "ListElementObject";
-	
+
 	/**
 	 * Constructor for the ListElementObject class.
 	 * 
@@ -62,6 +63,88 @@ public class ListElementObject {
 		setAlarm(alarm);
 		this.completed = completed;
 		this.image = image;
+	}
+
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((alarm == null) ? 0 : alarm.hashCode());
+		result = prime * result + (completed ? 1231 : 1237);
+		result = prime * result + ((created == null) ? 0 : created.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((dtFormat == null) ? 0 : dtFormat.hashCode());
+		result = prime * result + id;
+		result = prime * result + Arrays.hashCode(image);
+		result = prime * result + listId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ListElementObject)) {
+			return false;
+		}
+		ListElementObject other = (ListElementObject) obj;
+		if (alarm == null) {
+			if (other.alarm != null) {
+				return false;
+			}
+		} else if (!alarm.equals(other.alarm)) {
+			return false;
+		}
+		if (completed != other.completed) {
+			return false;
+		}
+		if (created == null) {
+			if (other.created != null) {
+				return false;
+			}
+		} else if (!created.equals(other.created)) {
+			return false;
+		}
+		if (description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (dtFormat == null) {
+			if (other.dtFormat != null) {
+				return false;
+			}
+		} else if (!dtFormat.equals(other.dtFormat)) {
+			return false;
+		}
+		if (id != other.id) {
+			return false;
+		}
+		if (!Arrays.equals(image, other.image)) {
+			return false;
+		}
+		if (listId != other.listId) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		boolean hasImage = (image == null ? false : true);
+		
+		return String.format(
+				"ListElementObject [id=%s, listId=%s, description=%s, created=%s, alarm=%s, completed=%s hasImage=%s]",
+				id, listId, description, getCreatedAsString(), getAlarmAsString(), completed,
+				Boolean.toString(hasImage));
 	}
 
 	public int getId() {
@@ -111,8 +194,8 @@ public class ListElementObject {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
-	public void setCreated(String created){
+
+	public void setCreated(String created) {
 		try {
 			setCreated(dtFormat.parse(created));
 		} catch (ParseException e) {
@@ -127,7 +210,7 @@ public class ListElementObject {
 
 	public void setAlarm(String alarm) {
 		try {
-			setCreated(dtFormat.parse(alarm));
+			setAlarm(dtFormat.parse(alarm));
 		} catch (ParseException e) {
 			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
 		}
