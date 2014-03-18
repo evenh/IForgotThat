@@ -97,10 +97,10 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @param description The user's description of this reminder
 	 * @param alarm Date and time in the following format: YYYY-MM-DD HH:MM:SS
 	 * @param image A raw image
-	 * @return True on success, otherwise false
+	 * @return The id of the inserted list element on success, 0 on failure
 	 * @since 1.0
 	 */
-	public boolean createNewListElement(int listId, String description, String alarm, byte[] image) {
+	public int createNewListElement(int listId, String description, String alarm, byte[] image) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
 		
@@ -114,14 +114,18 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		// Try to save the list element
 		try {
 			// Check for success
-			if (db.insertOrThrow(TABLE_NAME, null, values) != -1) {
+
+			// Runs the query and stores the id
+			long returnId = db.insertOrThrow(TABLE_NAME, null, values);
+
+			if (returnId != -1) {
 				// Success
 				Log.i(TAG, "The list element with description '" + description + "' was successfully saved");
 
 				// Close the database connection
 				db.close();
 
-				return true;
+				return (int) returnId;
 			}
 
 			// Failure
@@ -130,7 +134,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return false;
+			return 0;
 		} catch (SQLiteConstraintException sqlce) {
 			Log.e(TAG, "Error in inserting the list element with description " + description
 					+ " due to a database constraint. Are you sure that the provided list ID exists?");
@@ -138,7 +142,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return false;
+			return 0;
 		} catch (SQLException sqle) {
 			// Something wrong with the SQL
 			Log.e(TAG, "Error in inserting the list element with description '" + description + "'", sqle);
@@ -146,7 +150,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 			// Close the database connection
 			db.close();
 
-			return false;
+			return 0;
 		}
 	}
 
