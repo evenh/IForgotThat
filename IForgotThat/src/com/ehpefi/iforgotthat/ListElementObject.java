@@ -7,6 +7,12 @@ import java.util.Date;
 
 import android.util.Log;
 
+/**
+ * Contains information about a specific reminder
+ * 
+ * @author Even Holthe
+ * @since 1.0
+ */
 public class ListElementObject {
 	private int id;
 	private int listId;
