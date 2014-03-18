@@ -43,7 +43,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onCreate() was called. Creating the table '" + TABLE_NAME + "'...");
 
 		// SQL to create the 'items' table
-		// TODO: Mark image BLOB NOT NULL
+		// TODO: Mark image BLOB NOT NULL when everything is good to go :)
 		String createItemsSQL = String
 				.format("CREATE TABLE %s (%s integer PRIMARY KEY AUTOINCREMENT NOT NULL, %s integer NOT NULL, "
 						+ "%s varchar(255), %s DATETIME DEFAULT CURRENT_TIMESTAMP, %s DATETIME, %s integer(1) NOT NULL DEFAULT(0), "
@@ -226,5 +226,53 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		db.close();
 
 		return false;
+	}
+
+	/**
+	 * Retrieves one list element from the database based on the input id
+	 * 
+	 * @param id The identifier of a list element
+	 * @return A ListElementObject on success, null on failure
+	 */
+	public ListElementObject getListElement(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting one list from the database
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID,
+				COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP, COL_IMAGE, TABLE_NAME,
+				COL_ID, id);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// As long as we have exactly one result
+		if (cursor.getCount() == 1) {
+			// Move to the only record
+			cursor.moveToFirst();
+
+			// Get completion status -> convert to boolean
+			
+			boolean completed = (cursor.getInt(3) == 1 ? true : false);
+			
+			// Create the list object
+			ListElementObject listElement = new ListElementObject(cursor.getInt(0), cursor.getInt(1),
+					cursor.getString(2), cursor.getString(4), cursor.getString(5), completed, cursor.getBlob(6));
+
+			// Close the database connection
+			db.close();
+
+			// Return the list
+			return listElement;
+		}
+
+		Log.e(TAG, "The cursor in getListElement() contains an unexpected value: " + cursor.getCount()
+				+ ". Returning a null object!");
+
+		// Close the database connection
+		db.close();
+
+		// Fail
+		return null;
 	}
 }
