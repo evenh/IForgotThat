@@ -1,5 +1,7 @@
 package com.ehpefi.iforgotthat;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,7 +24,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	public static final String COL_CREATED_TIMESTAMP = "created_timestamp";
 	public static final String COL_ALARM_TIMESTAMP = "alarm_timestamp";
 	public static final String COL_COMPLETED = "completed";
-	public static final String COL_IMAGE = "image";
+	private static final String COL_IMAGE = "image";
 
 	// Specify which class that logs messages
 	private static final String TAG = "ListElementHelper";
@@ -233,6 +235,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The identifier of a list element
 	 * @return A ListElementObject on success, null on failure
+	 * @since 1.0
 	 */
 	public ListElementObject getListElement(int id) {
 		// Create a pointer to the database
@@ -252,7 +255,6 @@ public class ListElementHelper extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 
 			// Get completion status -> convert to boolean
-			
 			boolean completed = (cursor.getInt(3) == 1 ? true : false);
 			
 			// Create the list object
@@ -274,5 +276,51 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 		// Fail
 		return null;
+	}
+
+	/**
+	 * Gets all list elements for a given list id
+	 * 
+	 * @param id The list id
+	 * @param OrderBy A static string from the ListElementHelper class (COL_ID, COL_LIST_ID, COL_DESCRIPTION,
+	 *            COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP)
+	 * @return An ArrayList of ListElementObject on success, an empty list of these on failure
+	 * @since 1.0
+	 */
+	public ArrayList<ListElementObject> getListElementsForListId(int id, String OrderBy) {
+		// Create an ArrayList to hold our list elements
+		ArrayList<ListElementObject> listElements = new ArrayList<ListElementObject>();
+
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting all lists from the database
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID,
+				COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP, COL_IMAGE, TABLE_NAME,
+				COL_LIST_ID, id);
+
+		// Cursor who points at the current record
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// Iterate over the results
+		while (cursor.moveToNext()) {
+			// Get completion status -> convert to boolean
+			boolean completed = (cursor.getInt(3) == 1 ? true : false);
+
+			try {
+				listElements.add(new ListElementObject(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor
+						.getString(4), cursor.getString(5), completed, cursor.getBlob(6)));
+			} catch (Exception e) {
+				Log.e(TAG,
+						"Could not create ListElementObject in getListElementsForListId(), the following exception was thrown",
+						e);
+			}
+		}
+
+		// Close the database connection
+		db.close();
+
+		// Return the list
+		return listElements;
 	}
 }

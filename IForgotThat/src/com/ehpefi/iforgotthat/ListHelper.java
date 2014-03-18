@@ -143,7 +143,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Returns all the lists existing in the database
 	 * 
 	 * @param OrderBy A static string from the ListHelper class (COL_ID, COL_TITLE, COL_TIMESTAMP)
-	 * @return A list of to do lists
+	 * @return A list of to do lists on success, an empty ArrayList on failure
 	 * @since 1.0
 	 */
 	public ArrayList<ListObject> getAllLists(String OrderBy) {
