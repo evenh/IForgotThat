@@ -103,8 +103,6 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	public boolean createNewListElement(int listId, String description, String alarm, byte[] image) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
-
-		// onCreate(db);
 		
 		// Create the data to insert
 		ContentValues values = new ContentValues();
@@ -178,6 +176,47 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 		// Couldn't delete list element
 		Log.e(TAG, "Could not delete list element with id " + id);
+
+		// Close the database connection
+		db.close();
+
+		return false;
+	}
+
+	/**
+	 * Marks a list element as completed/done
+	 * 
+	 * @param id The element's identifier
+	 * @param status True for completed, false for not completed
+	 * @return True if successfull, false otherwise
+	 * @since 1.0
+	 */
+	public boolean setListElementComplete(int id, boolean status) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Also convert boolean to an integer for database purposes
+		int statusInt = (status) ? 1 : 0;
+
+		// Log that we are changing the status of an id
+		Log.i(TAG, "Setting the status of id: " + id + " to " + status);
+
+		// Provide new data
+		ContentValues values = new ContentValues();
+		values.put(COL_COMPLETED, statusInt);
+
+		if (db.update(TABLE_NAME, values, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
+			Log.i(TAG, "The status of id " + id + " was successfully changed to " + status);
+
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+
+		// Error
+		Log.e(TAG, "Could not change status of the list element with id " + id + " to " + status
+				+ ". Does the list element exist?");
 
 		// Close the database connection
 		db.close();
