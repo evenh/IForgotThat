@@ -115,11 +115,10 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 		// Try to save the list element
 		try {
-			// Check for success
-
 			// Runs the query and stores the id
 			long returnId = db.insertOrThrow(TABLE_NAME, null, values);
 
+			// Check for success
 			if (returnId != -1) {
 				// Success
 				Log.i(TAG, "The list element with description '" + description + "' was successfully saved");
