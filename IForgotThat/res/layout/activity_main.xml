@@ -1,16 +1,50 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android1:background="#ddd"
     tools:context=".MainActivity" >
+    
+    <ViewSwitcher
+        android:id="@+id/add_list_switcher"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android1:layout_gravity="center_vertical"
+        android1:background="#3d3d3d"
+        android1:textAlignment="gravity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        <TextView
+            android:id="@+id/clickable_add_list"
+            android1:layout_width="fill_parent"
+            android1:layout_height="wrap_content"
+            android1:layout_gravity="center_vertical"
+            android1:layout_marginLeft="5dp"
+            android:clickable="true"
+            android:onClick="addNewListClicked"
+            android:text="@string/add_new_list"
+            android1:textColor="#fefefe"
+            android1:textSize="25sp" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/editable_add_list_input"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_new_list_hint" 
+            android:singleLine="true"
+    		android:lines="1"
+    		android:onClick="addNewListTextEntered"
+            android:clickable="true"
+            android1:textColor="#fefefe">
+
+        </EditText>
+    </ViewSwitcher>
+
+    <ListView
+        android1:id="@+id/mainView"
+        android1:layout_width="match_parent"
+        android1:layout_height="wrap_content" >
+    </ListView>
+ 
+</LinearLayout>
