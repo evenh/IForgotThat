@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ehpefi.iforgotthat.SubListActivity"
+            android:name="com.ehpefi.iforgotthat.ListWithElementsActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.ehpefi.iforgotthat.SubListActivity" />

@@ -12,13 +12,13 @@ import android.widget.TextView;
  * @author Per Erik Finstad
  * @since 1.0
  */
-public class SubListActivity extends Activity {
+public class ListWithElementsActivity extends Activity {
 	TextView title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sub_list);
+		setContentView(R.layout.activity_list_with_elements);
 		
 		// Get the intent and its content
 		Intent intent = getIntent();
@@ -27,7 +27,6 @@ public class SubListActivity extends Activity {
 		// Get TextView for the list title and set its name
 		title = (TextView) findViewById(R.id.listName);
 		title.setText(listName);
-
 	}
 
 	/**
@@ -35,7 +34,7 @@ public class SubListActivity extends Activity {
 	 * 
 	 * @since 1.0
 	 */
-	public void backToMainList(View v) {
+	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed
 		onBackPressed();
 	}

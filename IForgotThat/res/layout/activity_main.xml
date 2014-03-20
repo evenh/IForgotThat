@@ -8,7 +8,7 @@
     tools:context=".MainActivity" >
     
     <ViewSwitcher
-        android:id="@+id/add_item_switcher"
+        android:id="@+id/add_list_switcher"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android1:layout_gravity="center_vertical"
@@ -16,28 +16,27 @@
         android1:textAlignment="gravity" >
 
         <TextView
-            android:id="@+id/clickable_add_list_item"
+            android:id="@+id/clickable_add_list"
             android1:layout_width="fill_parent"
             android1:layout_height="wrap_content"
             android1:layout_gravity="center_vertical"
             android1:layout_marginLeft="5dp"
             android:clickable="true"
-            android:onClick="TextViewClicked"
-            android:text="@string/add_new_list_item"
+            android:onClick="addNewListClicked"
+            android:text="@string/add_new_list"
             android1:textColor="#fefefe"
             android1:textSize="25sp" />
 
         <EditText
-            android:id="@+id/editable_add_list_item"
+            android:id="@+id/editable_add_list_input"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="Give your new list a name" 
+            android:hint="@string/add_new_list_hint" 
             android:singleLine="true"
     		android:lines="1"
+    		android:onClick="addNewListTextEntered"
             android:clickable="true"
-            android:onClick="TextViewClicked"
-            android1:textColor="#fefefe"
-            >
+            android1:textColor="#fefefe">
 
         </EditText>
     </ViewSwitcher>
