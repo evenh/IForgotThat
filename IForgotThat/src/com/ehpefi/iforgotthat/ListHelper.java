@@ -65,6 +65,25 @@ public class ListHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onUpgrade() was called, but nothing to upgrade...");
 	}
 
+	@Override
+	public void onOpen(SQLiteDatabase db) {
+		// Maybe somewhat hacky, but SQLiteOpenHelper doesn't call onCreate() for a new
+		// table, just a new database completely
+
+		// Ask the database if the table 'list' exist
+		Cursor cursor = db.rawQuery(
+				String.format("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s'", TABLE_NAME), null);
+
+		cursor.moveToFirst();
+
+		// If not, create it
+		if (cursor.getInt(0) == 0) {
+			onCreate(db);
+		}
+
+		cursor.close();
+	}
+
 	/**
 	 * Creates a new list in the database.
 	 * 
