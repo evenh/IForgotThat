@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:background="#ddd"
+    android:orientation="vertical"
     tools:context=".MainActivity" >
-    
+
     <ViewSwitcher
         android:id="@+id/add_list_switcher"
         android:layout_width="fill_parent"
@@ -30,20 +30,28 @@
             android:id="@+id/editable_add_list_input"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/add_new_list_hint" 
-            android:singleLine="true"
-    		android:lines="1"
-    		android:onClick="addNewListTextEntered"
             android:clickable="true"
-            android:textColor="#fefefe">
-
+            android:hint="@string/add_new_list_hint"
+            android:lines="1"
+            android:onClick="addNewListTextEntered"
+            android:singleLine="true"
+            android:textColor="#fefefe" >
         </EditText>
     </ViewSwitcher>
+
+    <TextView
+        android:id="@+id/text_has_no_lists"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/has_no_lists"
+        android:textColor="@color/gray"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ListView
         android:id="@+id/mainView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
     </ListView>
- 
+
 </LinearLayout>

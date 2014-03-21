@@ -22,11 +22,11 @@ public class ListWithElementsActivity extends Activity {
 		
 		// Get the intent and its content
 		Intent intent = getIntent();
-		String listName = intent.getStringExtra(("name"));
+		String listTitle = intent.getStringExtra(("title"));
 
 		// Get TextView for the list title and set its name
 		title = (TextView) findViewById(R.id.listName);
-		title.setText(listName);
+		title.setText(listTitle);
 	}
 
 	/**
