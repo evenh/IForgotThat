@@ -6,6 +6,7 @@
     <!--  Main activity -->
     <string name="add_new_list">Add new list \t\t\t\t\t\t\t\t\t\t\t +</string>
     <string name="add_new_list_hint">What is the name of your list?</string>
+    <string name="has_no_lists">No lists</string>
 	<string name="completed_items">Completed items</string>
 	
 	<!-- Other -->

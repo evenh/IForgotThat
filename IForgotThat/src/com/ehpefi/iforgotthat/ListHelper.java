@@ -84,6 +84,21 @@ public class ListHelper extends SQLiteOpenHelper {
 		cursor.close();
 	}
 
+	public int numberOfLists() {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// Ask the database of how many lists we have
+		Cursor cursor = db.rawQuery(String.format("SELECT count(%s) FROM %s", COL_ID, TABLE_NAME), null);
+		cursor.moveToFirst();
+
+		// Get the result
+		int number = cursor.getInt(0);
+		cursor.close();
+
+		return number;
+	}
+
 	/**
 	 * Creates a new list in the database.
 	 * 
