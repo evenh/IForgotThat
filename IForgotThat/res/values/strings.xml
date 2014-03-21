@@ -8,7 +8,10 @@
     <string name="add_new_list_hint">What is the name of your list?</string>
     <string name="has_no_lists">No lists</string>
 	<string name="completed_items">Completed items</string>
-	
+	<string name="list_name_empty">Please enter a valid name</string>
+	<string name="list_already_exists">The list \'%s\' already exists</string>
+	<string name="list_creation_ok">List \'%s\' created</string>
+	<string name="list_creation_fail">Couldn\'t create the list \'%s\'</string>
 	<!-- Other -->
     <string name="title_activity_sub_list">SubListActivity</string>
     <string name="title_activity_camera">CameraActivity</string>
