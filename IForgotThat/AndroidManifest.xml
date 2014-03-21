@@ -3,10 +3,17 @@
     package="com.ehpefi.iforgotthat"
     android:versionCode="1"
     android:versionName="1.0" >
-
+	
+    <uses-permission 
+        android:name="android.permission.CAMERA" />
+    
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
+    
+    <uses-feature 
+        android:name="android.hardware.camera.any" 
+        android:required="true"/>
 
     <application
         android:allowBackup="true"
