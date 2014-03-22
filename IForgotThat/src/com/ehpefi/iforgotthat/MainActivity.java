@@ -185,6 +185,7 @@ public class MainActivity extends Activity {
 				// Reset the text in the EditText
 				listNameInput.setText("");
 			} else {
+				// Just display a toast telling the user that the creation of a new list failed
 				displayToast(String.format(getResources().getString(R.string.list_creation_fail), inputName));
 			}
 		}
