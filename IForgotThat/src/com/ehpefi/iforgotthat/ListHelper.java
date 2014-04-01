@@ -204,6 +204,7 @@ public class ListHelper extends SQLiteOpenHelper {
 		}
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Return the list
@@ -237,6 +238,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			ListObject list = new ListObject(cursor.getInt(0), cursor.getString(1), cursor.getString(2));
 
 			// Close the database connection
+			cursor.close();
 			db.close();
 
 			// Return the list
@@ -247,6 +249,7 @@ public class ListHelper extends SQLiteOpenHelper {
 				+ ". Returning a null object!");
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Fail
@@ -344,12 +347,14 @@ public class ListHelper extends SQLiteOpenHelper {
 		// The title doesn't exist
 		if (cursor.getCount() == 0) {
 			// Close the database connection
+			cursor.close();
 			db.close();
 
 			return false;
 		}
 		
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		return true;
@@ -373,9 +378,13 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		// The list doesn't exist
 		if (cursor.getInt(0) == 0) {
+			cursor.close();
+			db.close();
 			return false;
 		}
 
+		cursor.close();
+		db.close();
 		return true;
 	}
 }
