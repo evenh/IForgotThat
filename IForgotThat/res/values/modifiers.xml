@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_modifiers">
+        <item>@string/list_menu_rename</item>
+        <item>@string/list_menu_delete</item>
+    </string-array>
+</resources>

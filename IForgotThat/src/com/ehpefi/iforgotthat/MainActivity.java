@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -62,6 +65,7 @@ public class MainActivity extends Activity {
 		// Create a new list adapter for all our lists
 		listAdapter = new ListObjectAdapter(this, android.R.layout.simple_list_item_1, allLists);
 		listView.setAdapter(listAdapter);
+		registerForContextMenu(listView);
 
 		showLists();
 	}
@@ -189,7 +193,22 @@ public class MainActivity extends Activity {
 				displayToast(String.format(getResources().getString(R.string.list_creation_fail), inputName));
 			}
 		}
+	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+		// Check whether the ListView was selected
+		if (view.getId() == R.id.mainView) {
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+			// Set list title
+			menu.setHeaderTitle(String.format(getResources().getString(R.string.list_menu_title),
+					allLists.get(info.position).getTitle()));
+			// Get available actions
+			String[] menuItems = getResources().getStringArray(R.array.list_modifiers);
+			for (int i = 0; i < menuItems.length; i++) {
+				menu.add(Menu.NONE, i, i, menuItems[i]);
+			}
+		}
 	}
 
 }
