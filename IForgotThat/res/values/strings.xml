@@ -12,6 +12,8 @@
 	<string name="list_already_exists">The list \'%s\' already exists</string>
 	<string name="list_creation_ok">List \'%s\' created</string>
 	<string name="list_creation_fail">Couldn\'t create the list \'%s\'</string>
+	<string name="list_deletion_ok">List \'%s\' deleted</string>
+	<string name="list_deletion_fail">Couldn\'t delete the list \'%s\'</string>
 	<string name="list_menu_title">Edit \'%s\'</string>
 	<string name="list_menu_rename">Rename</string>
 	<string name="list_menu_delete">Delete</string>

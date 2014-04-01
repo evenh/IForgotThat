@@ -11,6 +11,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -209,6 +210,35 @@ public class MainActivity extends Activity {
 				menu.add(Menu.NONE, i, i, menuItems[i]);
 			}
 		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+		String[] menuItems = getResources().getStringArray(R.array.list_modifiers);
+		int index = item.getItemId();
+		String itemName = menuItems[index];
+		ListObject selectedList = allLists.get(info.position);
+
+		// If the user selected "Delete"
+		if (itemName.equals(getResources().getString(R.string.list_menu_delete))) {
+			// If we successfully deleted the list
+			if (listHelper.deleteList(selectedList.getId())) {
+				displayToast(String
+						.format(getResources().getString(R.string.list_deletion_ok), selectedList.getTitle()));
+			} else {
+				// Couldn't delete the list
+				displayToast(String.format(getResources().getString(R.string.list_deletion_fail),
+						selectedList.getTitle()));
+			}
+
+			updateListView();
+		} else if (itemName.equals(getResources().getString(R.string.list_menu_rename))) {
+			Log.d(TAG, "RENAME");
+		}
+
+		return true;
 	}
 
 }
