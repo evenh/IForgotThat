@@ -3,7 +3,9 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -219,21 +221,36 @@ public class MainActivity extends Activity {
 		String[] menuItems = getResources().getStringArray(R.array.list_modifiers);
 		int index = item.getItemId();
 		String itemName = menuItems[index];
-		ListObject selectedList = allLists.get(info.position);
+		final ListObject selectedList = allLists.get(info.position);
 
 		// If the user selected "Delete"
 		if (itemName.equals(getResources().getString(R.string.list_menu_delete))) {
-			// If we successfully deleted the list
-			if (listHelper.deleteList(selectedList.getId())) {
-				displayToast(String
-						.format(getResources().getString(R.string.list_deletion_ok), selectedList.getTitle()));
-			} else {
-				// Couldn't delete the list
-				displayToast(String.format(getResources().getString(R.string.list_deletion_fail),
-						selectedList.getTitle()));
-			}
+			// Create a dialog box to confirm deletion
+			AlertDialog confirmDeletion = new AlertDialog.Builder(this)
+					.setTitle(getResources().getString(R.string.list_deletion_title))
+					.setMessage(String.format(getResources().getString(R.string.list_deletion_confirm), selectedList.getTitle()))
+					.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// If we successfully deleted the list
+							// TODO: Delete list elements assigned to this list
+							if (listHelper.deleteList(selectedList.getId())) {
+								displayToast(String.format(getResources().getString(R.string.list_deletion_ok), selectedList.getTitle()));
+							} else {
+								// Couldn't delete the list
+								displayToast(String.format(getResources().getString(R.string.list_deletion_fail), selectedList.getTitle()));
+							}
 
-			updateListView();
+							updateListView();
+						}
+					}).setNegativeButton(getResources().getString(R.string.no), new android.content.DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					}).create();
+
+			confirmDeletion.show();
 		} else if (itemName.equals(getResources().getString(R.string.list_menu_rename))) {
 			Log.d(TAG, "RENAME");
 		}
