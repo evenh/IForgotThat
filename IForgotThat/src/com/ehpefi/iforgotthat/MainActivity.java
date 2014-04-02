@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -252,7 +253,42 @@ public class MainActivity extends Activity {
 
 			confirmDeletion.show();
 		} else if (itemName.equals(getResources().getString(R.string.list_menu_rename))) {
-			Log.d(TAG, "RENAME");
+			// If the user selected "Rename"
+
+			LayoutInflater inflater = getLayoutInflater();
+			AlertDialog renameDialog = new AlertDialog.Builder(this).setView(inflater.inflate(R.layout.rename_list, null))
+					.setTitle(String.format(getResources().getString(R.string.rename_list_title), selectedList.getTitle()))
+					.setPositiveButton(R.string.rename_list_okbutton, new DialogInterface.OnClickListener() {
+						@Override
+						// When the user has pressed "Rename"
+						public void onClick(DialogInterface dialog, int id) {
+							// Get the input text (the new title)
+							EditText newTitleET = (EditText) ((AlertDialog) dialog).findViewById(R.id.new_list_name);
+							String newTitle = newTitleET.getText().toString();
+
+							// Check for empty input
+							if (newTitle.equals("") || newTitle == null || newTitle.trim().length() == 0) {
+								displayToast(getResources().getString(R.string.list_name_empty));
+							} else {
+								// Try to rename the list
+								if (listHelper.renameList(selectedList.getId(), newTitle)) {
+									displayToast(String.format(getResources().getString(R.string.list_rename_ok), selectedList.getTitle(), newTitle));
+								} else {
+									displayToast(String.format(getResources().getString(R.string.list_rename_fail), selectedList.getTitle()));
+								}
+								
+								// Refresh the list view
+								updateListView();
+							}
+						}
+					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						// Cancel button
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					}).create();
+
+			renameDialog.show();
 		}
 
 		return true;
