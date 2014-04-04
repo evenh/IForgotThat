@@ -3,16 +3,27 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
+/**
+ * Handles the camera preview
+ * 
+ * @author Per Erik Finstad
+ * @since 1.0
+ */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private static final String TAG = "CameraPreview";
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
 	private CameraPreview mPreview;
+	private boolean isPreviewActive = false;
 
 	public CameraPreview(Context context, Camera camera) {
 		super(context);
@@ -28,6 +39,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		try {
 			mCamera.setPreviewDisplay(holder);
 			mCamera.startPreview();
+			isPreviewActive = true;
 		} catch (IOException e) {
 			Log.d(TAG, "Error setting camera preview: " + e.getMessage());
 		}
@@ -53,22 +65,42 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		// stop preview before making changes
-		try {
-			mCamera.stopPreview();
-		} catch (Exception e) {
-			// ignore: tried to stop a non-existent preview
+		if (isPreviewActive) {
+			try {
+				mCamera.stopPreview();
+			} catch (Exception e) {
+				Log.d(TAG, "Couldn't stop camera preview", e);
+			}
 		}
 
-		// set preview size and make any resize, rotate or
-		// reformatting changes here
+		// From http://stackoverflow.com/questions/3841122/android-camera-preview-is-sideways
+		Parameters parameters = mCamera.getParameters();
+		Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
+		if (display.getRotation() == Surface.ROTATION_0) {
+			parameters.setPreviewSize(h, w);
+			mCamera.setDisplayOrientation(90);
+		}
+
+		if (display.getRotation() == Surface.ROTATION_90) {
+			parameters.setPreviewSize(w, h);
+		}
+
+		if (display.getRotation() == Surface.ROTATION_180) {
+			parameters.setPreviewSize(h, w);
+		}
+
+		if (display.getRotation() == Surface.ROTATION_270) {
+			parameters.setPreviewSize(w, h);
+			mCamera.setDisplayOrientation(180);
+		}
 
 		// start preview with new settings
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
-
 		} catch (Exception e) {
-			Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+			Log.d(TAG, "Error starting camera preview", e);
 		}
 	}
 }
