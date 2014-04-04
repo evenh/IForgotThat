@@ -8,13 +8,27 @@
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+    </FrameLayout>
 
-    <ImageButton
-        android:id="@+id/button_capture"
-        android:layout_width="fill_parent"
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:src="@android:drawable/ic_menu_camera" />
+        android:columnCount="1" >
+
+        <ImageButton
+            android:id="@+id/button_capture"
+            android:layout_column="0"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_row="0"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_column="0"
+            android:layout_gravity="right|bottom"
+            android:layout_row="0"
+            android:src="@drawable/ic_launcher" />
+    </GridLayout>
 
 </LinearLayout>
