@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-	private static final String TAG = "cPreview";
+	private static final String TAG = "CameraPreview";
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
@@ -34,10 +34,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// empty. Take care of releasing the Camera preview in your activity.
+		// Release the camera on orientation change
+		if (mCamera != null) {
+			mCamera.stopPreview();
+			mCamera.setPreviewCallback(null);
+			mCamera.release();
+			mCamera = null;
+		}
 	}
-
-
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		// If your preview can change or rotate, take care of those events here.
