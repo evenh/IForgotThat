@@ -47,4 +47,18 @@ public class ListWithElementsActivity extends Activity {
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
 
+	/**
+	 * Opens the CameraActivity class for creating
+	 * 
+	 * @param v The view
+	 * @since 1.0
+	 */
+	public void newReminder(View v) {
+		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+		startActivity(intent);
+
+		// Transition smoothly :)
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+	}
+
 }

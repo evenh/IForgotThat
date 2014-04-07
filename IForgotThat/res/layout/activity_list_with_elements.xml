@@ -22,6 +22,27 @@
         android:onClick="backToLists"
         android:text=""
         android:textColor="#fefefe"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_alignParentTop="true" />
+
+    <ListView
+        android:id="@+id/elementsListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"	
+        android:layout_above="@+id/addNewListElement"
+        android:layout_alignEnd="@+id/listName"
+        android:layout_below="@+id/listName" >
+
+    </ListView>
+    
+    <Button
+        android:id="@+id/addNewListElement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/list_elements_add_new"
+        android:onClick="newReminder"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
