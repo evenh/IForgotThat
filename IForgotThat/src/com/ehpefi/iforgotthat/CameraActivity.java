@@ -4,16 +4,21 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -136,10 +141,21 @@ public class CameraActivity extends Activity {
 	 */
 	private byte[] compressImage(byte[] input) {
 		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
-		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
 
+		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
 		ByteArrayOutputStream blob = new ByteArrayOutputStream();
-		original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+
+		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
+		if (Build.MODEL.equals("Nexus S") && display.getRotation() == Surface.ROTATION_0) {
+			Log.i(TAG, "Nexus S detected, applying rotation hack!");
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+			rotated.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+		} else {
+			original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+		}
 
 		byte[] compressed = blob.toByteArray();
 		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");

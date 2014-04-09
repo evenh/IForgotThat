@@ -67,17 +67,7 @@ public class NewReminderActivity extends Activity {
 			image = bundle.getByteArray("image");
 
 			if (image != null) {
-				BitmapFactory.Options options = new BitmapFactory.Options();
-
-
 				imageHolder.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
-				Log.i(TAG, "Rotation for this image is: " + imageHolder.getRotation() + "degrees");
-				if (imageHolder.getRotation() == 0.0) {
-					imageHolder.setRotation(90);
-					Log.i(TAG, "New rotation for this image is: " + imageHolder.getRotation() + "degrees");
-				} else {
-					Log.i(TAG, "Rotation of the image is not changed");
-				}
 			}
 
 		} else {
