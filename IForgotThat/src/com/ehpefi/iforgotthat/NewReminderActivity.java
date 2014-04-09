@@ -6,11 +6,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -25,14 +26,16 @@ public class NewReminderActivity extends Activity {
 	ListElementHelper listElementHelper = new ListElementHelper(this);
 
 	// Data fields
-	TextView listName;
-	EditText title;
-	Date reminder;
-	Bitmap image;
+	private TextView listName;
+	private EditText title;
+
+	private ImageView imageHolder;
 
 	// For the database
-	int listID;
-	String listTitle;
+	private int listID;
+	private String listTitle;
+	private Date reminder;
+	private byte[] image;
 
 	// Used for logging
 	private static final String TAG = "NewReminderActivity";
@@ -44,31 +47,45 @@ public class NewReminderActivity extends Activity {
 
 		title = (EditText) findViewById(R.id.reminder_title);
 		listName = (TextView) findViewById(R.id.listName);
+		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
 
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
-		if (bundle != null && bundle.getInt("listID") != 0) {
-			listID = bundle.getInt("listId");
-			listTitle = listHelper.getList(listID).getTitle();
+		if (bundle != null) {
+			// Check for list id
+			if (bundle.getInt("listID") != 0) {
+				listID = bundle.getInt("listId");
+				listTitle = listHelper.getList(listID).getTitle();
 
-			Log.d(TAG, "List id recieved: " + listID);
-			Log.d(TAG, "List title recieved: " + listTitle);
+				Log.d(TAG, "List id recieved: " + listID);
+				Log.d(TAG, "List title recieved: " + listTitle);
 
-			// Set the list name
-			listName.setText(listTitle);
+				// Set the list name
+				listName.setText(listTitle);
+			}
+			// Recieve image
+			image = bundle.getByteArray("image");
+
+			if (image != null) {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+
+
+				imageHolder.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
+			}
+
 		} else {
 			Log.e(TAG, "No extras recieved!");
 		}
 	}
 
 	/**
-	 * Pops up an alert on the thrash button onClick
+	 * Pops up an alert on the trash button onClick
 	 * 
 	 * @param The view
 	 * @since 1.0
 	 */
 	public void thrashAndExit(View v) {
-		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle("Are you sure?").setMessage("Do you want to thrash this reminder?")
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle("Are you sure?").setMessage("Do you want to trash this reminder?")
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
