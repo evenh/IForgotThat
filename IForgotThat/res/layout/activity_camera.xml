@@ -24,7 +24,7 @@
             android:src="@android:drawable/ic_menu_camera" />
 
         <Button
-            android:id="@+id/imageButton2"
+            android:id="@+id/button_flash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"

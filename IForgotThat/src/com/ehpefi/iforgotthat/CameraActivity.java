@@ -1,13 +1,10 @@
 package com.ehpefi.iforgotthat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -17,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -28,17 +26,23 @@ import android.widget.ImageButton;
  * @since 1.0
  */
 public class CameraActivity extends Activity {
-
 	private static final String TAG = "CameraActivity";
 	protected static final String MEDIA_TYPE_IMAGE = null;
 	private Camera mCamera;
 	private CameraPreview mPreview;
 	private PictureCallback mPicture;
 
+	private ImageButton captureButton;
+	private Button flashButton;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
+
+		// Get the UI elements
+		captureButton = (ImageButton) findViewById(R.id.button_capture);
+		flashButton = (Button) findViewById(R.id.button_flash);
 
 		// Create an instance of Camera
 		mCamera = getCameraInstance();
@@ -54,27 +58,8 @@ public class CameraActivity extends Activity {
 				// Compress the data
 				data = compressImage(data);
 
-				File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-				if (pictureFile == null) {
-					Log.e(TAG, "Error creating media file, check storage permissions");
-					return;
-				}
-
-				try {
-					FileOutputStream fos = new FileOutputStream(pictureFile);
-					Log.d(TAG, "Writing file to system!");
-					fos.write(data);
-					fos.close();
-				} catch (FileNotFoundException e) {
-					Log.w(TAG, "File not found", e);
-				} catch (IOException e) {
-					Log.e(TAG, "Error accessing file", e);
-				}
-			}
-
-			private File getOutputMediaFile(String mediaTypeImage) {
-				// TODO Auto-generated method stub
-				return null;
+				// Call the NewReminderActivity
+				createNewReminder(data);
 			}
 		};
 
@@ -101,12 +86,12 @@ public class CameraActivity extends Activity {
 
 					try {
 						Thread.sleep(500);
-						tempParam.setFlashMode(Parameters.FLASH_MODE_OFF);
+						tempParam.setFlashMode(Parameters.FLASH_MODE_ON);
 						mCamera.setParameters(tempParam);
 					} catch (InterruptedException ie) {
 						ie.printStackTrace();
 					} catch (Exception e) {
-						Log.e(TAG, "Exceptionfest", e);
+						Log.e(TAG, "Exception while setting the parameters", e);
 					}
 
 				} else {
@@ -118,25 +103,54 @@ public class CameraActivity extends Activity {
 	}
 
 	/**
+	 * Fires off the new intent to NewReminderActivity
+	 * 
+	 * @param A compressed image as a byte array
+	 * @since 1.0
+	 */
+	private void createNewReminder(byte[] image) {
+		Intent intent = new Intent(this, NewReminderActivity.class);
+		// Put all the necessary extras in
+		intent.putExtra("image", image);
+
+		// Check for incoming data from the previous activity
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null && bundle.getInt("listID") != 0) {
+			intent.putExtra("listID", bundle.getInt("listID"));
+		} else {
+			intent.putExtra("listID", 0);
+		}
+
+		startActivity(intent);
+
+		// Transition smoothly
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+	}
+
+	/**
 	 * Compresses a raw image from the camera to JPEG with 70% quality
 	 * 
 	 * @param A raw image in a byte array
 	 * @return A byte array containing the compressed image
 	 * @since 1.0
 	 */
-	byte[] compressImage(byte[] input) {
+	private byte[] compressImage(byte[] input) {
+		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
 		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
 
 		ByteArrayOutputStream blob = new ByteArrayOutputStream();
 		original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
 
-		return blob.toByteArray();
+		byte[] compressed = blob.toByteArray();
+		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");
+
+		return compressed;
 	}
 
 	/**
 	 * Gets an instance of the camera
 	 * 
-	 * @return An instance of camera if successfull, null otherwise
+	 * @return An instance of camera if successful, null otherwise
 	 * @since 1.0
 	 */
 	public static Camera getCameraInstance() {
@@ -146,11 +160,18 @@ public class CameraActivity extends Activity {
 			// find supported image sizes
 			try {
 				Parameters params = c.getParameters();
-				List<Camera.Size> sizes = params.getSupportedPictureSizes();
-				Camera.Size selected = sizes.get(sizes.size() - 1);// selects the smallest resolution (last item in array)
-				Log.i(TAG, "Resolution selected: " + selected.width + "x" + selected.height);
-				params.setPictureSize(selected.width, selected.height);
-				params.setPreviewSize(selected.width, selected.height);
+
+				List<Camera.Size> cameraSizes = params.getSupportedPictureSizes();
+				// selects the smallest resolution (last item in array)
+				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
+				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
+				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
+				
+				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
+				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
+				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
+				params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
+				
 				c.setParameters(params);
 			} catch (Exception e) {
 				Log.d(TAG, "Failed to set parameters: " + e);
@@ -187,4 +208,11 @@ public class CameraActivity extends Activity {
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(this, CameraActivity.class);
+		startActivityForResult(intent, 0);
+		// Transition animation
+		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
 }
