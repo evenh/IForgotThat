@@ -20,6 +20,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+/**
+ * Responsible for capturing images for new list elements
+ * 
+ * @author Per Erik Finstad
+ * @author Even Holthe
+ * @since 1.0
+ */
 public class CameraActivity extends Activity {
 
 	private static final String TAG = "CameraActivity";
@@ -80,9 +87,8 @@ public class CameraActivity extends Activity {
 				Log.d(TAG, "Photo in the taking!");
 
 				// Hack for the Google Nexus S
-				if (Build.MODEL.equals("Nexus S")
-						&& mCamera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
-					Log.d(TAG, "Google Nexus S detected, applying flash hack!");
+				if (Build.MODEL.equals("Nexus S") && mCamera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
+					Log.i(TAG, "Google Nexus S detected, applying flash hack!");
 					Camera.Parameters tempParam = mCamera.getParameters();
 					tempParam.setFlashMode(Parameters.FLASH_MODE_TORCH);
 					mCamera.setParameters(tempParam);
@@ -114,8 +120,9 @@ public class CameraActivity extends Activity {
 	/**
 	 * Compresses a raw image from the camera to JPEG with 70% quality
 	 * 
-	 * @param input
+	 * @param A raw image in a byte array
 	 * @return A byte array containing the compressed image
+	 * @since 1.0
 	 */
 	byte[] compressImage(byte[] input) {
 		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
@@ -126,7 +133,12 @@ public class CameraActivity extends Activity {
 		return blob.toByteArray();
 	}
 
-	// get an instance of the camera
+	/**
+	 * Gets an instance of the camera
+	 * 
+	 * @return An instance of camera if successfull, null otherwise
+	 * @since 1.0
+	 */
 	public static Camera getCameraInstance() {
 		Camera c = null;
 		try {
@@ -136,11 +148,7 @@ public class CameraActivity extends Activity {
 				Parameters params = c.getParameters();
 				List<Camera.Size> sizes = params.getSupportedPictureSizes();
 				Camera.Size selected = sizes.get(sizes.size() - 1);// selects the smallest resolution (last item in array)
-				Log.i(TAG, "Sizes available for this camera:");
-				for (Camera.Size size : sizes) {
-					Log.i(TAG, size.width + "x" + size.height);
-				}
-				Log.i(TAG, "Size selected for this application: " + selected.width + "x" + selected.height);
+				Log.i(TAG, "Resolution selected: " + selected.width + "x" + selected.height);
 				params.setPictureSize(selected.width, selected.height);
 				params.setPreviewSize(selected.width, selected.height);
 				c.setParameters(params);
@@ -151,7 +159,6 @@ public class CameraActivity extends Activity {
 		} catch (Exception e) {
 			// Camera is not available (in use or does not exist)
 			Log.e(TAG, "Camera is not available or doesn't exist" + e);
-
 		}
 		return c; // returns null if camera is unavailable
 	}
@@ -159,9 +166,8 @@ public class CameraActivity extends Activity {
 	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
-	 * @param none
-	 * @return boolean
-	 * 
+	 * @param The view
+	 * @since 1.0
 	 */
 	public void flashOnOff(View v) {
 		Camera.Parameters param = mCamera.getParameters();
@@ -181,4 +187,4 @@ public class CameraActivity extends Activity {
 		}
 	}
 
-}// end of class
+}
