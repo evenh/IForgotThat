@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <TextView
@@ -26,8 +26,8 @@
         android:id="@+id/reminder_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Beskrivelse plz"
-        android:ems="10" >
+        android:singleLine="true"
+        android:hint="Beskrivelse plz" >
 
         <requestFocus />
     </EditText>
@@ -35,30 +35,39 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#678"
         android:columnCount="1" >
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_thrash"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
             android:layout_column="0"
             android:layout_gravity="left|center_vertical"
             android:layout_row="0"
+            android:background="#678"
             android:onClick="thrashAndExit"
-            android:text="Thrash" />
+            android:src="@drawable/ic_action_cancel" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_addAlarm"
             android:layout_column="0"
             android:layout_gravity="center"
             android:layout_row="0"
-            android:text="Add alarm" />
+            android:background="#678"
+            android:layout_height="fill_parent"
+            android:layout_width="80dp"
+            android:src="@drawable/ic_action_alarms" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_save"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
             android:layout_column="0"
             android:layout_gravity="right|center_vertical"
             android:layout_row="0"
-            android:text="Save" />
-
+            android:background="#678"
+            android:src="@drawable/ic_action_accept" />
     </GridLayout>
 
 </LinearLayout>

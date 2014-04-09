@@ -91,4 +91,5 @@ public class NewReminderActivity extends Activity {
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
+
 }
