@@ -22,7 +22,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
-	private CameraPreview mPreview;
 	private boolean isPreviewActive = false;
 
 	public CameraPreview(Context context, Camera camera) {
