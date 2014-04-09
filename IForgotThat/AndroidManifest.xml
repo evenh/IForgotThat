@@ -3,17 +3,17 @@
     package="com.ehpefi.iforgotthat"
     android:versionCode="1"
     android:versionName="1.0" >
-	
-    <uses-permission 
+
+    <uses-permission
         android:name="android.permission.CAMERA" />
-    
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
-    
-    <uses-feature 
-        android:name="android.hardware.camera.any" 
-        android:required="true"/>
+
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
 
     <application
         android:allowBackup="true"
@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.ehpefi.iforgotthat.MainActivity"
+            android:name="com.ehpefi.iforgotthat.CameraActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,10 +36,9 @@
                 <action android:name="com.ehpefi.iforgotthat.SubListActivity" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.ehpefi.iforgotthat.CameraActivity"
-            android:label="@string/app_name" >
-        </activity>
+        <activity android:name="MainActivity"></activity>
+        <activity android:name="NewReminderActivity"></activity>
+
     </application>
 
 </manifest>
