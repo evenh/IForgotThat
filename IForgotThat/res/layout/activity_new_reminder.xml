@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/listName"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="false"
+        android:background="#678"
+        android:clickable="true"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#fefefe"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/camera_user_image"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_launcher" />
+
+    <EditText
+        android:id="@+id/reminder_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="What do you want to remember?" >
+
+        <requestFocus />
+    </EditText>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#678"
+        android:columnCount="1" >
+
+        <ImageButton
+            android:id="@+id/btn_trash"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
+            android:layout_column="0"
+            android:layout_gravity="left|center_vertical"
+            android:layout_row="0"
+            android:background="#678"
+            android:onClick="thrashAndExit"
+            android:src="@drawable/ic_action_cancel" />
+
+        <ImageButton
+            android:id="@+id/btn_addAlarm"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:layout_row="0"
+            android:background="#678"
+            android:layout_height="fill_parent"
+            android:layout_width="80dp"
+            android:src="@drawable/ic_action_alarms" />
+
+        <ImageButton
+            android:id="@+id/btn_save"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
+            android:layout_column="0"
+            android:layout_gravity="right|center_vertical"
+            android:layout_row="0"
+            android:background="#678"
+            android:src="@drawable/ic_action_accept" />
+    </GridLayout>
+
+</LinearLayout>
