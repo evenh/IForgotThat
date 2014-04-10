@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 				// Create an intent and pass the title and id
 				Intent intent = new Intent(getApplicationContext(), ListWithElementsActivity.class);
 				intent.putExtra("title", list.getTitle());
-				intent.putExtra("id", list.getId());
+				intent.putExtra("listID", list.getId());
 
 				startActivity(intent);
 

@@ -53,12 +53,13 @@ public class NewReminderActivity extends Activity {
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
 			// Check for list id
-			if (bundle.getInt("listID") != 0) {
-				listID = bundle.getInt("listId");
-				listTitle = listHelper.getList(listID).getTitle();
-
+			if (bundle.getInt("listID") > 0) {
+				listID = bundle.getInt("listID");
 				Log.d(TAG, "List id recieved: " + listID);
-				Log.d(TAG, "List title recieved: " + listTitle);
+
+				ListObject list = listHelper.getList(listID);
+				listTitle = list.getTitle();
+				Log.d(TAG, "List title resolved: " + listTitle);
 
 				// Set the list name
 				listName.setText(listTitle);

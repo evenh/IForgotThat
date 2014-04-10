@@ -14,6 +14,7 @@ import android.widget.TextView;
  */
 public class ListWithElementsActivity extends Activity {
 	TextView title;
+	private int listID = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +22,13 @@ public class ListWithElementsActivity extends Activity {
 		setContentView(R.layout.activity_list_with_elements);
 		
 		// Get the intent and its content
-		Intent intent = getIntent();
-		String listTitle = intent.getStringExtra(("title"));
+		Bundle bundle = getIntent().getExtras();
+		String listTitle = "N/A";
+
+		if (bundle != null) {
+			listTitle = bundle.getString("title");
+			listID = bundle.getInt("listID");
+		}
 
 		// Get TextView for the list title and set its name
 		title = (TextView) findViewById(R.id.listName);
@@ -55,6 +61,8 @@ public class ListWithElementsActivity extends Activity {
 	 */
 	public void newReminder(View v) {
 		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+
+		intent.putExtra("listID", listID);
 		startActivity(intent);
 
 		// Transition smoothly :)
