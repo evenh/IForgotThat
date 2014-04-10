@@ -226,7 +226,8 @@ public class CameraActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, CameraActivity.class);
+		Intent intent = new Intent(this, ListWithElementsActivity.class);
+		intent.putExtra("listID", getIntent().getExtras().getInt("listID"));
 		startActivityForResult(intent, 0);
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);

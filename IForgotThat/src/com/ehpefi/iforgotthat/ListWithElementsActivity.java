@@ -15,11 +15,14 @@ import android.widget.TextView;
 public class ListWithElementsActivity extends Activity {
 	TextView title;
 	private int listID = 0;
+	ListHelper listHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_with_elements);
+		
+		listHelper = new ListHelper(this);
 		
 		// Get the intent and its content
 		Bundle bundle = getIntent().getExtras();
@@ -28,6 +31,9 @@ public class ListWithElementsActivity extends Activity {
 		if (bundle != null) {
 			listTitle = bundle.getString("title");
 			listID = bundle.getInt("listID");
+			if (listTitle == null || listTitle.equals("")) {
+				listTitle =  listHelper.getList(listID).getTitle();
+			}
 		}
 
 		// Get TextView for the list title and set its name
