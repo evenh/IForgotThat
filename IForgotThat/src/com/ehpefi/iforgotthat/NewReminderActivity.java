@@ -1,6 +1,7 @@
 package com.ehpefi.iforgotthat;
 
 import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -101,6 +102,7 @@ public class NewReminderActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(this, CameraActivity.class);
+		intent.putExtra("listID", listID);
 		startActivityForResult(intent, 0);
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
