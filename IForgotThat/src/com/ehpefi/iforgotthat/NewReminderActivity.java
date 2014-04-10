@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -27,7 +29,8 @@ public class NewReminderActivity extends Activity {
 
 	// Data fields
 	private TextView listName;
-	private EditText title;
+	private EditText description;
+	private String descriptionText;
 
 	private ImageView imageHolder;
 
@@ -45,9 +48,12 @@ public class NewReminderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_reminder);
 
-		title = (EditText) findViewById(R.id.reminder_title);
+		description = (EditText) findViewById(R.id.reminder_title);
 		listName = (TextView) findViewById(R.id.listName);
 		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
+
+		// Set the description to an empty string by default
+		descriptionText = "";
 
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
@@ -74,6 +80,21 @@ public class NewReminderActivity extends Activity {
 		} else {
 			Log.e(TAG, "No extras recieved!");
 		}
+
+		description.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				descriptionChanged(description.getText().toString());
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+		});
 	}
 
 	/**
@@ -97,6 +118,26 @@ public class NewReminderActivity extends Activity {
 				}).create();
 
 		confirmDeletion.show();
+	}
+
+	/**
+	 * Convenience method for updating the description field
+	 * 
+	 * @param The new description
+	 * @since 1.0
+	 */
+	private void descriptionChanged(String newDescription) {
+		try {
+			if (newDescription.equals("") || newDescription == "") {
+				descriptionText = "";
+			} else {
+				descriptionText = newDescription;
+			}
+		} catch (NullPointerException npe) {
+			descriptionText = "";
+		}
+
+		Log.d(TAG, "A description entered: " + descriptionText);
 	}
 
 	@Override
