@@ -32,4 +32,8 @@
 	<!-- Other -->
     <string name="title_activity_sub_list">SubListActivity</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <!--  NewReminderActivity -->
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="thrash_current_reminder">Do you want to trash this reminder?</string>
+    <string name="remember_hint">What do you want to remember?</string>
 </resources>

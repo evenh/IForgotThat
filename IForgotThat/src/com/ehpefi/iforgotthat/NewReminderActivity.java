@@ -1,7 +1,6 @@
 package com.ehpefi.iforgotthat;
 
 import java.util.Date;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -83,7 +82,7 @@ public class NewReminderActivity extends Activity {
 	 * @since 1.0
 	 */
 	public void thrashAndExit(View v) {
-		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle("Are you sure?").setMessage("Do you want to trash this reminder?")
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(R.string.thrash_current_reminder)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
