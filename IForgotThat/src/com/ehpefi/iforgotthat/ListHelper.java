@@ -65,6 +65,40 @@ public class ListHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onUpgrade() was called, but nothing to upgrade...");
 	}
 
+	@Override
+	public void onOpen(SQLiteDatabase db) {
+		// Maybe somewhat hacky, but SQLiteOpenHelper doesn't call onCreate() for a new
+		// table, just a new database completely
+
+		// Ask the database if the table 'list' exist
+		Cursor cursor = db.rawQuery(
+				String.format("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s'", TABLE_NAME), null);
+
+		cursor.moveToFirst();
+
+		// If not, create it
+		if (cursor.getInt(0) == 0) {
+			onCreate(db);
+		}
+
+		cursor.close();
+	}
+
+	public int numberOfLists() {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// Ask the database of how many lists we have
+		Cursor cursor = db.rawQuery(String.format("SELECT count(%s) FROM %s", COL_ID, TABLE_NAME), null);
+		cursor.moveToFirst();
+
+		// Get the result
+		int number = cursor.getInt(0);
+		cursor.close();
+
+		return number;
+	}
+
 	/**
 	 * Creates a new list in the database.
 	 * 
@@ -170,6 +204,7 @@ public class ListHelper extends SQLiteOpenHelper {
 		}
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Return the list
@@ -203,6 +238,7 @@ public class ListHelper extends SQLiteOpenHelper {
 			ListObject list = new ListObject(cursor.getInt(0), cursor.getString(1), cursor.getString(2));
 
 			// Close the database connection
+			cursor.close();
 			db.close();
 
 			// Return the list
@@ -213,6 +249,7 @@ public class ListHelper extends SQLiteOpenHelper {
 				+ ". Returning a null object!");
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Fail
@@ -310,12 +347,14 @@ public class ListHelper extends SQLiteOpenHelper {
 		// The title doesn't exist
 		if (cursor.getCount() == 0) {
 			// Close the database connection
+			cursor.close();
 			db.close();
 
 			return false;
 		}
 		
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		return true;
@@ -339,9 +378,13 @@ public class ListHelper extends SQLiteOpenHelper {
 
 		// The list doesn't exist
 		if (cursor.getInt(0) == 0) {
+			cursor.close();
+			db.close();
 			return false;
 		}
 
+		cursor.close();
+		db.close();
 		return true;
 	}
 }

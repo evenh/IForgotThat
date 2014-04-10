@@ -22,11 +22,11 @@ public class ListWithElementsActivity extends Activity {
 		
 		// Get the intent and its content
 		Intent intent = getIntent();
-		String listName = intent.getStringExtra(("name"));
+		String listTitle = intent.getStringExtra(("title"));
 
 		// Get TextView for the list title and set its name
 		title = (TextView) findViewById(R.id.listName);
-		title.setText(listName);
+		title.setText(listTitle);
 	}
 
 	/**
@@ -45,6 +45,20 @@ public class ListWithElementsActivity extends Activity {
 		startActivityForResult(intent, 0);
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
+
+	/**
+	 * Opens the CameraActivity class for creating
+	 * 
+	 * @param v The view
+	 * @since 1.0
+	 */
+	public void newReminder(View v) {
+		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+		startActivity(intent);
+
+		// Transition smoothly :)
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
 }
