@@ -26,6 +26,15 @@
         android:textColor="#fefefe"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/text_has_no_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:gravity="center"
+        android:text="@string/has_no_reminders"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray" />
+
     <ListView
         android:id="@+id/elementsListView"
         android:layout_width="match_parent"
@@ -35,7 +44,6 @@
         android:layout_below="@+id/listName"
         android:layout_weight="0.99"
         android:background="#ddd" >
-
     </ListView>
 
     <GridLayout
