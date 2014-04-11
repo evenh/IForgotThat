@@ -172,12 +172,12 @@ public class NewReminderActivity extends Activity {
 		}
 
 		AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
-				.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// Get the selected date + time
 						Calendar cal = Calendar.getInstance();
-						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
 
 						reminder = new Date(cal.getTimeInMillis());
 						reminderString = ListElementObject.getDateAsString(reminder);
@@ -185,13 +185,13 @@ public class NewReminderActivity extends Activity {
 
 						dialog.dismiss();
 					}
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Log.d(TAG, "The user canceled the date+time dialog");
 						dialog.cancel();
 					}
-				}).setNeutralButton("No alarm", new DialogInterface.OnClickListener() {
+				}).setNeutralButton(R.string.no_alarm, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Log.d(TAG, "The user selected 'No alarm'");
@@ -202,6 +202,35 @@ public class NewReminderActivity extends Activity {
 				}).create();
 
 		alarmDialog.show();
+	}
+
+	/**
+	 * Saves the item to the database
+	 * 
+	 * @param The view
+	 * @since 1.0
+	 */
+	public void saveReminder(View view) {
+		Log.i(TAG, "Saving the reminder...");
+
+		// What data goes in
+		Log.d(TAG, "List ID: " + listID);
+		Log.d(TAG, "List title: " + listTitle);
+		Log.d(TAG, "Description: " + descriptionText);
+		Log.d(TAG, "Alarm: " + reminderString);
+
+		if (listElementHelper.createNewListElement(listID, descriptionText, reminderString, image) > 0) {
+			// Go back to the selected list
+			Intent intent = new Intent(this, ListWithElementsActivity.class);
+			// Clear history and pass along the list ID
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			intent.putExtra("listID", listID);
+			intent.putExtra("title", listTitle);
+
+			startActivity(intent);
+		} else {
+			Log.e(TAG, "Couldn't save the reminder!");
+		}
 	}
 
 	@Override
