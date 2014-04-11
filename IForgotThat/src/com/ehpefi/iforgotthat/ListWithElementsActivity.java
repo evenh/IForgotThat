@@ -1,10 +1,14 @@
 package com.ehpefi.iforgotthat;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 /**
  * The activity view for a list containing list elements
@@ -14,8 +18,18 @@ import android.widget.TextView;
  */
 public class ListWithElementsActivity extends Activity {
 	TextView title;
+	ViewSwitcher viewSwitcher;
+
 	private int listID = 0;
+	private String listTitle = "N/A";
+
 	ListHelper listHelper;
+	ListElementHelper listElementHelper;
+
+	ArrayList<ListElementObject> elements;
+
+	// Used for logging
+	private static final String TAG = "ListWithElementsActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +37,12 @@ public class ListWithElementsActivity extends Activity {
 		setContentView(R.layout.activity_list_with_elements);
 		
 		listHelper = new ListHelper(this);
+		listElementHelper = new ListElementHelper(this);
 		
+		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewswitch);
+
 		// Get the intent and its content
 		Bundle bundle = getIntent().getExtras();
-		String listTitle = "N/A";
 
 		if (bundle != null) {
 			listTitle = bundle.getString("title");
@@ -39,6 +55,19 @@ public class ListWithElementsActivity extends Activity {
 		// Get TextView for the list title and set its name
 		title = (TextView) findViewById(R.id.listName);
 		title.setText(listTitle);
+
+		// Fill the elements
+		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
+		
+		showElements();
+	}
+
+	private void showElements() {
+		// If there are reminders
+		if (elements.size() > 0) {
+			Log.d(TAG, "Number of reminders: " + elements.size());
+			viewSwitcher.showNext();
+		}
 	}
 
 	/**
