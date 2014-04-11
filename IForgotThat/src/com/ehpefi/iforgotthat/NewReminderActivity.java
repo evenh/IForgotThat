@@ -177,7 +177,7 @@ public class NewReminderActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						// Get the selected date + time
 						Calendar cal = Calendar.getInstance();
-						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
 
 						reminder = new Date(cal.getTimeInMillis());
 						reminderString = ListElementObject.getDateAsString(reminder);
@@ -202,6 +202,35 @@ public class NewReminderActivity extends Activity {
 				}).create();
 
 		alarmDialog.show();
+	}
+
+	/**
+	 * Saves the item to the database
+	 * 
+	 * @param The view
+	 * @since 1.0
+	 */
+	public void saveReminder(View view) {
+		Log.i(TAG, "Saving the reminder...");
+
+		// What data goes in
+		Log.d(TAG, "List ID: " + listID);
+		Log.d(TAG, "List title: " + listTitle);
+		Log.d(TAG, "Description: " + descriptionText);
+		Log.d(TAG, "Alarm: " + reminderString);
+
+		if (listElementHelper.createNewListElement(listID, descriptionText, reminderString, image) > 0) {
+			// Go back to the selected list
+			Intent intent = new Intent(this, ListWithElementsActivity.class);
+			// Clear history and pass along the list ID
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			intent.putExtra("listID", listID);
+			intent.putExtra("title", listTitle);
+
+			startActivity(intent);
+		} else {
+			Log.e(TAG, "Couldn't save the reminder!");
+		}
 	}
 
 	@Override

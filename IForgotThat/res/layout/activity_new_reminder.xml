@@ -26,10 +26,11 @@
         android:id="@+id/reminder_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:inputType="text"
+        android:hint="@string/remember_hint"
         android:imeOptions="actionDone"
-        android:hint="@string/remember_hint" >
+        android:inputType="text"
+        android:singleLine="true" >
+
         <requestFocus />
     </EditText>
 
@@ -52,12 +53,12 @@
 
         <ImageButton
             android:id="@+id/btn_addAlarm"
+            android:layout_width="80dp"
+            android:layout_height="fill_parent"
             android:layout_column="0"
             android:layout_gravity="center"
             android:layout_row="0"
             android:background="#678"
-            android:layout_height="fill_parent"
-            android:layout_width="80dp"
             android:onClick="showAlarmDialog"
             android:src="@drawable/ic_action_alarms" />
 
@@ -69,6 +70,7 @@
             android:layout_gravity="right|center_vertical"
             android:layout_row="0"
             android:background="#678"
+            android:onClick="saveReminder"
             android:src="@drawable/ic_action_accept" />
     </GridLayout>
 
