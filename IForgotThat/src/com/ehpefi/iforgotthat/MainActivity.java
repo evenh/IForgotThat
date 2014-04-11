@@ -52,6 +52,9 @@ public class MainActivity extends Activity {
 	// Notification
 	Toast toast;
 
+	// Context of this class
+	final Context context = this;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -234,8 +237,7 @@ public class MainActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// If we successfully deleted the list
-							// TODO: Delete list elements assigned to this list
-							if (listHelper.deleteList(selectedList.getId())) {
+							if (listHelper.deleteList(selectedList.getId(), context)) {
 								displayToast(String.format(getResources().getString(R.string.list_deletion_ok), selectedList.getTitle()));
 							} else {
 								// Couldn't delete the list

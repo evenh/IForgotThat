@@ -259,16 +259,25 @@ public class ListHelper extends SQLiteOpenHelper {
 	/**
 	 * Deletes a list from the database
 	 * 
-	 * @param id The id of the list to be deleted
+	 * @param The id of the list to be deleted
+	 * @param The context which is responsible for deleting
 	 * @return True if success, false otherwise
 	 * @since 1.0
 	 */
-	public boolean deleteList(int id) {
+	public boolean deleteList(int id, Context context) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
 
 		// Log that we are deleting a list
 		Log.i(TAG, "Deletion of list id " + id + " requested");
+
+		// Delete individual elements within that list
+		ListElementHelper listElementHelper = new ListElementHelper(context);
+		ArrayList<ListElementObject> elements = listElementHelper.getListElementsForListId(id, ListElementHelper.COL_ID);
+		for (ListElementObject element : elements) {
+			listElementHelper.deleteListElement(element.getId());
+		}
+		elements = null;
 
 		// Try to delete the list
 		if (db.delete(TABLE_NAME, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
