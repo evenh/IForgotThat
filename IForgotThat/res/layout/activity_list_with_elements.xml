@@ -18,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="false"
         android:layout_centerVertical="false"
-        android:background="#678"
+        android:background="@drawable/menu_top_gradient"
         android:clickable="true"
         android:gravity="center"
         android:onClick="backToLists"
@@ -33,13 +33,15 @@
         android:layout_above="@+id/addNewListElement"
         android:layout_alignEnd="@+id/listName"
         android:layout_below="@+id/listName"
-        android:layout_weight="0.99" >
+        android:layout_weight="0.99"
+        android:background="#ddd" >
+
     </ListView>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#678"
+        android:background="@drawable/menu_bottom_gradient"
         android:columnCount="1" >
 
         <ImageButton
@@ -49,7 +51,7 @@
             android:layout_column="0"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_row="0"
-            android:background="#678"
+            android:background="@drawable/menu_bottom_gradient"
             android:onClick="newReminder"
             android:src="@drawable/ic_action_new" />
     </GridLayout>

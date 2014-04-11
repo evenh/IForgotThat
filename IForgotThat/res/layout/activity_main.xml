@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical"
-        android:background="#3d3d3d"
+        android:background="@drawable/menu_top_gradient"
         android:textAlignment="gravity" >
 
         <TextView
@@ -22,11 +22,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:clickable="true"
-            android:drawablePaddingRigth="5dp"
             android:drawableRight="@drawable/ic_action_new"
             android:onClick="addNewListClicked"
             android:text="@string/add_new_list"
-            android:textColor="#fefefe"
+            android:textColor="#ddd"
             android:textSize="25sp" />
 
         <EditText
@@ -46,10 +45,11 @@
         android:id="@+id/text_has_no_lists"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#ddd"
         android:gravity="center"
         android:text="@string/has_no_lists"
-        android:textColor="@color/gray"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray" />
 
     <ListView
         android:id="@+id/mainView"
