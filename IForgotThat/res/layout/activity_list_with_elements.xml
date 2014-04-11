@@ -26,15 +26,11 @@
         android:textColor="#fefefe"
         android:textSize="20sp" />
 
-    <ViewSwitcher
-        android:id="@+id/viewswitch"
-        android:layout_width="fill_parent"
-        android:layout_height="408dp">
 
         <TextView
             android:id="@+id/text_has_no_reminders"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="408dp"
             android:gravity="center"
             android:text="@string/has_no_reminders"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -43,13 +39,13 @@
         <ListView
             android:id="@+id/elementsListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="408dp"
             android:layout_above="@+id/addNewListElement"
             android:layout_alignEnd="@+id/listName"
             android:layout_below="@+id/listName"
             android:background="#ddd" >
         </ListView>
-    </ViewSwitcher>
+    
 
     <GridLayout
         android:layout_width="match_parent"

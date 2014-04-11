@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 /**
  * The activity view for a list containing list elements
@@ -17,16 +16,17 @@ import android.widget.ViewSwitcher;
  * @since 1.0
  */
 public class ListWithElementsActivity extends Activity {
-	TextView title;
-	ViewSwitcher viewSwitcher;
+	private TextView title;
+	private TextView noReminders;
+	private ListView remindersView;
 
 	private int listID = 0;
 	private String listTitle = "N/A";
 
-	ListHelper listHelper;
-	ListElementHelper listElementHelper;
+	private ListHelper listHelper;
+	private ListElementHelper listElementHelper;
 
-	ArrayList<ListElementObject> elements;
+	private ArrayList<ListElementObject> elements;
 
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
@@ -36,10 +36,12 @@ public class ListWithElementsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_with_elements);
 		
+		// Find elements
+		noReminders = (TextView) findViewById(R.id.text_has_no_reminders);
+		remindersView = (ListView) findViewById(R.id.elementsListView);
+
 		listHelper = new ListHelper(this);
 		listElementHelper = new ListElementHelper(this);
-		
-		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewswitch);
 
 		// Get the intent and its content
 		Bundle bundle = getIntent().getExtras();
@@ -64,10 +66,17 @@ public class ListWithElementsActivity extends Activity {
 
 	private void showElements() {
 		// If there are reminders
-		if (elements.size() > 0) {
-			Log.d(TAG, "Number of reminders: " + elements.size());
-			viewSwitcher.showNext();
+		if (elements.size() == 0) {
+
+			// Hide the list view
+			remindersView.setVisibility(View.GONE);
+			noReminders.setVisibility(View.VISIBLE);
+
+			return;
 		}
+
+		noReminders.setVisibility(View.GONE);
+		remindersView.setVisibility(View.VISIBLE);
 	}
 
 	/**
