@@ -1,5 +1,6 @@
 package com.ehpefi.iforgotthat;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
@@ -8,11 +9,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 /**
  * Takes a picture from CameraActivity and user input to create a new reminder
@@ -27,7 +33,8 @@ public class NewReminderActivity extends Activity {
 
 	// Data fields
 	private TextView listName;
-	private EditText title;
+	private EditText description;
+	private String descriptionText;
 
 	private ImageView imageHolder;
 
@@ -35,6 +42,7 @@ public class NewReminderActivity extends Activity {
 	private int listID;
 	private String listTitle;
 	private Date reminder;
+	private String reminderString;
 	private byte[] image;
 
 	// Used for logging
@@ -45,9 +53,12 @@ public class NewReminderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_reminder);
 
-		title = (EditText) findViewById(R.id.reminder_title);
+		description = (EditText) findViewById(R.id.reminder_title);
 		listName = (TextView) findViewById(R.id.listName);
 		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
+
+		// Set the description to an empty string by default
+		descriptionText = "";
 
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
@@ -74,6 +85,23 @@ public class NewReminderActivity extends Activity {
 		} else {
 			Log.e(TAG, "No extras recieved!");
 		}
+
+		description.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+				descriptionChanged(description.getText().toString());
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+		});
+
+		Log.d(TAG, "Current alarm saved: " + ListElementObject.getDateAsString(reminder));
 	}
 
 	/**
@@ -97,6 +125,83 @@ public class NewReminderActivity extends Activity {
 				}).create();
 
 		confirmDeletion.show();
+	}
+
+	/**
+	 * Convenience method for updating the description field
+	 * 
+	 * @param The new description
+	 * @since 1.0
+	 */
+	private void descriptionChanged(String newDescription) {
+		try {
+			if (newDescription.equals("") || newDescription == "") {
+				descriptionText = "";
+			} else {
+				descriptionText = newDescription;
+			}
+		} catch (NullPointerException npe) {
+			descriptionText = "";
+		}
+
+		Log.d(TAG, "A description entered: " + descriptionText);
+	}
+
+	/**
+	 * Shows an AlertDialog containing a date and time picker
+	 * 
+	 * @param The view
+	 * @since 1.0
+	 */
+	public void showAlarmDialog(View view) {
+		// Get the custom date+time dialog
+		final LayoutInflater inflater = getLayoutInflater();
+		final View dateTimeView = inflater.inflate(R.layout.datetime_dialog, null);
+		// Get the UI elements for the custom dialog
+		final DatePicker datePicker = (DatePicker) dateTimeView.findViewById(R.id.datePicker);
+		final TimePicker timePicker = (TimePicker) dateTimeView.findViewById(R.id.timePicker);
+
+		// If the user has previously selected a date+time
+		if (reminder != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(reminder);
+
+			datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 1, cal.get(Calendar.DAY_OF_MONTH), null);
+			timePicker.setCurrentHour(cal.get(Calendar.HOUR));
+			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
+		}
+
+		AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
+				.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Get the selected date + time
+						Calendar cal = Calendar.getInstance();
+						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+
+						reminder = new Date(cal.getTimeInMillis());
+						reminderString = ListElementObject.getDateAsString(reminder);
+						Log.d(TAG, "The user selected this reminder: " + ListElementObject.getDateAsString(reminder));
+
+						dialog.dismiss();
+					}
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "The user canceled the date+time dialog");
+						dialog.cancel();
+					}
+				}).setNeutralButton("No alarm", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "The user selected 'No alarm'");
+						reminder = null;
+						reminderString = ListElementObject.getDateAsString(null);
+						dialog.cancel();
+					}
+				}).create();
+
+		alarmDialog.show();
 	}
 
 	@Override
