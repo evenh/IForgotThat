@@ -172,7 +172,7 @@ public class NewReminderActivity extends Activity {
 		}
 
 		AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
-				.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// Get the selected date + time
@@ -185,13 +185,13 @@ public class NewReminderActivity extends Activity {
 
 						dialog.dismiss();
 					}
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Log.d(TAG, "The user canceled the date+time dialog");
 						dialog.cancel();
 					}
-				}).setNeutralButton("No alarm", new DialogInterface.OnClickListener() {
+				}).setNeutralButton(R.string.no_alarm, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Log.d(TAG, "The user selected 'No alarm'");
