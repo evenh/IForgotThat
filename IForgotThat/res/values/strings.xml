@@ -7,7 +7,7 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <!--  Main activity -->
-    <string name="add_new_list">Add new list \t\t\t\t\t\t\t\t\t\t\t +</string>
+    <string name="add_new_list">Add new list</string>
     <string name="add_new_list_hint">What is the name of your list?</string>
     <string name="rename_list_title">Renaming \'%s\'</string>
     <string name="rename_list_hint">The new name of your list</string>
