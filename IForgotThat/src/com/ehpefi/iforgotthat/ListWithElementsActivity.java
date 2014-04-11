@@ -27,6 +27,7 @@ public class ListWithElementsActivity extends Activity {
 	private ListElementHelper listElementHelper;
 
 	private ArrayList<ListElementObject> elements;
+	ListElementObjectAdapter listAdapter;
 
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
@@ -60,7 +61,23 @@ public class ListWithElementsActivity extends Activity {
 
 		// Fill the elements
 		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
+
+		// Create a new list adapter for all our elements
+		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements);
+		remindersView.setAdapter(listAdapter);
 		
+		showElements();
+	}
+
+	/**
+	 * Convenience method for refreshing the list view
+	 * 
+	 * @since 1.0
+	 */
+	private void updateListView() {
+		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
+		listAdapter.clear();
+		listAdapter.addAll(elements);
 		showElements();
 	}
 
@@ -75,6 +92,7 @@ public class ListWithElementsActivity extends Activity {
 			return;
 		}
 
+		// Show the list view
 		noReminders.setVisibility(View.GONE);
 		remindersView.setVisibility(View.VISIBLE);
 	}

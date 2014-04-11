@@ -225,6 +225,12 @@ public class ListElementObject {
 			setAlarm(dtFormat.parse(alarm));
 		} catch (ParseException e) {
 			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
+		} catch (NullPointerException npe) {
+			try {
+				setAlarm(dtFormat.parse("0000-00-00 00:00:00"));
+			} catch (ParseException e) {
+				Log.e(TAG, "We failed miserably :(");
+			}
 		}
 	}
 
