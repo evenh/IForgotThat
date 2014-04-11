@@ -19,9 +19,9 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 /**
  * Responsible for capturing images for new list elements
@@ -31,6 +31,8 @@ import android.widget.ImageButton;
  * @since 1.0
  */
 public class CameraActivity extends Activity {
+	ListHelper listHelper = new ListHelper(this);
+
 	private static final String TAG = "CameraActivity";
 	protected static final String MEDIA_TYPE_IMAGE = null;
 	private Camera mCamera;
@@ -38,16 +40,39 @@ public class CameraActivity extends Activity {
 	private PictureCallback mPicture;
 
 	private ImageButton captureButton;
-	private Button flashButton;
+	private ImageButton flashButton;
+	private int listID;
+	private String listTitle;
+	private TextView listName;
+
+	private TextView title;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
 
+		// Check for incoming data and set list title
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null) {
+			// Check for list id
+			if (bundle.getInt("listID") > 0) {
+				listID = bundle.getInt("listID");
+				Log.d(TAG, "List id recieved: " + listID);
+
+				ListObject list = listHelper.getList(listID);
+				listTitle = list.getTitle();
+				Log.d(TAG, "List title resolved: " + listTitle);
+
+				// Get TextView for the list title and set its name
+				title = (TextView) findViewById(R.id.listName);
+				title.setText(listTitle);
+			}
+		}
+
 		// Get the UI elements
 		captureButton = (ImageButton) findViewById(R.id.button_capture);
-		flashButton = (Button) findViewById(R.id.button_flash);
+		flashButton = (ImageButton) findViewById(R.id.button_flash);
 
 		// Create an instance of Camera
 		mCamera = getCameraInstance();
@@ -125,6 +150,7 @@ public class CameraActivity extends Activity {
 		} else {
 			intent.putExtra("listID", 0);
 		}
+		
 
 		startActivity(intent);
 
@@ -182,12 +208,12 @@ public class CameraActivity extends Activity {
 				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
 				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
 				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
-				
+
 				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
 				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
 				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
-				params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
-				
+				// params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
+
 				c.setParameters(params);
 			} catch (Exception e) {
 				Log.d(TAG, "Failed to set parameters: " + e);
@@ -232,4 +258,4 @@ public class CameraActivity extends Activity {
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
-}
+}// end of class CameraActivity
