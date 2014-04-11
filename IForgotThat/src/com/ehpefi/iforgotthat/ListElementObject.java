@@ -22,7 +22,8 @@ public class ListElementObject {
 	private boolean completed;
 	private byte[] image;
 
-	private final SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public final static String dtFormatString = "yyyy-MM-dd HH:mm:ss";
+	private final static SimpleDateFormat dtFormat = new SimpleDateFormat(dtFormatString);
 	private static final String TAG = "ListElementObject";
 
 	/**
@@ -70,8 +71,6 @@ public class ListElementObject {
 		this.completed = completed;
 		this.image = image;
 	}
-
-	
 
 	@Override
 	public int hashCode() {
@@ -179,6 +178,13 @@ public class ListElementObject {
 
 	public String getAlarmAsString() {
 		return dtFormat.format(alarm);
+	}
+
+	public static String getDateAsString(Date date) {
+		if(date == null){
+			return "0000-00-00 00:00:00";
+		}
+		return dtFormat.format(date);
 	}
 
 	public boolean isCompleted() {
