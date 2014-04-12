@@ -21,12 +21,15 @@
         android:layout_height="320dp"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:maxHeight="320dp"
+        android:maxWidth="320dp"
+        android:scaleType="matrix"
         android:src="@drawable/ic_launcher" />
 
     <EditText
         android:id="@+id/reminder_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:ems="10"
         android:hint="@string/remember_hint"
         android:imeOptions="actionDone"
@@ -39,7 +42,7 @@
     <GridLayout
         android:id="@+id/gridLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_weight="0"
