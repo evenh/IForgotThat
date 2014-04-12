@@ -28,32 +28,36 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class CamTest extends Activity implements SurfaceHolder.Callback {
-	ListHelper listHelper = new ListHelper(this);
-
-	private static final String TAG = "CAMERA";
-	private Camera camera;
-	private SurfaceView surfaceView;
-	private SurfaceHolder surfaceHolder;
-	boolean isPreviewActive = false;
-	private int listID;;
+	// UI elements
 	private TextView title;
 	private ImageButton captureButton;
 	private ImageButton flashButton;
 	private String listTitle;
 
+	// Camera
+	private Camera camera;
+	private SurfaceView surfaceView;
+	private SurfaceHolder surfaceHolder;
+	boolean isPreviewActive = false;
 	private PictureCallback mPicture;
 
-	/** Called when the activity is first created. */
+	// Helper class
+	ListHelper listHelper = new ListHelper(this);
+	private int listID;
+
+	// Used for logging
+	private static final String TAG = "CAMERA";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cam_test);
-		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		    
-	      getWindow().setFormat(PixelFormat.UNKNOWN);
-	      surfaceView = (SurfaceView)findViewById(R.id.camerapreview);
-	      surfaceHolder = surfaceView.getHolder();
-	      surfaceHolder.addCallback(this);
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		getWindow().setFormat(PixelFormat.UNKNOWN);
+		surfaceView = (SurfaceView) findViewById(R.id.camerapreview);
+		surfaceHolder = surfaceView.getHolder();
+		surfaceHolder.addCallback(this);
 
 		camera = getCameraInstance();
 
@@ -82,7 +86,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		mPicture = new PictureCallback() {
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
-				Log.d(TAG, "PictureCallback method is called");
+				Log.d(TAG, "Picture taken! Compressing image and passing it on to NewReminderActivity");
 				// Compress the data
 				data = compressImage(data);
 
@@ -91,7 +95,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 			}
 		};
 
-		// capture image button listener
+		// Handle clicks for the captureButton
 		ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
 		captureButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -100,8 +104,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 				Log.d(TAG, "Photo in the taking!");
 
 				// Hack for the Google Nexus S
-				if (Build.MODEL.equals("Nexus S")
-						&& camera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
+				if (Build.MODEL.equals("Nexus S") && camera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
 					Log.i(TAG, "Google Nexus S detected, applying flash hack!");
 					Camera.Parameters tempParam = camera.getParameters();
 					tempParam.setFlashMode(Parameters.FLASH_MODE_TORCH);
@@ -132,12 +135,10 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 
 	}
 
-	
 	/**
 	 * Fires off the new intent to NewReminderActivity
 	 * 
-	 * @param A
-	 *              compressed image as a byte array
+	 * @param A compressed image as a byte array
 	 * @since 1.0
 	 */
 	private void createNewReminder(byte[] image) {
@@ -159,33 +160,33 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
-
-
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		// If preview is active, stop it
 		if (isPreviewActive) {
 			camera.stopPreview();
 			isPreviewActive = false;
 		}
 
+		// If camera is not null
 		if (camera != null) {
+			// Try to start the preview
 			try {
 				camera.setPreviewDisplay(surfaceHolder);
 				camera.startPreview();
 				isPreviewActive = true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		// FIX for rotation/strecht issue on NEXUS S
-		if (holder.getSurface() == null) {
+		// FIX/hack for rotation/stretch issue on NEXUS S
+		if (Build.MODEL.equals("Nexus S") && holder.getSurface() == null) {
 			// preview surface does not exist
 			return;
 		}
 
-		// stop preview before making changes
+		// Stop preview before making changes
 		try {
 			camera.stopPreview();
 		} catch (Exception e) {
@@ -208,7 +209,6 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		}
 	}
 
-
 	public static Camera getCameraInstance() {
 
 		Camera c = null;
@@ -221,14 +221,12 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 				List<Camera.Size> cameraSizes = params.getSupportedPictureSizes();
 				// selects the smallest resolution (last item in array)
 				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
-				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x"
-						+ selectedPictureSize.height);
+				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
 				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
 
 				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
 				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
-				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x"
-						+ selectedPreviewSize.height);
+				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
 				// params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
 
 				c.setParameters(params);
@@ -243,13 +241,10 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		return c; // returns null if camera is unavailable
 	}
 
-	
-
 	/**
 	 * Compresses a raw image from the camera to JPEG with 70% quality
 	 * 
-	 * @param A
-	 *              raw image in a byte array
+	 * @param A raw image in a byte array
 	 * @return A byte array containing the compressed image
 	 * @since 1.0
 	 */
@@ -265,8 +260,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 			Log.i(TAG, "Nexus S detected, applying rotation hack!");
 			Matrix matrix = new Matrix();
 			matrix.postRotate(90);
-			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(),
-					matrix, true);
+			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
 			rotated.compress(Bitmap.CompressFormat.JPEG, 70, blob);
 		} else {
 			original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
@@ -286,8 +280,6 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		camera = null;
 		isPreviewActive = false;
 	}
-
-
 
 	/**
 	 * Method for turning camera flash on/off. Default is off
@@ -323,12 +315,8 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
 
-
 	@Override
-	public void surfaceCreated(SurfaceHolder arg0) {
-		// TODO Auto-generated method stub
-
+	public void surfaceCreated(SurfaceHolder sh) {
 	}
 
 }// end of class CamTest
-
