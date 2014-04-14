@@ -23,6 +23,7 @@ public class ListElementObject {
 	private byte[] image;
 
 	public final static String dtFormatString = "yyyy-MM-dd HH:mm:ss";
+	public final static String noAlarmString = "0001-01-01 01:01:01";
 	private final static SimpleDateFormat dtFormat = new SimpleDateFormat(dtFormatString);
 	private static final String TAG = "ListElementObject";
 
@@ -124,7 +125,7 @@ public class ListElementObject {
 			return false;
 		}
 		if (dtFormat == null) {
-			if (other.dtFormat != null) {
+			if (ListElementObject.dtFormat != null) {
 				return false;
 			}
 		} else if (!dtFormat.equals(other.dtFormat)) {
@@ -181,8 +182,8 @@ public class ListElementObject {
 	}
 
 	public static String getDateAsString(Date date) {
-		if(date == null){
-			return "0000-00-00 00:00:00";
+		if (date == null) {
+			return noAlarmString;
 		}
 		return dtFormat.format(date);
 	}
@@ -227,7 +228,7 @@ public class ListElementObject {
 			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
 		} catch (NullPointerException npe) {
 			try {
-				setAlarm(dtFormat.parse("0000-00-00 00:00:00"));
+				setAlarm(dtFormat.parse(noAlarmString));
 			} catch (ParseException e) {
 				Log.e(TAG, "We failed miserably :(");
 			}
