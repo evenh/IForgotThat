@@ -154,8 +154,9 @@ public class CameraActivity extends Activity {
 
 		startActivity(intent);
 
-		// Transition smoothly
-		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
+		//Flip transition
+		overridePendingTransition(R.anim.flip_from_middle, R.anim.flip_to_middle);
 	}
 
 	/**
