@@ -6,13 +6,16 @@
     <ImageView
         android:id="@+id/reminderImage"
         android:layout_width="110dp"
-        android:layout_height="130dp"
+        android:layout_height="110dp"
+        android:layout_marginRight="5dp"
+        android:scaleType="center"
         android:src="@drawable/ic_launcher" />
     
      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="110dp"
+        android:orientation="vertical"
+        android:background="@drawable/list_item_gradient" >
 
          <TextView
              android:id="@+id/lblDescription"
