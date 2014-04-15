@@ -192,7 +192,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The element's identifier
 	 * @param status True for completed, false for not completed
-	 * @return True if successfull, false otherwise
+	 * @return True if successful, false otherwise
 	 * @since 1.0
 	 */
 	public boolean setListElementComplete(int id, boolean status) {

@@ -84,6 +84,12 @@ public class ListHelper extends SQLiteOpenHelper {
 		cursor.close();
 	}
 
+	/**
+	 * Gets the total number of lists in the database
+	 *
+	 * @return The number of lists in the database
+	 * @since 1.0
+	 */
 	public int numberOfLists() {
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();
@@ -259,8 +265,8 @@ public class ListHelper extends SQLiteOpenHelper {
 	/**
 	 * Deletes a list from the database
 	 * 
-	 * @param The id of the list to be deleted
-	 * @param The context which is responsible for deleting
+	 * @param id The id of the list to be deleted
+	 * @param context The context which is responsible for deleting
 	 * @return True if success, false otherwise
 	 * @since 1.0
 	 */

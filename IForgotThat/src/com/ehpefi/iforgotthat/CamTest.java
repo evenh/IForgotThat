@@ -27,6 +27,12 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * Handles the camera
+ *
+ * @author Per Erik Finstad
+ * @since 1.0
+ */
 public class CamTest extends Activity implements SurfaceHolder.Callback {
 	// UI elements
 	private TextView title;
@@ -138,7 +144,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Fires off the new intent to NewReminderActivity
 	 * 
-	 * @param A compressed image as a byte array
+	 * @param image A compressed image as a byte array
 	 * @since 1.0
 	 */
 	private void createNewReminder(byte[] image) {
@@ -209,8 +215,12 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		}
 	}
 
+    /**
+     * Gets an instance of the Camera
+     *
+     * @return An instance of Camera, may be null
+     */
 	public static Camera getCameraInstance() {
-
 		Camera c = null;
 		try {
 			c = Camera.open(); // attempt to get a Camera instance
@@ -244,7 +254,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Compresses a raw image from the camera to JPEG with 70% quality
 	 * 
-	 * @param A raw image in a byte array
+	 * @param input A raw image in a byte array
 	 * @return A byte array containing the compressed image
 	 * @since 1.0
 	 */
@@ -274,7 +284,6 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-
 		camera.stopPreview();
 		camera.release();
 		camera = null;
@@ -284,7 +293,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
-	 * @param The view
+	 * @param v The view
 	 * @since 1.0
 	 */
 	public void flashOnOff(View v) {
@@ -319,4 +328,4 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder sh) {
 	}
 
-}// end of class CamTest
+}

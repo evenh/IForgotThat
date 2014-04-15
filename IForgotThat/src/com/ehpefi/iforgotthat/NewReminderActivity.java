@@ -107,7 +107,7 @@ public class NewReminderActivity extends Activity {
 	/**
 	 * Pops up an alert on the trash button onClick
 	 * 
-	 * @param The view
+	 * @param v The view
 	 * @since 1.0
 	 */
 	public void thrashAndExit(View v) {
@@ -130,7 +130,7 @@ public class NewReminderActivity extends Activity {
 	/**
 	 * Convenience method for updating the description field
 	 * 
-	 * @param The new description
+	 * @param newDescription The new description
 	 * @since 1.0
 	 */
 	private void descriptionChanged(String newDescription) {
@@ -150,7 +150,7 @@ public class NewReminderActivity extends Activity {
 	/**
 	 * Shows an AlertDialog containing a date and time picker
 	 * 
-	 * @param The view
+	 * @param view The view
 	 * @since 1.0
 	 */
 	public void showAlarmDialog(View view) {
@@ -209,7 +209,7 @@ public class NewReminderActivity extends Activity {
 	/**
 	 * Saves the item to the database
 	 * 
-	 * @param The view
+	 * @param view The view
 	 * @since 1.0
 	 */
 	public void saveReminder(View view) {

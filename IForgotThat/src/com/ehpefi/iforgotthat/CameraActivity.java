@@ -135,7 +135,7 @@ public class CameraActivity extends Activity {
 	/**
 	 * Fires off the new intent to NewReminderActivity
 	 * 
-	 * @param A compressed image as a byte array
+	 * @param image A compressed image as a byte array
 	 * @since 1.0
 	 */
 	private void createNewReminder(byte[] image) {
@@ -162,7 +162,7 @@ public class CameraActivity extends Activity {
 	/**
 	 * Compresses a raw image from the camera to JPEG with 70% quality
 	 * 
-	 * @param A raw image in a byte array
+	 * @param input A raw image in a byte array
 	 * @return A byte array containing the compressed image
 	 * @since 1.0
 	 */
@@ -230,7 +230,7 @@ public class CameraActivity extends Activity {
 	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
-	 * @param The view
+	 * @param v The view
 	 * @since 1.0
 	 */
 	public void flashOnOff(View v) {
