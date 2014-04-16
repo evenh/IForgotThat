@@ -3,8 +3,12 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -31,6 +35,8 @@ public class ListWithElementsActivity extends Activity {
 	private ArrayList<ListElementObject> elements;
 	ListElementObjectAdapter listAdapter;
 
+	BroadcastReceiver postman;
+	
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
 
@@ -69,6 +75,18 @@ public class ListWithElementsActivity extends Activity {
 		remindersView.setAdapter(listAdapter);
 
 		showElements();
+
+		// Recieves messages to update the list
+		postman = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Bundle extras = intent.getExtras();
+				remindersView.closeAnimate(extras.getInt("position"));
+				updateListView();
+			}
+		};
+
+		LocalBroadcastManager.getInstance(this).registerReceiver(postman, new IntentFilter("update-list"));
 	}
 
 	/**
@@ -135,4 +153,10 @@ public class ListWithElementsActivity extends Activity {
 		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
+	@Override
+	protected void onDestroy() {
+		// Unregister since the activity is about to be closed.
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(postman);
+		super.onDestroy();
+	}
 }

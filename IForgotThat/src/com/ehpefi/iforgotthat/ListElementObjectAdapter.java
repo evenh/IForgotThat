@@ -3,8 +3,10 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +36,15 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		this.context = context;
 	}
 
+	private void sendMessageToUpdateListView(int position) {
+		Intent intent = new Intent("update-list");
+		// Which list element to get closed
+		intent.putExtra("position", position);
+		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+	}
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		// Convert the View passed in to a local variable
 		View view = convertView;
 
@@ -81,6 +90,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 				public void onClick(View v) {
 					Log.d(TAG, "Deletion requested!");
 					listElementHelper.deleteListElement(reminder.getId());
+					sendMessageToUpdateListView(position);
 				}
 			});
 
