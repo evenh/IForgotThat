@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,12 +21,17 @@ import android.widget.TextView;
  * @since 1.0
  */
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
-
 	private ArrayList<ListElementObject> elements;
+	private ListElementHelper listElementHelper;
+
+	Context context;
+
+	public static final String TAG = "ListElementObjectAdapter";
 
 	public ListElementObjectAdapter(Context context, int textViewResourceId, ArrayList<ListElementObject> elements) {
 		super(context, textViewResourceId, elements);
 		this.elements = elements;
+		this.context = context;
 	}
 
 	@Override
@@ -39,12 +46,19 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			view = inflater.inflate(R.layout.element_row, null);
 		}
 
+		listElementHelper = new ListElementHelper(context);
+
 		// Get the current object
-		ListElementObject reminder = elements.get(position);
+		final ListElementObject reminder = elements.get(position);
 
 		ImageView image = (ImageView) view.findViewById(R.id.reminderImage);
 		TextView description = (TextView) view.findViewById(R.id.lblDescription);
 		TextView alarm = (TextView) view.findViewById(R.id.lblAlarm);
+
+		// Our "hidden" buttons
+		ImageButton thrashButton = (ImageButton) view.findViewById(R.id.btn_trash_reminder);
+		ImageButton editButton = (ImageButton) view.findViewById(R.id.btn_edit_reminder);
+		ImageButton completeButton = (ImageButton) view.findViewById(R.id.btn_complete_reminder);
 
 		if (reminder != null) {
 			byte[] tmpImg = reminder.getImage();
@@ -60,6 +74,31 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			if (!reminder.getDescription().equals("")) {
 				description.setText(reminder.getDescription());
 			}
+
+			// If the user clicked "thrash"
+			thrashButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d(TAG, "Deletion requested!");
+					listElementHelper.deleteListElement(reminder.getId());
+				}
+			});
+
+			// If the user clicked "edit"
+			editButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d(TAG, "Editing requested!");
+				}
+			});
+
+			// If the user clicked "complete"
+			completeButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Log.d(TAG, "Completion requested!");
+				}
+			});
 		}
 
 		return view;

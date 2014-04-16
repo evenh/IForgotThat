@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
 
 /**
  * The activity view for a list containing list elements
@@ -18,7 +20,7 @@ import android.widget.TextView;
 public class ListWithElementsActivity extends Activity {
 	private TextView title;
 	private TextView noReminders;
-	private ListView remindersView;
+	private SwipeListView remindersView;
 
 	private int listID = 0;
 	private String listTitle = "N/A";
@@ -36,10 +38,10 @@ public class ListWithElementsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_with_elements);
-		
+
 		// Find elements
 		noReminders = (TextView) findViewById(R.id.text_has_no_reminders);
-		remindersView = (ListView) findViewById(R.id.elementsListView);
+		remindersView = (SwipeListView) findViewById(R.id.elementsListView);
 
 		listHelper = new ListHelper(this);
 		listElementHelper = new ListElementHelper(this);
@@ -51,7 +53,7 @@ public class ListWithElementsActivity extends Activity {
 			listTitle = bundle.getString("title");
 			listID = bundle.getInt("listID");
 			if (listTitle == null || listTitle.equals("")) {
-				listTitle =  listHelper.getList(listID).getTitle();
+				listTitle = listHelper.getList(listID).getTitle();
 			}
 		}
 
@@ -65,7 +67,7 @@ public class ListWithElementsActivity extends Activity {
 		// Create a new list adapter for all our elements
 		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements);
 		remindersView.setAdapter(listAdapter);
-		
+
 		showElements();
 	}
 
@@ -74,7 +76,9 @@ public class ListWithElementsActivity extends Activity {
 	 * 
 	 * @since 1.0
 	 */
-	private void updateListView() {
+	public void updateListView() {
+		Log.d(TAG, "Updating the list view...");
+		elements = null;
 		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
 		listAdapter.clear();
 		listAdapter.addAll(elements);

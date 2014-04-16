@@ -26,26 +26,28 @@
         android:textColor="#fefefe"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/text_has_no_reminders"
+        android:layout_width="match_parent"
+        android:layout_height="408dp"
+        android:gravity="center"
+        android:text="@string/has_no_reminders"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray" />
 
-        <TextView
-            android:id="@+id/text_has_no_reminders"
-            android:layout_width="match_parent"
-            android:layout_height="408dp"
-            android:gravity="center"
-            android:text="@string/has_no_reminders"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/gray" />
-
-        <ListView
-            android:id="@+id/elementsListView"
-            android:layout_width="match_parent"
-            android:layout_height="408dp"
-            android:layout_above="@+id/addNewListElement"
-            android:layout_alignEnd="@+id/listName"
-            android:layout_below="@+id/listName"
-            android:background="#ddd" >
-        </ListView>
-    
+    <com.ehpefi.iforgotthat.swipelistview.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/elementsListView"
+        android:layout_width="match_parent"
+        android:layout_height="408dp"
+        android:listSelector="#00000000"
+        android:layout_alignEnd="@+id/listName"
+        swipe:swipeBackView="@+id/back"
+        swipe:swipeCloseAllItemsWhenMoveList="true"
+        swipe:swipeDrawableChecked="@drawable/choice_selected"
+        swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
+        swipe:swipeFrontView="@+id/front"
+        swipe:swipeMode="left" />
 
     <GridLayout
         android:layout_width="match_parent"
