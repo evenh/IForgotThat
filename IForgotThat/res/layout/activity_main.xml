@@ -54,7 +54,17 @@
     <ListView
         android:id="@+id/mainView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="0dp"
+        android:layout_weight="2" >
     </ListView>
 
+    <Button
+        android:id="@+id/btn_show_completed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/menu_bottom_gradient"
+        android:text="@string/completed_items"
+        android:textColor="#ddd"
+		android:onClick="showCompletedItems" />
 </LinearLayout>

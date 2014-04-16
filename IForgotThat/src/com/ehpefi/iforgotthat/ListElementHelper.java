@@ -29,6 +29,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	// Specify which class that logs messages
 	private static final String TAG = "ListElementHelper";
 
+	public static final int COMPLETED_LIST_ID = Integer.MIN_VALUE;
+
 	/**
 	 * Constructs a new instance of the ListElementHelper class
 	 * 
@@ -322,6 +324,32 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 		// Return the list
 		return listElements;
+	}
+
+	/**
+	 * Gets all incomplete list elements for a given list id. If COMPLETED_LIST_ID is passed in, it returns a list of
+	 * completed items
+	 * 
+	 * @param id The list id
+	 * @param OrderBy A static string from the ListElementHelper class (COL_ID, COL_LIST_ID, COL_DESCRIPTION,
+	 *            COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP)
+	 * @return An ArrayList of incomplete ListElementObject on success, an empty list of these on failure
+	 * @since 1.0
+	 */
+	public ArrayList<ListElementObject> getIncompleteListElementsForListId(int id, String OrderBy) {
+		if (id == COMPLETED_LIST_ID) {
+			return getCompletedItems();
+		}
+
+		ArrayList<ListElementObject> incompleteElements = new ArrayList<ListElementObject>();
+
+		for (ListElementObject listElement : getListElementsForListId(id, OrderBy)) {
+			if (!listElement.isCompleted()) {
+				incompleteElements.add(listElement);
+			}
+		}
+
+		return incompleteElements;
 	}
 
 	/**

@@ -16,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
+
 /**
  * Custom adapter for just showing the title of the list
  * 
@@ -25,21 +27,29 @@ import android.widget.TextView;
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	private ArrayList<ListElementObject> elements;
 	private ListElementHelper listElementHelper;
+	
+	public int listID;
 
-	Context context;
+	public Context context;
+
+	private SwipeListView holder;
 
 	public static final String TAG = "ListElementObjectAdapter";
 
-	public ListElementObjectAdapter(Context context, int textViewResourceId, ArrayList<ListElementObject> elements) {
+	public ListElementObjectAdapter(Context context, int textViewResourceId, ArrayList<ListElementObject> elements, int listID) {
 		super(context, textViewResourceId, elements);
 		this.elements = elements;
 		this.context = context;
+		this.listID = listID;
 	}
 
-	private void sendMessageToUpdateListView(int position) {
-		Intent intent = new Intent("update-list");
+	private void sendMessageToUpdateListView(int position, String action) {
 		// Which list element to get closed
+		// holder.closeAnimate(position);
+
+		Intent intent = new Intent("update-list");
 		intent.putExtra("position", position);
+		intent.putExtra("operation", action);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 	}
 
@@ -53,6 +63,8 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// For now, use the standard Android simple list item 1
 			view = inflater.inflate(R.layout.element_row, null);
+
+			holder = (SwipeListView) parent;
 		}
 
 		listElementHelper = new ListElementHelper(context);
@@ -90,7 +102,9 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 				public void onClick(View v) {
 					Log.d(TAG, "Deletion requested!");
 					listElementHelper.deleteListElement(reminder.getId());
-					sendMessageToUpdateListView(position);
+					remove(reminder);
+					notifyDataSetChanged();
+					sendMessageToUpdateListView(position, "delete");
 				}
 			});
 
@@ -107,6 +121,12 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 				@Override
 				public void onClick(View v) {
 					Log.d(TAG, "Completion requested!");
+					if (listID != ListElementHelper.COMPLETED_LIST_ID) {
+						listElementHelper.setListElementComplete(reminder.getId(), true);
+					} else {
+						listElementHelper.setListElementComplete(reminder.getId(), false);
+					}
+					sendMessageToUpdateListView(position, "complete");
 				}
 			});
 		}

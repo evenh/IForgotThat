@@ -121,6 +121,23 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * Shows the completed items
+	 * 
+	 * @param view The view
+	 * @since 1.0
+	 */
+	public void showCompletedItems(View view) {
+		Intent completed = new Intent(this, ListWithElementsActivity.class);
+		completed.putExtra("title", getResources().getString(R.string.completed_items));
+		completed.putExtra("listID", ListElementHelper.COMPLETED_LIST_ID);
+
+		startActivity(completed);
+
+		// Transition smoothly :)
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+	}
+
+	/**
 	 * Requests the change from TextView to EditText
 	 * 
 	 * @param view The view

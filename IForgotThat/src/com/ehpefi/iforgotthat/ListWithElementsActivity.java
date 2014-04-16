@@ -68,10 +68,10 @@ public class ListWithElementsActivity extends Activity {
 		title.setText(listTitle);
 
 		// Fill the elements
-		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
+		elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
 
 		// Create a new list adapter for all our elements
-		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements);
+		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements, listID);
 		remindersView.setAdapter(listAdapter);
 
 		showElements();
@@ -81,7 +81,19 @@ public class ListWithElementsActivity extends Activity {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				Bundle extras = intent.getExtras();
+
+				elements.remove(extras.getInt("position"));
+				Log.d(TAG, "Size of 'elements' is " + elements.size());
+
+
+				Log.d(TAG, "Incoming position to be closed: " + extras.getInt("position"));
+
 				remindersView.closeAnimate(extras.getInt("position"));
+				elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
+				listAdapter.notifyDataSetChanged();
+
+				Log.d(TAG, "Size of 'elements' is NOW " + elements.size());
+
 				updateListView();
 			}
 		};
@@ -97,7 +109,7 @@ public class ListWithElementsActivity extends Activity {
 	public void updateListView() {
 		Log.d(TAG, "Updating the list view...");
 		elements = null;
-		elements = listElementHelper.getListElementsForListId(listID, ListElementHelper.COL_ID);
+		elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
 		listAdapter.clear();
 		listAdapter.addAll(elements);
 		showElements();
