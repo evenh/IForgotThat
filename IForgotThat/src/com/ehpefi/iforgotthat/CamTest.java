@@ -87,6 +87,13 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		captureButton = (ImageButton) findViewById(R.id.button_capture);
 		flashButton = (ImageButton) findViewById(R.id.button_flash);
 
+		/**
+		 * Callback function to get the capture image
+		 * 
+		 * @param byte[] data, Camere camera
+		 * @since 1.0
+		 * 
+		 */
 		mPicture = new PictureCallback() {
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
@@ -99,7 +106,14 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 				createNewReminder(data);
 			}
 		};
-
+		
+		
+		
+		/**
+		 * Method to take the picture
+		 * @param View v
+		 * @since 1.0
+		 */
 		// Handle clicks for the captureButton
 		ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
 		captureButton.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +154,15 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		overridePendingTransition(R.anim.flip_from_middle, R.anim.flip_to_middle);
 
 	}
+
+	/**
+	 * Method for check if the orientation of the surface changes
+	 * 
+	 * @param SurfaceHolder
+	 *              holder, int format, int width, int height
+	 * @since 1.0
+	 * 
+	 */
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -256,6 +279,14 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 
 		return compressed;
 	}
+
+	/**
+	 * Method for release the camera and stop it from using the surface
+	 * 
+	 * @param Surfaceholder
+	 *              holder
+	 * @since 1.0
+	 */
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
