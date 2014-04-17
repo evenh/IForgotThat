@@ -237,7 +237,7 @@ public class NewReminderActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, CameraActivity.class);
+		Intent intent = new Intent(this, CamTest.class);
 		intent.putExtra("listID", listID);
 		startActivityForResult(intent, 0);
 		// Transition animation

@@ -156,7 +156,7 @@ public class ListWithElementsActivity extends Activity {
 	 * @since 1.0
 	 */
 	public void newReminder(View v) {
-		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+		Intent intent = new Intent(getApplicationContext(), CamTest.class);
 
 		intent.putExtra("listID", listID);
 		startActivity(intent);
