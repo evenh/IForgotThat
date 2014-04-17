@@ -113,7 +113,29 @@ public class ListWithElementsActivity extends Activity {
 	}
 
 	public void completeElement(View button) {
-		Log.d(TAG, "Completion requested!");
+		Log.d(TAG, "Completion requested for list element in position: " + position);
+
+		// Get the object to be deleted
+		ListElementObject reminderObject = listAdapter.getItem(position);
+
+		// Close the slider
+		remindersView.closeAnimate(position);
+
+		// Remove the list element from the array and mark the reminder as complete
+		elements.remove(position);
+
+		if (listID != ListElementHelper.COMPLETED_LIST_ID) {
+			listElementHelper.setListElementComplete(reminderObject.getId(), true);
+		} else {
+			// We are in the completed section
+			listElementHelper.setListElementComplete(reminderObject.getId(), false);
+		}
+
+		// Refresh view
+		listAdapter.notifyDataSetChanged();
+
+		// Run a check to show if we have an empty list
+		showElements();
 	}
 
 	private void showElements() {
