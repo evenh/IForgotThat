@@ -189,9 +189,15 @@ public class MainActivity extends Activity {
 		String inputName = listNameInput.getText().toString();
 		Log.d(TAG, "The list name that was entered was: " + inputName);
 
-		// Check for empty or invalid input
 		if (inputName.equals("") || inputName == null || inputName.trim().length() == 0) {
+			// Send toast to user
 			displayToast(getResources().getString(R.string.list_name_empty));
+
+			// Dismiss keyboard and switch back to text saying "Add new list"
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(listNameInput.getWindowToken(), 0);
+			switcher.showNext();
+
 			return;
 		}
 
