@@ -171,6 +171,12 @@ public class ListWithElementsActivity extends Activity {
 			// Hide the list view
 			remindersView.setVisibility(View.GONE);
 			noReminders.setVisibility(View.VISIBLE);
+
+			// If we are in the "complete" list, hide the new reminder button
+			if (listID == ListElementHelper.COMPLETED_LIST_ID) {
+				((GridLayout) findViewById(R.id.newListElementHolder)).setVisibility(View.GONE);
+			}
+
 			return;
 		}
 		// Show the list view
