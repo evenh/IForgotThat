@@ -3,16 +3,13 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ehpefi.iforgotthat.swipelistview.BaseSwipeListViewListener;
 import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
 
 /**
@@ -22,33 +19,39 @@ import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
  * @since 1.0
  */
 public class ListWithElementsActivity extends Activity {
+	// UI Elements
 	private TextView title;
 	private TextView noReminders;
 	private SwipeListView remindersView;
 
+	// Incoming data
 	private int listID = 0;
 	private String listTitle = "N/A";
 
+	// Helpers
 	private ListHelper listHelper;
 	private ListElementHelper listElementHelper;
 
+	// Data
 	private ArrayList<ListElementObject> elements;
-	ListElementObjectAdapter listAdapter;
+	public ListElementObjectAdapter listAdapter;
+	public int position;
 
-	BroadcastReceiver postman;
-	
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// Standard initialization
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_with_elements);
 
-		// Find elements
+		// Find elements and assign elements
 		noReminders = (TextView) findViewById(R.id.text_has_no_reminders);
 		remindersView = (SwipeListView) findViewById(R.id.elementsListView);
+		title = (TextView) findViewById(R.id.listName);
 
+		// Initialize helpers
 		listHelper = new ListHelper(this);
 		listElementHelper = new ListElementHelper(this);
 
@@ -64,68 +67,63 @@ public class ListWithElementsActivity extends Activity {
 		}
 
 		// Get TextView for the list title and set its name
-		title = (TextView) findViewById(R.id.listName);
 		title.setText(listTitle);
 
 		// Fill the elements
 		elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
 
 		// Create a new list adapter for all our elements
-		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements, listID);
+		listAdapter = new ListElementObjectAdapter(this, R.layout.element_row, elements);
 		remindersView.setAdapter(listAdapter);
 
-		showElements();
-
-		// Recieves messages to update the list
-		postman = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				Bundle extras = intent.getExtras();
-
-				elements.remove(extras.getInt("position"));
-				Log.d(TAG, "Size of 'elements' is " + elements.size());
-
-
-				Log.d(TAG, "Incoming position to be closed: " + extras.getInt("position"));
-
-				remindersView.closeAnimate(extras.getInt("position"));
-				elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
-				listAdapter.notifyDataSetChanged();
-
-				Log.d(TAG, "Size of 'elements' is NOW " + elements.size());
-
-				updateListView();
+		// Listener
+		remindersView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+			// Whenever a row has been slided to show the back, update the list position
+			public void onOpened(int pos, boolean toRight) {
+				position = pos;
+				Log.d(TAG, "Updated list position to " + pos);
 			}
-		};
+		});
 
-		LocalBroadcastManager.getInstance(this).registerReceiver(postman, new IntentFilter("update-list"));
+		showElements();
 	}
 
-	/**
-	 * Convenience method for refreshing the list view
-	 * 
-	 * @since 1.0
-	 */
-	public void updateListView() {
-		Log.d(TAG, "Updating the list view...");
-		elements = null;
-		elements = listElementHelper.getIncompleteListElementsForListId(listID, ListElementHelper.COL_ID);
-		listAdapter.clear();
-		listAdapter.addAll(elements);
+	public void deleteElement(View button) {
+		Log.d(TAG, "Deletion requested for list element in position: " + position);
+
+		// Get the object to be deleted
+		ListElementObject reminderObject = listAdapter.getItem(position);
+
+		// Close the slider
+		remindersView.closeAnimate(position);
+
+		// Remove the list element from the array and delete the object from the database
+		elements.remove(position);
+		listElementHelper.deleteListElement(reminderObject.getId());
+
+		// Refresh view
+		listAdapter.notifyDataSetChanged();
+
+		// Run a check to show if we have an empty list
 		showElements();
+	}
+
+	public void editElement(View button) {
+		Log.d(TAG, "Edit requested!");
+	}
+
+	public void completeElement(View button) {
+		Log.d(TAG, "Completion requested!");
 	}
 
 	private void showElements() {
 		// If there are reminders
 		if (elements.size() == 0) {
-
 			// Hide the list view
 			remindersView.setVisibility(View.GONE);
 			noReminders.setVisibility(View.VISIBLE);
-
 			return;
 		}
-
 		// Show the list view
 		noReminders.setVisibility(View.GONE);
 		remindersView.setVisibility(View.VISIBLE);
@@ -167,8 +165,6 @@ public class ListWithElementsActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		// Unregister since the activity is about to be closed.
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(postman);
 		super.onDestroy();
 	}
 }

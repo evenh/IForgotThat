@@ -18,6 +18,7 @@
             android:layout_column="0"
             android:layout_gravity="left|center"
             android:layout_row="0"
+            android:onClick="deleteElement"
             android:src="@drawable/ic_action_cancel" />
         
         <ImageButton
@@ -27,6 +28,7 @@
             android:layout_column="0"
             android:layout_gravity="center_horizontal|center"
             android:layout_row="0"
+            android:onClick="editElement"
             android:src="@drawable/ic_action_edit" />
 
         <ImageButton
@@ -36,6 +38,7 @@
             android:layout_column="0"
             android:layout_gravity="right|center"
             android:layout_row="0"
+            android:onClick="completeElement"
             android:src="@drawable/ic_action_accept" />
         
     </GridLayout>
