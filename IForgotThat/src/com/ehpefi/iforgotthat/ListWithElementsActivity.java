@@ -17,6 +17,7 @@ import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
  * The activity view for a list containing list elements
  * 
  * @author Per Erik Finstad
+ * @author Even Holthe
  * @since 1.0
  */
 public class ListWithElementsActivity extends Activity {
@@ -89,6 +90,12 @@ public class ListWithElementsActivity extends Activity {
 		showElements();
 	}
 
+	/**
+	 * Triggers a delete operation of the current reminder
+	 * 
+	 * @param button The view
+	 * @since 1.0
+	 */
 	public void deleteElement(View button) {
 		Log.d(TAG, "Deletion requested for list element in position: " + position);
 
@@ -109,10 +116,23 @@ public class ListWithElementsActivity extends Activity {
 		showElements();
 	}
 
+	/**
+	 * Triggers an edit operation of the current reminder
+	 * 
+	 * @param button The view
+	 * @since 1.0
+	 */
 	public void editElement(View button) {
+		// TODO: Implement this
 		Log.d(TAG, "Edit requested!");
 	}
 
+	/**
+	 * Triggers a completion operation of the current reminder
+	 * 
+	 * @param button The view
+	 * @since 1.0
+	 */
 	public void completeElement(View button) {
 		Log.d(TAG, "Completion requested for list element in position: " + position);
 
@@ -139,6 +159,12 @@ public class ListWithElementsActivity extends Activity {
 		showElements();
 	}
 
+	/**
+	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items"
+	 * special list
+	 * 
+	 * @since 1.0
+	 */
 	private void showElements() {
 		// If there are reminders
 		if (elements.size() == 0) {
