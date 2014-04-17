@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.ehpefi.iforgotthat.swipelistview.BaseSwipeListViewListener;
@@ -149,6 +150,11 @@ public class ListWithElementsActivity extends Activity {
 		// Show the list view
 		noReminders.setVisibility(View.GONE);
 		remindersView.setVisibility(View.VISIBLE);
+
+		// If we are in the "complete" list, hide the new reminder button
+		if (listID == ListElementHelper.COMPLETED_LIST_ID) {
+			((GridLayout) findViewById(R.id.newListElementHolder)).setVisibility(View.GONE);
+		}
 	}
 
 	/**
