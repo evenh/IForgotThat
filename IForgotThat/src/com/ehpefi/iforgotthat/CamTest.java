@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -58,9 +57,8 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cam_test);
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-		getWindow().setFormat(PixelFormat.UNKNOWN);
+		// getWindow().setFormat(PixelFormat.UNKNOWN);
 		surfaceView = (SurfaceView) findViewById(R.id.camerapreview);
 		surfaceHolder = surfaceView.getHolder();
 		surfaceHolder.addCallback(this);
@@ -92,6 +90,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		mPicture = new PictureCallback() {
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
+
 				Log.d(TAG, "Picture taken! Compressing image and passing it on to NewReminderActivity");
 				// Compress the data
 				data = compressImage(data);
@@ -108,34 +107,9 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 			public void onClick(View v) {
 				// get an image from the camera
 				Log.d(TAG, "Photo in the taking!");
-
-				// Hack for the Google Nexus S
-				if (Build.MODEL.equals("Nexus S") && camera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
-					Log.i(TAG, "Google Nexus S detected, applying flash hack!");
-					Camera.Parameters tempParam = camera.getParameters();
-					tempParam.setFlashMode(Parameters.FLASH_MODE_TORCH);
-					camera.setParameters(tempParam);
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					camera.takePicture(null, null, mPicture);
-					Log.d(TAG, "Picture captured");
-
-					try {
-						Thread.sleep(500);
-						tempParam.setFlashMode(Parameters.FLASH_MODE_ON);
-						camera.setParameters(tempParam);
-					} catch (InterruptedException ie) {
-						ie.printStackTrace();
-					} catch (Exception e) {
-						Log.e(TAG, "Exception while setting the parameters", e);
-					}
-
-				} else {
-					camera.takePicture(null, null, mPicture);
-				}
+				
+				camera.takePicture(null,null, mPicture);
+				Log.d(TAG, "Picture captured");
 			}
 		});
 
@@ -162,8 +136,9 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 
 		startActivity(intent);
 
-		// Transition smoothly
-		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+		// Flip transition
+		overridePendingTransition(R.anim.flip_from_middle, R.anim.flip_to_middle);
+
 	}
 
 	@Override
