@@ -23,10 +23,14 @@
 		    android:layout_alignParentEnd="false"
 		    android:layout_gravity="left"
 		    android:background="@drawable/menu_top_gradient"
+		    android:paddingLeft="5dp"
+       		android:drawableLeft="@drawable/ic_action_back"
+        	android:drawablePadding="-40sp"
 		    android:clickable="true"
 		    android:gravity="center"
 		    android:textColor="#fefefe"
-		    android:textSize="20sp" />
+		    android:textSize="20sp"
+		    android:onClick="backToLists" />
 
 	</GridLayout>
 
