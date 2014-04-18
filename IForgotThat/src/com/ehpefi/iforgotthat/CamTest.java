@@ -115,7 +115,6 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		 * @since 1.0
 		 */
 		// Handle clicks for the captureButton
-		ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
 		captureButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
