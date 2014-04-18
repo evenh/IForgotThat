@@ -251,6 +251,16 @@ public class CameraActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Goes back to the MainActivity
+	 * 
+	 * @since 1.0
+	 */
+	public void backToLists(View v) {
+		// Calls the method that is called when the back button is pressed
+		onBackPressed();
+	}
+
 	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(this, ListWithElementsActivity.class);
