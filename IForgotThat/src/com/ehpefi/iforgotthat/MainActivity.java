@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -228,8 +227,12 @@ public class MainActivity extends Activity {
 		// Get the object to be renamed
 		currentList = (ListObject) listAdapter.getItem(position);
 
-		LayoutInflater inflater = getLayoutInflater();
-		AlertDialog renameDialog = new AlertDialog.Builder(this).setView(inflater.inflate(R.layout.rename_list, null))
+		// Inflate layout
+		View renameLayout = getLayoutInflater().inflate(R.layout.rename_list, null);
+		// Set text inside the EditText (the current list name)
+		((EditText) renameLayout.findViewById(R.id.new_list_name)).setText(currentList.getTitle());
+
+		AlertDialog renameDialog = new AlertDialog.Builder(this).setView(renameLayout)
 				.setTitle(String.format(getResources().getString(R.string.rename_list_title), currentList.getTitle()))
 				.setPositiveButton(R.string.rename_list_okbutton, new DialogInterface.OnClickListener() {
 					@Override
@@ -265,6 +268,8 @@ public class MainActivity extends Activity {
 					// Cancel button
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
+						// Close the slider
+						listView.closeAnimate(position);
 					}
 				}).create();
 
