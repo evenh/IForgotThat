@@ -31,11 +31,11 @@ public class NewReminderActivity extends Activity {
 	ListHelper listHelper = new ListHelper(this);
 	ListElementHelper listElementHelper = new ListElementHelper(this);
 
-	// Data fields
+	// UI fields
 	private TextView listName;
 	private EditText description;
 	private String descriptionText;
-
+	private TextView alarmPreview;
 	private ImageView imageHolder;
 
 	// For the database
@@ -53,9 +53,11 @@ public class NewReminderActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_reminder);
 
+		// Initialize UI elements
 		description = (EditText) findViewById(R.id.reminder_title);
 		listName = (TextView) findViewById(R.id.listName);
 		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
+		alarmPreview = (TextView) findViewById(R.id.alarm_preview);
 
 		// Set the description to an empty string by default
 		descriptionText = "";
@@ -101,7 +103,24 @@ public class NewReminderActivity extends Activity {
 			}
 		});
 
+		handleAlarmPreview();
+
 		Log.d(TAG, "Current alarm saved: " + ListElementObject.getDateAsString(reminder));
+	}
+
+	/**
+	 * Handles the visibility and content of the alarm preview
+	 * 
+	 * @since 1.0
+	 */
+	public void handleAlarmPreview() {
+		// Sets the alarm preview
+		if (reminder == null || reminderString == null || reminderString.equals("")) {
+			alarmPreview.setVisibility(View.GONE);
+		} else {
+			alarmPreview.setVisibility(View.VISIBLE);
+			alarmPreview.setText(reminderString);
+		}
 	}
 
 	/**
@@ -183,6 +202,7 @@ public class NewReminderActivity extends Activity {
 
 						reminder = new Date(cal.getTimeInMillis());
 						reminderString = ListElementObject.getDateAsString(reminder);
+						handleAlarmPreview();
 						Log.d(TAG, "The user selected this reminder: " + ListElementObject.getDateAsString(reminder));
 
 						dialog.dismiss();
@@ -199,6 +219,7 @@ public class NewReminderActivity extends Activity {
 						Log.d(TAG, "The user selected 'No alarm'");
 						reminder = null;
 						reminderString = ListElementObject.getDateAsString(null);
+						handleAlarmPreview();
 						dialog.cancel();
 					}
 				}).create();
