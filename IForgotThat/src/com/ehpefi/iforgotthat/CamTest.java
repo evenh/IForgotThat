@@ -296,6 +296,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		isPreviewActive = false;
 	}
 
+
 	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
@@ -303,7 +304,6 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * @since 1.0
 	 */
 	public void flashOnOff(View v) {
-		Log.d(TAG, "Flash button pressed");
 		Camera.Parameters param = camera.getParameters();
 		List<String> flashModes = param.getSupportedFlashModes();
 
@@ -312,8 +312,13 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 
 			if (currentFlashMode.equals(Parameters.FLASH_MODE_OFF)) {
 				currentFlashMode = Parameters.FLASH_MODE_ON;
+				flashButton.setImageResource(R.drawable.ic_action_flash_on);
+				Log.d(TAG, "Flash on!");
+
 			} else {
 				currentFlashMode = Parameters.FLASH_MODE_OFF;
+				flashButton.setImageResource(R.drawable.ic_action_flash_off);
+				Log.d(TAG, "Flash off!");
 			}
 
 			param.setFlashMode(currentFlashMode);

@@ -15,6 +15,10 @@
         android:textColor="#fefefe"
         android:textSize="20sp" />
 
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
     <ImageView
         android:id="@+id/camera_user_image"
         android:layout_width="fill_parent"
@@ -25,6 +29,21 @@
         android:maxWidth="320dp"
         android:scaleType="matrix"
         android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/alarm_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#80000000"
+        android:drawableRight="@drawable/ic_action_alarms"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="4/4/2015 3:15PM"
+        android:textColor="#eee" />
+    
+    </FrameLayout>
 
     <EditText
         android:id="@+id/reminder_title"
@@ -70,7 +89,7 @@
             android:layout_row="0"
             android:background="@drawable/button_selector"
             android:onClick="showAlarmDialog"
-            android:src="@drawable/ic_action_alarms" />
+            android:src="@drawable/ic_action_add_alarm" />
 
         <ImageButton
             android:id="@+id/btn_save"
