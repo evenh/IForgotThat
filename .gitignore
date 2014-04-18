@@ -14,6 +14,7 @@ lint
 *.class
 
 # generated files
+.idea/
 bin/
 gen/
 classes/
@@ -42,6 +43,8 @@ Thumbs.db
 
 # backup files
 *.bak
+
+IForgotThat.iml
 
 # gradle directory
 .gradle

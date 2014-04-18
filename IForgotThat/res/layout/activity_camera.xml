@@ -3,6 +3,18 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/listName"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="false"
+        android:background="@drawable/menu_top_gradient"
+        android:clickable="true"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#fefefe"
+        android:textSize="20sp" />
 
     <FrameLayout
         android:id="@+id/camera_preview"
@@ -14,24 +26,29 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/menu_bottom_gradient"
         android:columnCount="1" >
 
         <ImageButton
             android:id="@+id/button_capture"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_column="0"
-            android:layout_gravity="center_horizontal|bottom"
+            android:layout_gravity="center_horizontal|top"
             android:layout_row="0"
-            android:src="@android:drawable/ic_menu_camera" />
+            android:background="@drawable/menu_bottom_gradient"
+            android:src="@drawable/ic_action_camera" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_flash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:layout_column="0"
-            android:layout_gravity="right|bottom"
+            android:layout_gravity="right|top"
             android:layout_row="0"
-            android:text="Flash" 
-            android:onClick="flashOnOff"/>
+            android:background="@drawable/menu_bottom_gradient"
+            android:onClick="flashOnOff"
+            android:src="@drawable/ic_action_flash_on" />
 
     </GridLayout>
 

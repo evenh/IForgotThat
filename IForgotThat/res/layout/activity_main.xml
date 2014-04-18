@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_gravity="center_vertical"
-        android:background="#3d3d3d"
+        android:background="@drawable/menu_top_gradient"
         android:textAlignment="gravity" >
 
         <TextView
@@ -19,11 +19,13 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:clickable="true"
+            android:drawableRight="@drawable/ic_action_new"
             android:onClick="addNewListClicked"
             android:text="@string/add_new_list"
-            android:textColor="#fefefe"
+            android:textColor="#ddd"
             android:textSize="25sp" />
 
         <EditText
@@ -43,15 +45,35 @@
         android:id="@+id/text_has_no_lists"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="#ddd"
         android:gravity="center"
         android:text="@string/has_no_lists"
-        android:textColor="@color/gray"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/gray" />
 
-    <ListView
+    <com.ehpefi.iforgotthat.swipelistview.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mainView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </ListView>
+        android:layout_height="0dp"
+        android:layout_alignEnd="@+id/showCompleted"
+        android:layout_weight="1"
+        android:listSelector="#00000000"
+        swipe:swipeBackView="@+id/back"
+        swipe:swipeCloseAllItemsWhenMoveList="true"
+        swipe:swipeDrawableChecked="@drawable/choice_selected"
+        swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
+        swipe:swipeFrontView="@+id/front"
+        swipe:swipeMode="left" />
+
+    <Button
+        android:id="@+id/btn_show_completed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/menu_bottom_gradient"
+        android:onClick="showCompletedItems"
+        android:text="@string/completed_items"
+        android:textColor="#ddd" />
 
 </LinearLayout>

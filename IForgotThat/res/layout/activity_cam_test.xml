@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   >
+	     
+	<SurfaceView
+	    android:id="@+id/camerapreview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="50dp"
+	    android:layout_weight="1" />
+
+	<GridLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
+
+		<TextView
+		    android:id="@+id/listName"
+		    android:layout_width="fill_parent"
+		    android:layout_height="50dp"
+		    android:layout_alignParentEnd="false"
+		    android:layout_gravity="left"
+		    android:background="@drawable/menu_top_gradient"
+		    android:paddingLeft="5dp"
+       		android:drawableLeft="@drawable/ic_action_back"
+        	android:drawablePadding="-40sp"
+		    android:clickable="true"
+		    android:gravity="center"
+		    android:textColor="#fefefe"
+		    android:textSize="20sp"
+		    android:onClick="backToLists" />
+
+	</GridLayout>
+
+	<GridLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="150dp"
+	    android:layout_gravity="bottom"
+	    android:background="@drawable/menu_bottom_gradient"
+	    android:columnCount="1" >
+		
+	    <ImageButton
+	        android:id="@+id/button_capture"
+	        android:layout_width="80dp"
+	        android:layout_height="50dp"
+	        android:layout_column="0"
+	        android:layout_gravity="center_vertical|center_horizontal"
+	        android:layout_row="0"
+	        android:background="@drawable/button_selector"
+	        android:src="@drawable/ic_action_camera" 
+	        android:clickable="true"/>
+
+	    <ImageButton
+	        android:id="@+id/button_flash"
+	        android:layout_width="80dp"
+	        android:layout_height="50dp"
+	        android:layout_column="0"
+	        android:background="@drawable/button_style"
+	        android:layout_gravity="right|center_vertical"
+	        android:layout_marginRight="10dp"
+	        android:layout_row="0"
+	        android:onClick="flashOnOff"
+	        android:src="@drawable/ic_action_flash_off" 
+	        android:clickable="true"/>
+
+	</GridLayout>
+
+</FrameLayout>

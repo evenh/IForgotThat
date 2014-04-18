@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <GridLayout
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/menu_top_gradient"
+        android:columnCount="1"
+        android:tag="back" >
+
+        <ImageButton
+            android:id="@+id/btn_delete_list"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left|center"
+            android:layout_row="0"
+            android:onClick="deleteList"
+            android:src="@drawable/ic_action_cancel" />
+
+        <ImageButton
+            android:id="@+id/btn_rename_list"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="right|center"
+            android:layout_row="0"
+            android:onClick="renameList"
+            android:src="@drawable/ic_action_edit" />
+    </GridLayout>
+
+    <LinearLayout
+        android:id="@+id/front"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/list_item_gradient"
+        android:orientation="horizontal"
+        android:tag="front" >
+
+        <TextView
+            android:id="@+id/listName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    </LinearLayout>
+
+</FrameLayout>

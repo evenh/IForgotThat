@@ -22,7 +22,9 @@ public class ListElementObject {
 	private boolean completed;
 	private byte[] image;
 
-	private final SimpleDateFormat dtFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public final static String dtFormatString = "yyyy-MM-dd HH:mm:ss";
+	public final static String noAlarmString = "0001-01-01 01:01:01";
+	private final static SimpleDateFormat dtFormat = new SimpleDateFormat(dtFormatString);
 	private static final String TAG = "ListElementObject";
 
 	/**
@@ -70,8 +72,6 @@ public class ListElementObject {
 		this.completed = completed;
 		this.image = image;
 	}
-
-	
 
 	@Override
 	public int hashCode() {
@@ -125,7 +125,7 @@ public class ListElementObject {
 			return false;
 		}
 		if (dtFormat == null) {
-			if (other.dtFormat != null) {
+			if (ListElementObject.dtFormat != null) {
 				return false;
 			}
 		} else if (!dtFormat.equals(other.dtFormat)) {
@@ -181,6 +181,13 @@ public class ListElementObject {
 		return dtFormat.format(alarm);
 	}
 
+	public static String getDateAsString(Date date) {
+		if (date == null) {
+			return noAlarmString;
+		}
+		return dtFormat.format(date);
+	}
+
 	public boolean isCompleted() {
 		return completed;
 	}
@@ -219,6 +226,12 @@ public class ListElementObject {
 			setAlarm(dtFormat.parse(alarm));
 		} catch (ParseException e) {
 			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
+		} catch (NullPointerException npe) {
+			try {
+				setAlarm(dtFormat.parse(noAlarmString));
+			} catch (ParseException e) {
+				Log.e(TAG, "We failed miserably :(");
+			}
 		}
 	}
 

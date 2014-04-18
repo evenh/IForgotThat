@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+     
+	<!--Styling for how the button should appear when clicked -->
+	<gradient   
+	    android:angle="270"
+	    android:startColor="#789"
+	    android:endColor="#567"/>
+	
+		<!-- roundedcorner -->
+	<corners    
+	    android:radius="10dp"/>
+
+</shape>

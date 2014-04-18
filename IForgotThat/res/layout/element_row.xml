@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <GridLayout
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/menu_top_gradient"
+        android:columnCount="1"
+        android:tag="back" >
+
+        <ImageButton
+            android:id="@+id/btn_trash_reminder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left|center"
+            android:layout_row="0"
+            android:onClick="deleteElement"
+            android:src="@drawable/ic_action_cancel" />
+        
+        <ImageButton
+            android:id="@+id/btn_edit_reminder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_row="0"
+            android:onClick="editElement"
+            android:src="@drawable/ic_action_edit" />
+
+        <ImageButton
+            android:id="@+id/btn_complete_reminder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="right|center"
+            android:layout_row="0"
+            android:onClick="completeElement"
+            android:src="@drawable/ic_action_accept" />
+        
+    </GridLayout>
+
+        <LinearLayout
+        android:id="@+id/front"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/list_item_gradient"
+        android:tag="front" >
+
+        <ImageView
+            android:id="@+id/reminderImage"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lblDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/has_no_description"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/lblAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/has_no_alarm" />
+        </LinearLayout>
+    </LinearLayout>
+    
+</FrameLayout>

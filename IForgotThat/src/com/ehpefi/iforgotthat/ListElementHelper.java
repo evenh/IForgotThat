@@ -29,6 +29,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	// Specify which class that logs messages
 	private static final String TAG = "ListElementHelper";
 
+	public static final int COMPLETED_LIST_ID = Integer.MIN_VALUE;
+
 	/**
 	 * Constructs a new instance of the ListElementHelper class
 	 * 
@@ -45,11 +47,10 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "onCreate() was called. Creating the table '" + TABLE_NAME + "'...");
 
 		// SQL to create the 'items' table
-		// TODO: Mark image BLOB NOT NULL when everything is good to go :)
 		String createItemsSQL = String
 				.format("CREATE TABLE %s (%s integer PRIMARY KEY AUTOINCREMENT NOT NULL, %s integer NOT NULL, "
 						+ "%s varchar(255), %s DATETIME DEFAULT CURRENT_TIMESTAMP, %s DATETIME, %s integer(1) NOT NULL DEFAULT(0), "
-						+ "%s blob,FOREIGN KEY(%s) REFERENCES list(_id))", TABLE_NAME, COL_ID, COL_LIST_ID,
+				+ "%s blob NOT NULL,FOREIGN KEY(%s) REFERENCES list(_id))", TABLE_NAME, COL_ID, COL_LIST_ID,
 						COL_DESCRIPTION, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP, COL_COMPLETED, COL_IMAGE,
 						COL_LIST_ID);
 		
@@ -193,7 +194,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The element's identifier
 	 * @param status True for completed, false for not completed
-	 * @return True if successfull, false otherwise
+	 * @return True if successful, false otherwise
 	 * @since 1.0
 	 */
 	public boolean setListElementComplete(int id, boolean status) {
@@ -271,6 +272,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 				+ ". Returning a null object!");
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Fail
@@ -317,10 +319,37 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		}
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Return the list
 		return listElements;
+	}
+
+	/**
+	 * Gets all incomplete list elements for a given list id. If COMPLETED_LIST_ID is passed in, it returns a list of
+	 * completed items
+	 * 
+	 * @param id The list id
+	 * @param OrderBy A static string from the ListElementHelper class (COL_ID, COL_LIST_ID, COL_DESCRIPTION,
+	 *            COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP)
+	 * @return An ArrayList of incomplete ListElementObject on success, an empty list of these on failure
+	 * @since 1.0
+	 */
+	public ArrayList<ListElementObject> getIncompleteListElementsForListId(int id, String OrderBy) {
+		if (id == COMPLETED_LIST_ID) {
+			return getCompletedItems();
+		}
+
+		ArrayList<ListElementObject> incompleteElements = new ArrayList<ListElementObject>();
+
+		for (ListElementObject listElement : getListElementsForListId(id, OrderBy)) {
+			if (!listElement.isCompleted()) {
+				incompleteElements.add(listElement);
+			}
+		}
+
+		return incompleteElements;
 	}
 
 	/**
@@ -362,6 +391,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		}
 
 		// Close the database connection
+		cursor.close();
 		db.close();
 
 		// Return the list
