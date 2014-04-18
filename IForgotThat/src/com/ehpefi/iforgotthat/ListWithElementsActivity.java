@@ -102,15 +102,15 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Close the slider
-		remindersView.closeAnimate(position);
-
 		// Remove the list element from the array and delete the object from the database
 		elements.remove(position);
 		listElementHelper.deleteListElement(reminderObject.getId());
 
 		// Refresh view
 		listAdapter.notifyDataSetChanged();
+
+		// Close the slider
+		remindersView.closeAnimate(position);
 
 		// Run a check to show if we have an empty list
 		showElements();
@@ -139,8 +139,6 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Close the slider
-		remindersView.closeAnimate(position);
 
 		// Remove the list element from the array and mark the reminder as complete
 		elements.remove(position);
@@ -154,6 +152,9 @@ public class ListWithElementsActivity extends Activity {
 
 		// Refresh view
 		listAdapter.notifyDataSetChanged();
+
+		// Close the slider
+		remindersView.closeAnimate(position);
 
 		// Run a check to show if we have an empty list
 		showElements();
