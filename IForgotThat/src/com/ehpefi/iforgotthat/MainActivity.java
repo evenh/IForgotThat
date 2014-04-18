@@ -9,21 +9,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
+
+import com.ehpefi.iforgotthat.swipelistview.BaseSwipeListViewListener;
+import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
 
 /**
  * The main activity which displays all the available lists
@@ -34,15 +30,16 @@ import android.widget.ViewSwitcher;
  */
 public class MainActivity extends Activity {
 	// UI Elements
-	ListView listView;
+	SwipeListView listView;
 	EditText listNameInput;
 	TextView hasNoLists;
 
 	ViewSwitcher switcher;
+	public int position;
 
 	// Database related
-	ListHelper listHelper = new ListHelper(this);
-	ListElementHelper listElementHelper = new ListElementHelper(this);
+	ListHelper listHelper;
+	ListElementHelper listElementHelper;
 	ArrayList<ListObject> allLists;
 	ListObjectAdapter listAdapter;
 
@@ -54,6 +51,7 @@ public class MainActivity extends Activity {
 
 	// Context of this class
 	final Context context = this;
+	ListObject currentList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,49 +59,38 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		// Find our UI elements
-		listView = (ListView) findViewById(R.id.mainView);
+		listView = (SwipeListView) findViewById(R.id.mainView);
 		listNameInput = (EditText) findViewById(R.id.editable_add_list_input);
 		hasNoLists = (TextView) findViewById(R.id.text_has_no_lists);
-
 		switcher = (ViewSwitcher) findViewById(R.id.add_list_switcher);
+
+		// Initialize helpers
+		listHelper = new ListHelper(this);
+		listElementHelper = new ListElementHelper(this);
 
 		// Fetch all the lists from the database
 		allLists = listHelper.getAllLists(ListHelper.COL_ID);
+
 		// Create a new list adapter for all our lists
-		listAdapter = new ListObjectAdapter(this, android.R.layout.simple_list_item_1, allLists);
+		listAdapter = new ListObjectAdapter(this, R.layout.list_row, allLists);
 		listView.setAdapter(listAdapter);
-		registerForContextMenu(listView);
 
-		showLists();
-	}
+		// Swipe listener
+		listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
 
-	/**
-	 * Takes care of showing an empty message if there are no lists, and all the lists if number of lists > 0
-	 * 
-	 * @since 1.0
-	 */
-	private void showLists() {
-		// If the database doesn't contain any lists
-		if (listHelper.numberOfLists() == 0) {
+		});
 
-			// Hide the list view
-			listView.setVisibility(View.GONE);
-			hasNoLists.setVisibility(View.VISIBLE);
-
-			Log.d(TAG, "No lists in the database");
-
-			return;
-		}
-
-		// Show the list view if we have data
-		hasNoLists.setVisibility(View.GONE);
-		listView.setVisibility(View.VISIBLE);
-
-		// When a list is clicked
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+			// Whenever a row has been slided to show the back, update the list position
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			public void onOpened(int pos, boolean toRight) {
+				position = pos;
+				Log.d(TAG, "Updated list position to " + pos);
+			}
 
+			// For clicks on the list names
+			@Override
+			public void onClickFrontView(int position) {
 				// Get the object for the clicked list
 				ListObject list = (ListObject) listView.getItemAtPosition(position);
 
@@ -118,6 +105,32 @@ public class MainActivity extends Activity {
 				overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			}
 		});
+
+		showLists();
+	}
+
+	/**
+	 * Takes care of showing an empty message if there are no lists, and all the lists if number of lists > 0
+	 * 
+	 * @since 1.0
+	 */
+	private void showLists() {
+		// If the database doesn't contain any lists
+		if (listHelper.numberOfLists() == 0) {
+			// Hide the list view
+			listView.setVisibility(View.GONE);
+			hasNoLists.setVisibility(View.VISIBLE);
+
+			Log.d(TAG, "No lists in the database");
+
+			return;
+		}
+
+		Log.d(TAG, "Lists in the datbase");
+
+		// Show the list view if we have data
+		hasNoLists.setVisibility(View.GONE);
+		listView.setVisibility(View.VISIBLE);
 	}
 
 	/**
@@ -167,15 +180,95 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Convenience method for refreshing the list view
+	 * Handles clicks on the "delete list" button
 	 * 
+	 * @param view The view
 	 * @since 1.0
 	 */
-	private void updateListView() {
-		allLists = listHelper.getAllLists(ListHelper.COL_ID);
-		listAdapter.clear();
-		listAdapter.addAll(allLists);
-		showLists();
+	public void deleteList(View view) {
+		// Get the object to be deleted
+		currentList = (ListObject) listAdapter.getItem(position);
+
+		// Create a dialog box to confirm deletion
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.list_deletion_title))
+				.setMessage(String.format(getResources().getString(R.string.list_deletion_confirm), currentList.getTitle()))
+				.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// If we successfully deleted the list
+						if (listHelper.deleteList(currentList.getId(), context)) {
+							// Close the slider
+							listView.closeAnimate(position);
+
+							// Remove the list from the array
+							allLists.remove(position);
+
+							displayToast(String.format(getResources().getString(R.string.list_deletion_ok), currentList.getTitle()));
+						} else {
+							// Couldn't delete the list
+							displayToast(String.format(getResources().getString(R.string.list_deletion_fail), currentList.getTitle()));
+						}
+
+						// Refresh view
+						listAdapter.notifyDataSetChanged();
+
+						showLists();
+					}
+				}).setNegativeButton(getResources().getString(R.string.no), new android.content.DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).create();
+
+		confirmDeletion.show();
+	}
+
+	public void renameList(View view) {
+		// Get the object to be renamed
+		currentList = (ListObject) listAdapter.getItem(position);
+
+		LayoutInflater inflater = getLayoutInflater();
+		AlertDialog renameDialog = new AlertDialog.Builder(this).setView(inflater.inflate(R.layout.rename_list, null))
+				.setTitle(String.format(getResources().getString(R.string.rename_list_title), currentList.getTitle()))
+				.setPositiveButton(R.string.rename_list_okbutton, new DialogInterface.OnClickListener() {
+					@Override
+					// When the user has pressed "Rename"
+					public void onClick(DialogInterface dialog, int id) {
+						// Get the input text (the new title)
+						EditText newTitleET = (EditText) ((AlertDialog) dialog).findViewById(R.id.new_list_name);
+						String newTitle = newTitleET.getText().toString();
+
+						// Check for empty input
+						if (newTitle.equals("") || newTitle == null || newTitle.trim().length() == 0) {
+							displayToast(getResources().getString(R.string.list_name_empty));
+						} else {
+							// Try to rename the list
+							if (listHelper.renameList(currentList.getId(), newTitle)) {
+								displayToast(String.format(getResources().getString(R.string.list_rename_ok), currentList.getTitle(), newTitle));
+
+								// Rename the local object
+								currentList.setTitle(newTitle);
+
+								// Close the slider
+								listView.closeAnimate(position);
+
+								// Update the dataset
+								listAdapter.notifyDataSetChanged();
+								showLists();
+							} else {
+								displayToast(String.format(getResources().getString(R.string.list_rename_fail), currentList.getTitle()));
+							}
+						}
+					}
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					// Cancel button
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				}).create();
+
+		renameDialog.show();
 	}
 
 	/**
@@ -206,9 +299,13 @@ public class MainActivity extends Activity {
 			displayToast(String.format(getResources().getString(R.string.list_already_exists), inputName));
 		} else {
 			// Try to create the list
-			if (listHelper.createNewList(inputName) > 0) {
+			int listID = listHelper.createNewList(inputName);
+
+			if (listID > 0) {
 				// All good, update the data and tell the listAdapter to refresh
-				updateListView();
+				allLists.add(listHelper.getList(listID));
+				listAdapter.notifyDataSetChanged();
+				showLists();
 				// Tell the user that everything went OK
 				displayToast(String.format(getResources().getString(R.string.list_creation_ok), inputName));
 				// Close the keyboard
@@ -226,97 +323,8 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-		// Check whether the ListView was selected
-		if (view.getId() == R.id.mainView) {
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-			// Set list title
-			menu.setHeaderTitle(String.format(getResources().getString(R.string.list_menu_title),
-					allLists.get(info.position).getTitle()));
-			// Get available actions
-			String[] menuItems = getResources().getStringArray(R.array.list_modifiers);
-			for (int i = 0; i < menuItems.length; i++) {
-				menu.add(Menu.NONE, i, i, menuItems[i]);
-			}
-		}
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-		String[] menuItems = getResources().getStringArray(R.array.list_modifiers);
-		int index = item.getItemId();
-		String itemName = menuItems[index];
-		final ListObject selectedList = allLists.get(info.position);
-
-		// If the user selected "Delete"
-		if (itemName.equals(getResources().getString(R.string.list_menu_delete))) {
-			// Create a dialog box to confirm deletion
-			AlertDialog confirmDeletion = new AlertDialog.Builder(this)
-					.setTitle(getResources().getString(R.string.list_deletion_title))
-					.setMessage(String.format(getResources().getString(R.string.list_deletion_confirm), selectedList.getTitle()))
-					.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// If we successfully deleted the list
-							if (listHelper.deleteList(selectedList.getId(), context)) {
-								displayToast(String.format(getResources().getString(R.string.list_deletion_ok), selectedList.getTitle()));
-							} else {
-								// Couldn't delete the list
-								displayToast(String.format(getResources().getString(R.string.list_deletion_fail), selectedList.getTitle()));
-							}
-
-							updateListView();
-						}
-					}).setNegativeButton(getResources().getString(R.string.no), new android.content.DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					}).create();
-
-			confirmDeletion.show();
-		} else if (itemName.equals(getResources().getString(R.string.list_menu_rename))) {
-			// If the user selected "Rename"
-
-			LayoutInflater inflater = getLayoutInflater();
-			AlertDialog renameDialog = new AlertDialog.Builder(this).setView(inflater.inflate(R.layout.rename_list, null))
-					.setTitle(String.format(getResources().getString(R.string.rename_list_title), selectedList.getTitle()))
-					.setPositiveButton(R.string.rename_list_okbutton, new DialogInterface.OnClickListener() {
-						@Override
-						// When the user has pressed "Rename"
-						public void onClick(DialogInterface dialog, int id) {
-							// Get the input text (the new title)
-							EditText newTitleET = (EditText) ((AlertDialog) dialog).findViewById(R.id.new_list_name);
-							String newTitle = newTitleET.getText().toString();
-
-							// Check for empty input
-							if (newTitle.equals("") || newTitle == null || newTitle.trim().length() == 0) {
-								displayToast(getResources().getString(R.string.list_name_empty));
-							} else {
-								// Try to rename the list
-								if (listHelper.renameList(selectedList.getId(), newTitle)) {
-									displayToast(String.format(getResources().getString(R.string.list_rename_ok), selectedList.getTitle(), newTitle));
-								} else {
-									displayToast(String.format(getResources().getString(R.string.list_rename_fail), selectedList.getTitle()));
-								}
-								
-								// Refresh the list view
-								updateListView();
-							}
-						}
-					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-						// Cancel button
-						public void onClick(DialogInterface dialog, int id) {
-							dialog.cancel();
-						}
-					}).create();
-
-			renameDialog.show();
-		}
-
-		return true;
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 
 }

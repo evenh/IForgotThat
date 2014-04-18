@@ -166,27 +166,22 @@ public class ListWithElementsActivity extends Activity {
 	 * @since 1.0
 	 */
 	private void showElements() {
+		// If we are in the "complete" list, hide the new reminder button
+		if (listID == ListElementHelper.COMPLETED_LIST_ID) {
+			((GridLayout) findViewById(R.id.newListElementHolder)).setVisibility(View.GONE);
+		}
+
 		// If there are reminders
 		if (elements.size() == 0) {
 			// Hide the list view
 			remindersView.setVisibility(View.GONE);
 			noReminders.setVisibility(View.VISIBLE);
 
-			// If we are in the "complete" list, hide the new reminder button
-			if (listID == ListElementHelper.COMPLETED_LIST_ID) {
-				((GridLayout) findViewById(R.id.newListElementHolder)).setVisibility(View.GONE);
-			}
-
 			return;
 		}
 		// Show the list view
 		noReminders.setVisibility(View.GONE);
 		remindersView.setVisibility(View.VISIBLE);
-
-		// If we are in the "complete" list, hide the new reminder button
-		if (listID == ListElementHelper.COMPLETED_LIST_ID) {
-			((GridLayout) findViewById(R.id.newListElementHolder)).setVisibility(View.GONE);
-		}
 	}
 
 	/**

@@ -51,12 +51,20 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/gray" />
 
-    <ListView
+    <com.ehpefi.iforgotthat.swipelistview.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mainView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
-    </ListView>
+        android:layout_alignEnd="@+id/showCompleted"
+        android:layout_weight="1"
+        android:listSelector="#00000000"
+        swipe:swipeBackView="@+id/back"
+        swipe:swipeCloseAllItemsWhenMoveList="true"
+        swipe:swipeDrawableChecked="@drawable/choice_selected"
+        swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
+        swipe:swipeFrontView="@+id/front"
+        swipe:swipeMode="left" />
 
     <Button
         android:id="@+id/btn_show_completed"
@@ -64,7 +72,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@drawable/menu_bottom_gradient"
+        android:onClick="showCompletedItems"
         android:text="@string/completed_items"
-        android:textColor="#ddd"
-		android:onClick="showCompletedItems" />
+        android:textColor="#ddd" />
+
 </LinearLayout>
