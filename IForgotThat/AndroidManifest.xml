@@ -48,6 +48,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.ehpefi.iforgotthat.DetailedReminderActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.ehpefi.iforgotthat.CamTest"
             android:label="@string/title_activity_cam_test" >
         </activity>

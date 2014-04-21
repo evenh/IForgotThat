@@ -66,6 +66,8 @@ public class ListWithElementsActivity extends Activity {
 			if (listTitle == null || listTitle.equals("")) {
 				listTitle = listHelper.getList(listID).getTitle();
 			}
+		} else {
+			Log.e(TAG, "Fatal error: no data recieved!");
 		}
 
 		// Get TextView for the list title and set its name
@@ -84,6 +86,23 @@ public class ListWithElementsActivity extends Activity {
 			public void onOpened(int pos, boolean toRight) {
 				position = pos;
 				Log.d(TAG, "Updated list position to " + pos);
+			}
+
+			// For clicks on the reminders
+			@Override
+			public void onClickFrontView(int position) {
+				// Get the object for the clicked reminder
+				ListElementObject reminder = (ListElementObject) remindersView.getItemAtPosition(position);
+
+				// Create an intent and pass the object and list id
+				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
+				intent.putExtra("id", reminder.getId());
+				intent.putExtra("listID", reminder.getListId());
+
+				startActivity(intent);
+
+				// Transition smoothly :)
+				overridePendingTransition(R.anim.right_in, R.anim.left_out);
 			}
 		});
 
@@ -138,7 +157,6 @@ public class ListWithElementsActivity extends Activity {
 
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
-
 
 		// Remove the list element from the array and mark the reminder as complete
 		elements.remove(position);
