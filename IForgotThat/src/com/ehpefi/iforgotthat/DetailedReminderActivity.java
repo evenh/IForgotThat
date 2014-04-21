@@ -3,6 +3,7 @@ package com.ehpefi.iforgotthat;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,8 +51,9 @@ public class DetailedReminderActivity extends Activity {
 		// Get extras
 		if (bundle != null) {
 			id = bundle.getInt("id");
-			listID = bundle.getInt("listID");
 			reminder = listElementHelper.getListElement(id);
+			Log.d(TAG, "Got the following reminder: " + reminder.toString());
+			listID = reminder.getListId();
 
 			// Image
 			image.setImageBitmap(reminder.getImageAsBitmap());

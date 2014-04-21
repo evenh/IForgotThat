@@ -5,6 +5,8 @@
     android:versionName="1.0.0" >
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -29,7 +31,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
         </activity>
         <activity
             android:name="com.ehpefi.iforgotthat.CameraActivity"
@@ -55,6 +56,8 @@
             android:name="com.ehpefi.iforgotthat.CamTest"
             android:label="@string/title_activity_cam_test" >
         </activity>
+
+        <receiver android:name=".AlarmReceiver" />
     </application>
 
 </manifest>

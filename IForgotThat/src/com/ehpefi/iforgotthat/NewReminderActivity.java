@@ -4,7 +4,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -242,7 +245,29 @@ public class NewReminderActivity extends Activity {
 		Log.d(TAG, "Description: " + descriptionText);
 		Log.d(TAG, "Alarm: " + reminderString);
 
-		if (listElementHelper.createNewListElement(listID, descriptionText, reminderString, image) > 0) {
+		int insertedReminder = listElementHelper.createNewListElement(listID, descriptionText, reminderString, image);
+
+		if (insertedReminder > 0) {
+			// Creates an alarm if necessary
+			if (!reminderString.equals(ListElementObject.noAlarmString)) {
+				Log.d(TAG, "Setting an alarm for " + reminderString);
+
+				// Temporary calendar object
+				Calendar tmp = Calendar.getInstance();
+				tmp.setTime(reminder);
+				Long time = tmp.getTimeInMillis();
+
+				// Create a new intent for the alarm receiver
+				Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+				alarmIntent.putExtra("id", insertedReminder);
+
+				// Create a new alarm manager
+				AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+				// Set the alarm
+				alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			}
+
 			// Go back to the selected list
 			Intent intent = new Intent(this, ListWithElementsActivity.class);
 			// Clear history and pass along the list ID

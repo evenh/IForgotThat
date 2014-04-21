@@ -97,7 +97,6 @@ public class ListWithElementsActivity extends Activity {
 				// Create an intent and pass the object and list id
 				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
 				intent.putExtra("id", reminder.getId());
-				intent.putExtra("listID", reminder.getListId());
 
 				startActivity(intent);
 
