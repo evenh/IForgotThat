@@ -15,9 +15,6 @@ import android.os.Bundle;
  * @since 1.0.0
  */
 public class AlarmReceiver extends BroadcastReceiver {
-	// Vibration pattern
-	long[] pattern = { 800, 0, 400, 0, 800 };
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// Get extras
@@ -38,7 +35,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		// Build notification
 		Notification n = new Notification.Builder(context).setContentTitle(context.getResources().getString(R.string.app_name)).setContentText(description)
-				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).setAutoCancel(true).setVibrate(pattern).build();
+				.setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).setAutoCancel(true).build();
+
+		// Bells n' whistles - literally
+		n.defaults |= Notification.DEFAULT_VIBRATE;
+		n.defaults |= Notification.DEFAULT_LIGHTS;
+		n.defaults |= Notification.DEFAULT_SOUND;
 
 		// Send off the notification
 		notificationManager.notify(0, n);
