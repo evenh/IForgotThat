@@ -18,7 +18,7 @@ import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
  * 
  * @author Per Erik Finstad
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListWithElementsActivity extends Activity {
 	// UI Elements
@@ -94,7 +94,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Triggers a delete operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void deleteElement(View button) {
 		Log.d(TAG, "Deletion requested for list element in position: " + position);
@@ -120,7 +120,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Triggers an edit operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void editElement(View button) {
 		// TODO: Implement this
@@ -131,7 +131,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Triggers a completion operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void completeElement(View button) {
 		Log.d(TAG, "Completion requested for list element in position: " + position);
@@ -164,7 +164,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items"
 	 * special list
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void showElements() {
 		// If we are in the "complete" list, hide the new reminder button
@@ -188,7 +188,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Goes back to the MainActivity
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed
@@ -207,7 +207,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Opens the CameraActivity class for creating
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void newReminder(View v) {
 		Intent intent = new Intent(getApplicationContext(), CamTest.class);

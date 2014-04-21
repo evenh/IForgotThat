@@ -17,7 +17,7 @@ import android.widget.TextView;
  * Custom adapter for just showing the title of the list
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	// Our data
@@ -56,7 +56,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	 * A class to hold one row (one reminder)
 	 * 
 	 * @author Even Holthe
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	class ElementRow {
 		// Front

@@ -28,7 +28,7 @@ import android.widget.TextView;
  * 
  * @author Per Erik Finstad
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class CameraActivity extends Activity {
 	ListHelper listHelper = new ListHelper(this);
@@ -136,7 +136,7 @@ public class CameraActivity extends Activity {
 	 * Fires off the new intent to NewReminderActivity
 	 * 
 	 * @param image A compressed image as a byte array
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void createNewReminder(byte[] image) {
 		Intent intent = new Intent(this, NewReminderActivity.class);
@@ -164,7 +164,7 @@ public class CameraActivity extends Activity {
 	 * 
 	 * @param input A raw image in a byte array
 	 * @return A byte array containing the compressed image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private byte[] compressImage(byte[] input) {
 		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
@@ -194,7 +194,7 @@ public class CameraActivity extends Activity {
 	 * Gets an instance of the camera
 	 * 
 	 * @return An instance of camera if successful, null otherwise
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public static Camera getCameraInstance() {
 		Camera c = null;
@@ -231,7 +231,7 @@ public class CameraActivity extends Activity {
 	 * Method for turning camera flash on/off. Default is off
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void flashOnOff(View v) {
 		Camera.Parameters param = mCamera.getParameters();
@@ -254,7 +254,7 @@ public class CameraActivity extends Activity {
 	/**
 	 * Goes back to the MainActivity
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed

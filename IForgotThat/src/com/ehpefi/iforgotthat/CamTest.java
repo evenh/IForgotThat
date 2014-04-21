@@ -30,7 +30,7 @@ import android.widget.TextView;
  * Handles the camera
  *
  * @author Per Erik Finstad
- * @since 1.0
+ * @since 1.0.0
  */
 public class CamTest extends Activity implements SurfaceHolder.Callback {
 	// UI elements
@@ -91,7 +91,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		 * Callback function to get the capture image
 		 * 
 		 * @param byte[] data, Camere camera
-		 * @since 1.0
+		 * @since 1.0.0
 		 * 
 		 */
 		mPicture = new PictureCallback() {
@@ -112,7 +112,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 		/**
 		 * Method to take the picture
 		 * @param View v
-		 * @since 1.0
+		 * @since 1.0.0
 		 */
 		// Handle clicks for the captureButton
 		captureButton.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +132,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * Fires off the new intent to NewReminderActivity
 	 * 
 	 * @param image A compressed image as a byte array
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void createNewReminder(byte[] image) {
 		Intent intent = new Intent(this, NewReminderActivity.class);
@@ -159,7 +159,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * 
 	 * @param SurfaceHolder
 	 *              holder, int format, int width, int height
-	 * @since 1.0
+	 * @since 1.0.0
 	 * 
 	 */
 
@@ -253,7 +253,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * 
 	 * @param input A raw image in a byte array
 	 * @return A byte array containing the compressed image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private byte[] compressImage(byte[] input) {
 		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
@@ -284,7 +284,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * 
 	 * @param Surfaceholder
 	 *              holder
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 
 	@Override
@@ -300,7 +300,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	 * Method for turning camera flash on/off. Default is off
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void flashOnOff(View v) {
 		Camera.Parameters param = camera.getParameters();
@@ -328,7 +328,7 @@ public class CamTest extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Goes back to the MainActivity
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed

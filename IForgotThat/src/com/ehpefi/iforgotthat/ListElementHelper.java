@@ -35,7 +35,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * Constructs a new instance of the ListElementHelper class
 	 * 
 	 * @param context The context in which the new instance should be created, usually 'this'.
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListElementHelper(Context context) {
 		// Call the super class' constructor
@@ -101,7 +101,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @param alarm Date and time in the following format: YYYY-MM-DD HH:MM:SS
 	 * @param image A raw image
 	 * @return The id of the inserted list element on success, 0 on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public int createNewListElement(int listId, String description, String alarm, byte[] image) {
 		// Create a pointer to the database
@@ -161,7 +161,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The list element's identifier
 	 * @return True on success, otherwise false
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean deleteListElement(int id) {
 		// Create a pointer to the database
@@ -195,7 +195,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @param id The element's identifier
 	 * @param status True for completed, false for not completed
 	 * @return True if successful, false otherwise
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean setListElementComplete(int id, boolean status) {
 		// Create a pointer to the database
@@ -235,7 +235,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The identifier of a list element
 	 * @return A ListElementObject on success, null on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListElementObject getListElement(int id) {
 		// Create a pointer to the database
@@ -286,7 +286,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @param OrderBy A static string from the ListElementHelper class (COL_ID, COL_LIST_ID, COL_DESCRIPTION,
 	 *            COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP)
 	 * @return An ArrayList of ListElementObject on success, an empty list of these on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ArrayList<ListElementObject> getListElementsForListId(int id, String OrderBy) {
 		// Create an ArrayList to hold our list elements
@@ -334,7 +334,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @param OrderBy A static string from the ListElementHelper class (COL_ID, COL_LIST_ID, COL_DESCRIPTION,
 	 *            COL_COMPLETED, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP)
 	 * @return An ArrayList of incomplete ListElementObject on success, an empty list of these on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ArrayList<ListElementObject> getIncompleteListElementsForListId(int id, String OrderBy) {
 		if (id == COMPLETED_LIST_ID) {
@@ -357,7 +357,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @return An ArrayList of ListElementObject which is marked as completed on success, an empty list of these on
 	 *         failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ArrayList<ListElementObject> getCompletedItems() {
 		// Create an ArrayList to hold our list elements
@@ -403,7 +403,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param updatedListElement The object with updated information
 	 * @return On success it returns the updated object back, on failure the return value is null
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListElementObject updateListElement(ListElementObject updatedListElement) {
 		// Check if the incoming object has the correct type

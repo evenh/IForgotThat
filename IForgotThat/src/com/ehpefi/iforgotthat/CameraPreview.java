@@ -15,7 +15,7 @@ import android.view.WindowManager;
  * Handles the camera preview
  * 
  * @author Per Erik Finstad
- * @since 1.0
+ * @since 1.0.0
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 	private static final String TAG = "CameraPreview";

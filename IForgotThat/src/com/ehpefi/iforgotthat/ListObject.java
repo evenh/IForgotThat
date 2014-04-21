@@ -10,7 +10,7 @@ import android.util.Log;
  * A list object is one single list in a bigger collection of lists.
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListObject {
 	private int id;
@@ -27,7 +27,7 @@ public class ListObject {
 	 * @param title The title of the list
 	 * @param timestamp The timestamp on which the list was created (String)
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListObject(int id, String title, String timestamp) {
 		setId(id);
@@ -42,7 +42,7 @@ public class ListObject {
 	 * @param title The title of the list
 	 * @param timestamp The timestamp on which the list was created (Date object)
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListObject(int id, String title, Date timestamp) {
 		setId(id);

@@ -25,7 +25,7 @@ import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
  * 
  * @author Per Erik Finstad
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class MainActivity extends Activity {
 	// UI Elements
@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Takes care of showing an empty message if there are no lists, and all the lists if number of lists > 0
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void showLists() {
 		// If the database doesn't contain any lists
@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
 	 * Shows the completed items
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void showCompletedItems(View view) {
 		Intent completed = new Intent(this, ListWithElementsActivity.class);
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
 	 * Requests the change from TextView to EditText
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void addNewListClicked(View view) {
 		switcher.showNext();
@@ -163,7 +163,7 @@ public class MainActivity extends Activity {
 	 * Convenience method for displaying a toast message
 	 * 
 	 * @param message The message to display
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void displayToast(String message) {
 		// If there is an active toast, cancel it
@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
 	 * Handles clicks on the "delete list" button
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void deleteList(View view) {
 		// Get the object to be deleted
@@ -280,7 +280,7 @@ public class MainActivity extends Activity {
 	 * Handle the user input after they have provided a list name
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void addNewListTextEntered(View view) {
 		// The list name the user typed in

@@ -11,7 +11,7 @@ import android.util.Log;
  * Contains information about a specific reminder
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListElementObject {
 	private int id;
@@ -37,7 +37,7 @@ public class ListElementObject {
 	 * @param alarm A Date object
 	 * @param completed Whether this item is checked off as complete or not
 	 * @param image A camera image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed,
 			byte[] image) {
@@ -60,7 +60,7 @@ public class ListElementObject {
 	 * @param alarm A date (String) in the format of "yyyy-MM-dd HH:mm:ss"
 	 * @param completed Whether this item is checked off as complete or not
 	 * @param image A camera image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed,
 			byte[] image) {

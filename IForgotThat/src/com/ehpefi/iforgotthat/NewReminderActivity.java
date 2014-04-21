@@ -24,7 +24,7 @@ import android.widget.TimePicker;
  * Takes a picture from CameraActivity and user input to create a new reminder
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class NewReminderActivity extends Activity {
 	// Helper classes for reminders
@@ -111,7 +111,7 @@ public class NewReminderActivity extends Activity {
 	/**
 	 * Handles the visibility and content of the alarm preview
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void handleAlarmPreview() {
 		// Sets the alarm preview
@@ -127,7 +127,7 @@ public class NewReminderActivity extends Activity {
 	 * Pops up an alert on the trash button onClick
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void thrashAndExit(View v) {
 		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(R.string.thrash_current_reminder)
@@ -150,7 +150,7 @@ public class NewReminderActivity extends Activity {
 	 * Convenience method for updating the description field
 	 * 
 	 * @param newDescription The new description
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void descriptionChanged(String newDescription) {
 		try {
@@ -170,7 +170,7 @@ public class NewReminderActivity extends Activity {
 	 * Shows an AlertDialog containing a date and time picker
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void showAlarmDialog(View view) {
 		// Get the custom date+time dialog
@@ -231,7 +231,7 @@ public class NewReminderActivity extends Activity {
 	 * Saves the item to the database
 	 * 
 	 * @param view The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void saveReminder(View view) {
 		Log.i(TAG, "Saving the reminder...");
