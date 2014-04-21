@@ -3,8 +3,6 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,9 +105,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		reminder = getItem(position);
 
 		if (reminder != null) {
-			byte[] tmpImg = reminder.getImage();
-			Bitmap bmp = BitmapFactory.decodeByteArray(tmpImg, 0, tmpImg.length);
-			rowHolder.image.setImageBitmap(bmp);
+			rowHolder.image.setImageBitmap(reminder.getImageAsBitmap());
 
 			// If we have an alarm
 			if (!reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {

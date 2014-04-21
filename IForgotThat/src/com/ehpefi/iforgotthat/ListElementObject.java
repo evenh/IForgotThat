@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
@@ -194,6 +196,10 @@ public class ListElementObject {
 
 	public byte[] getImage() {
 		return image;
+	}
+
+	public Bitmap getImageAsBitmap() {
+		return BitmapFactory.decodeByteArray(image, 0, image.length);
 	}
 
 	public void setListId(int listId) {

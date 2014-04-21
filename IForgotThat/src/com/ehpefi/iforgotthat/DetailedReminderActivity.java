@@ -2,13 +2,17 @@ package com.ehpefi.iforgotthat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Displays a reminder with a bigger image
+ * 
+ * @author Even Holthe
+ * @since 1.0.0
+ */
 public class DetailedReminderActivity extends Activity {
 	// UI
 	private TextView description;
@@ -31,8 +35,6 @@ public class DetailedReminderActivity extends Activity {
 		// Standard initialization
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_detailed_reminder);
-		
-		Log.d(TAG, "Launched " + TAG);
 
 		// Init helper
 		listElementHelper = new ListElementHelper(this);
@@ -52,7 +54,7 @@ public class DetailedReminderActivity extends Activity {
 			reminder = listElementHelper.getListElement(id);
 
 			// Image
-			image.setImageBitmap(BitmapFactory.decodeByteArray(reminder.getImage(), 0, reminder.getImage().length));
+			image.setImageBitmap(reminder.getImageAsBitmap());
 
 			// Description
 			if (!reminder.getDescription().equals("")) {
@@ -67,7 +69,6 @@ public class DetailedReminderActivity extends Activity {
 			} else {
 				alarmText.setText(reminder.getAlarmAsString());
 			}
-
 		}
 	}
 
