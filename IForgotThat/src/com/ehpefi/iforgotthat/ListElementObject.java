@@ -180,7 +180,11 @@ public class ListElementObject {
 	}
 
 	public String getAlarmAsString() {
-		return dtFormat.format(alarm);
+		try {
+			return dtFormat.format(alarm);
+		} catch (NullPointerException npe) {
+			return noAlarmString;
+		}
 	}
 
 	public static String getDateAsString(Date date) {
@@ -231,7 +235,11 @@ public class ListElementObject {
 		try {
 			setAlarm(dtFormat.parse(alarm));
 		} catch (ParseException e) {
-			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
+			try {
+				setAlarm(dtFormat.parse(noAlarmString));
+			} catch (ParseException pe) {
+				Log.e(TAG, "We failed miserably!");
+			}
 		} catch (NullPointerException npe) {
 			try {
 				setAlarm(dtFormat.parse(noAlarmString));
