@@ -317,7 +317,7 @@ public class NewReminderActivity extends Activity {
 
 						// Which activity should be fired?
 						if (!editMode) {
-							intent = new Intent(context, CamTest.class);
+							intent = new Intent(context, CameraActivity.class);
 						} else {
 							intent = new Intent(context, ListWithElementsActivity.class);
 						}

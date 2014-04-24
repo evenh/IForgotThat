@@ -34,15 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ehpefi.iforgotthat.CameraActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.ehpefi.iforgotthat.ListWithElementsActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.ehpefi.iforgotthat.CameraPreview"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -54,7 +46,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.ehpefi.iforgotthat.CamTest"
+            android:name="com.ehpefi.iforgotthat.CameraActivity"
             android:screenOrientation="portrait" >
         </activity>
 
