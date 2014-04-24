@@ -56,7 +56,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_cam_test);
+		setContentView(R.layout.activity_camera);
 
 		// getWindow().setFormat(PixelFormat.UNKNOWN);
 		surfaceView = (SurfaceView) findViewById(R.id.camerapreview);
@@ -118,6 +118,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		captureButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				captureButton.setEnabled(false);
 				// get an image from the camera
 				Log.d(TAG, "Photo in the taking!");
 				
