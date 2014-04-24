@@ -14,7 +14,7 @@
         android:drawablePadding="-40sp"
         android:clickable="true"
         android:gravity="center"
-        android:text=""
+        android:onClick="onBackPressed"
         android:textColor="#fefefe"
         android:textSize="20sp" />
 

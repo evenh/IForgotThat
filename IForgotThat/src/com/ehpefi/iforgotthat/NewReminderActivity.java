@@ -4,9 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +31,10 @@ public class NewReminderActivity extends Activity {
 	// Helper classes for reminders
 	ListHelper listHelper = new ListHelper(this);
 	ListElementHelper listElementHelper = new ListElementHelper(this);
+
+	// Editing
+	private boolean editMode = false;
+	private ListElementObject editObject;
 
 	// UI fields
 	private TextView listName;
@@ -68,6 +70,29 @@ public class NewReminderActivity extends Activity {
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
+			// Check for editing mode
+			if (bundle.getBoolean("editMode")) {
+				editMode = true;
+				editObject = listElementHelper.getListElement(bundle.getInt("id"));
+
+				// Init alarm
+				Log.d(TAG, "Object: " + editObject);
+				if (editObject.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
+					reminder = null;
+				} else {
+					reminder = editObject.getAlarm();
+				}
+
+				reminderString = ListElementObject.getDateAsString(reminder);
+				handleAlarmPreview();
+
+				// Init description
+				descriptionText = editObject.getDescription();
+				description.setText(descriptionText);
+
+				Log.d(TAG, "Editing mode enabled");
+			}
+
 			// Check for list id
 			if (bundle.getInt("listID") > 0) {
 				listID = bundle.getInt("listID");
@@ -80,8 +105,13 @@ public class NewReminderActivity extends Activity {
 				// Set the list name
 				listName.setText(listTitle);
 			}
-			// Recieve image
-			image = bundle.getByteArray("image");
+
+			// Receive image
+			if (!editMode) {
+				image = bundle.getByteArray("image");
+			} else {
+				image = editObject.getImage();
+			}
 
 			if (image != null) {
 				imageHolder.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
@@ -133,20 +163,7 @@ public class NewReminderActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void thrashAndExit(View v) {
-		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(R.string.thrash_current_reminder)
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						onBackPressed();
-					}
-				}).setNegativeButton("No", new android.content.DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				}).create();
-
-		confirmDeletion.show();
+		onBackPressed();
 	}
 
 	/**
@@ -191,7 +208,7 @@ public class NewReminderActivity extends Activity {
 			cal.setTime(reminder);
 
 			datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
-			timePicker.setCurrentHour(cal.get(Calendar.HOUR));
+			timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
 		}
 
@@ -237,7 +254,11 @@ public class NewReminderActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void saveReminder(View view) {
-		Log.i(TAG, "Saving the reminder...");
+		if (!editMode) {
+			Log.i(TAG, "Saving the reminder...");
+		} else {
+			Log.i(TAG, "Updating the reminder...");
+		}
 
 		// What data goes in
 		Log.d(TAG, "List ID: " + listID);
@@ -245,50 +266,75 @@ public class NewReminderActivity extends Activity {
 		Log.d(TAG, "Description: " + descriptionText);
 		Log.d(TAG, "Alarm: " + reminderString);
 
-		int insertedReminder = listElementHelper.createNewListElement(listID, descriptionText, reminderString, image);
+		// If regular mode
+		if (!editMode) {
+			int insertedReminder = listElementHelper.createNewListElement(listID, descriptionText, reminderString, image);
 
-		if (insertedReminder > 0) {
-			// Creates an alarm if necessary
-			Log.d(TAG, "Value of reminderString: " + reminderString);
-			if (reminder != null && !reminderString.equals(ListElementObject.noAlarmString)) {
-				Log.d(TAG, "Setting an alarm for " + reminderString);
-
-				// Temporary calendar object
-				Calendar tmp = Calendar.getInstance();
-				tmp.setTime(reminder);
-				Long time = tmp.getTimeInMillis();
-
-				// Create a new intent for the alarm receiver
-				Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-				alarmIntent.putExtra("id", insertedReminder);
-
-				// Create a new alarm manager
-				AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-				// Set the alarm
-				alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, insertedReminder, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			if (insertedReminder > 0) {
+				// Creates an alarm if necessary
+				ListElementObject inserted = listElementHelper.getListElement(insertedReminder);
+				inserted.registerAlarm(this);
+			} else {
+				Log.e(TAG, "Couldn't save the reminder!");
 			}
-
-			// Go back to the selected list
-			Intent intent = new Intent(this, ListWithElementsActivity.class);
-			// Clear history and pass along the list ID
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			intent.putExtra("listID", listID);
-			intent.putExtra("title", listTitle);
-
-			startActivity(intent);
 		} else {
-			Log.e(TAG, "Couldn't save the reminder!");
+			editObject.setDescription(descriptionText);
+			editObject.setAlarm(reminderString);
+
+			Log.d(TAG, "Updated object: " + editObject.toString());
+			// If updating was a success, register the alarm
+			if (listElementHelper.updateListElement(editObject) != null) {
+				editObject.registerAlarm(this);
+			} else {
+				Log.e(TAG, "Couldn't update object with id #" + editObject.getId());
+			}
 		}
+
+		// Go back to the selected list
+		Intent intent = new Intent(this, ListWithElementsActivity.class);
+		// Clear history and pass along the list ID
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		intent.putExtra("listID", listID);
+		intent.putExtra("title", listTitle);
+
+		startActivity(intent);
+	}
+
+	public void onBackPressed(View v) {
+		onBackPressed();
 	}
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent(this, CamTest.class);
-		intent.putExtra("listID", listID);
-		startActivityForResult(intent, 0);
-		// Transition animation
-		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+		final Context context = this;
+
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(R.string.thrash_current_reminder)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Create an intent
+						Intent intent;
+
+						// Which activity should be fired?
+						if (!editMode) {
+							intent = new Intent(context, CamTest.class);
+						} else {
+							intent = new Intent(context, ListWithElementsActivity.class);
+						}
+
+						intent.putExtra("listID", listID);
+						startActivity(intent);
+						// Transition animation
+						overridePendingTransition(R.anim.left_in, R.anim.right_out);
+					}
+				}).setNegativeButton(R.string.no, new android.content.DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}).create();
+
+		confirmDeletion.show();
 	}
 
 }

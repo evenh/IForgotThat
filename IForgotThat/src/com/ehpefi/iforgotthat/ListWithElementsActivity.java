@@ -141,8 +141,22 @@ public class ListWithElementsActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void editElement(View button) {
-		// TODO: Implement this
 		Log.d(TAG, "Edit requested!");
+
+		// Get object to be modified
+		ListElementObject editObject = listAdapter.getItem(position);
+		
+		// Create a new intent
+		Intent intent = new Intent(this, NewReminderActivity.class);
+		intent.putExtra("editMode", true);
+		intent.putExtra("id", editObject.getId());
+		intent.putExtra("listID", editObject.getListId());
+
+		// Fire off the new intent
+		startActivity(intent);
+
+		// Transition animation
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
 	/**

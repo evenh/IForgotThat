@@ -283,7 +283,8 @@ public class ListElementObject {
 			// Alarm manager
 			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-			// Set the alarm
+			// Cancel any previous alarms and set a new alarm
+			alarmManager.cancel(PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 			alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
 			Log.d(TAG, "Enabled alarm for reminder #" + getId());

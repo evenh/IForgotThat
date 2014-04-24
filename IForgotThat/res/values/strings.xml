@@ -39,7 +39,7 @@
     <string name="title_activity_camera">CameraActivity</string>
     <!-- NewReminderActivity -->
     <string name="are_you_sure">Are you sure?</string>
-    <string name="thrash_current_reminder">Do you want to trash this reminder?</string>
+    <string name="thrash_current_reminder">If you go back, you\'ll lose any changes. OK?</string>
     <string name="remember_hint">What do you want to remember?</string>
     <string name="no_alarm">No alarm</string>
     <string name="title_activity_cam_test">CamTest</string>

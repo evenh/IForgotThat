@@ -28,6 +28,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 		// Get the reminder
 		ListElementHelper leh = new ListElementHelper(context);
 		ListElementObject reminder = leh.getListElement(extras.getInt("id"));
+
+		if (reminder.isCompleted()) {
+			Log.i(TAG, "This reminders's alarm will not be triggered, because it is marked as done. ID #" + reminder.getId());
+			return;
+		}
+
 		String description = (reminder.getDescription().equals("") ? context.getResources().getString(R.string.has_no_description) : reminder.getDescription());
 
 		// Get a notification manager
