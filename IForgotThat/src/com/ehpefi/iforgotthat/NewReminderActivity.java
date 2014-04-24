@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -49,6 +50,7 @@ public class NewReminderActivity extends Activity {
 	private Date reminder;
 	private String reminderString;
 	private byte[] image;
+	private ImageButton addAlarmButton;
 
 	// Used for logging
 	private static final String TAG = "NewReminderActivity";
@@ -64,6 +66,7 @@ public class NewReminderActivity extends Activity {
 		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
 		alarmPreview = (TextView) findViewById(R.id.alarm_preview);
 
+		addAlarmButton = (ImageButton) findViewById(R.id.btn_addAlarm);
 		// Set the description to an empty string by default
 		descriptionText = "";
 
@@ -186,6 +189,7 @@ public class NewReminderActivity extends Activity {
 		Log.d(TAG, "A description entered: " + descriptionText);
 	}
 
+
 	/**
 	 * Shows an AlertDialog containing a date and time picker
 	 * 
@@ -193,6 +197,7 @@ public class NewReminderActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void showAlarmDialog(View view) {
+
 		// Get the custom date+time dialog
 		final LayoutInflater inflater = getLayoutInflater();
 		final View dateTimeView = inflater.inflate(R.layout.datetime_dialog, null);
@@ -214,8 +219,10 @@ public class NewReminderActivity extends Activity {
 
 		AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
 				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+
 						// Get the selected date + time
 						Calendar cal = Calendar.getInstance();
 						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
@@ -245,6 +252,7 @@ public class NewReminderActivity extends Activity {
 				}).create();
 
 		alarmDialog.show();
+
 	}
 
 	/**
