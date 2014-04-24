@@ -3,8 +3,13 @@ package com.ehpefi.iforgotthat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -255,5 +260,34 @@ public class ListElementObject {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	/**
+	 * Schedules an alarm for the currenct object
+	 * 
+	 * @param context The calling class
+	 * @since 1.0.0
+	 */
+	public void registerAlarm(Context context) {
+		// If we have a valid alarm
+		if (alarm != null && !getAlarmAsString().equals(noAlarmString)) {
+			// Temporary calendar object
+			Calendar tmp = Calendar.getInstance();
+			tmp.setTime(alarm);
+			Long time = tmp.getTimeInMillis();
+
+			// Create a new intent for the alarm receiver
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			alarmIntent.putExtra("id", getId());
+
+			// Alarm manager
+			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+			// Set the alarm
+			alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+			Log.d(TAG, "Enabled alarm for reminder #" + getId());
+		}
+
 	}
 }
