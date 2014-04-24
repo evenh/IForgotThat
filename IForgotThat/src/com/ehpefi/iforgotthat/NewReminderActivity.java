@@ -322,8 +322,16 @@ public class NewReminderActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		final Context context = this;
+		int message;
 
-		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(R.string.thrash_current_reminder)
+		// Set different messages, based on the context
+		if (editMode) {
+			message = R.string.thrash_current_changes;
+		} else {
+			message = R.string.thrash_current_reminder;
+		}
+
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(R.string.are_you_sure).setMessage(message)
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
