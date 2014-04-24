@@ -60,6 +60,7 @@
         android:layout_weight="1"
         android:listSelector="#00000000"
         swipe:swipeBackView="@+id/back"
+        android:isScrollContainer="false" 
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeDrawableChecked="@drawable/choice_selected"
         swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
