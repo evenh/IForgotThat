@@ -34,6 +34,7 @@
     <string name="has_no_reminders">No reminders</string>
     <string name="has_no_description">No description</string>
     <string name="has_no_alarm">No alarm specified</string>
+    <string name="list_belonging">Belong to list \'%s\'</string>
     <!-- Other -->
     <string name="title_activity_sub_list">SubListActivity</string>
     <string name="title_activity_camera">CameraActivity</string>

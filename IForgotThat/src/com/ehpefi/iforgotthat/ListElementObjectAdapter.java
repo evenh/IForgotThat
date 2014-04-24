@@ -21,6 +21,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	// Our data
 	private ArrayList<ListElementObject> elements;
 	private ListElementHelper listElementHelper;
+	private ListHelper listHelper;
 
 	// Context and data
 	public Context context;
@@ -61,6 +62,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		ImageView image;
 		TextView description;
 		TextView alarm;
+		TextView belongingList;
 
 		// Back
 		ImageButton thrashButton;
@@ -71,6 +73,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			image = (ImageView) row.findViewById(R.id.reminderImage);
 			description = (TextView) row.findViewById(R.id.lblDescription);
 			alarm = (TextView) row.findViewById(R.id.lblAlarm);
+			belongingList = (TextView) row.findViewById(R.id.lblListName);
 			thrashButton = (ImageButton) row.findViewById(R.id.btn_trash_reminder);
 			editButton = (ImageButton) row.findViewById(R.id.btn_edit_reminder);
 			completeButton = (ImageButton) row.findViewById(R.id.btn_complete_reminder);
@@ -104,6 +107,9 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		// Get the current object
 		reminder = getItem(position);
 
+		// Hide the list name
+		rowHolder.belongingList.setVisibility(View.GONE);
+
 		if (reminder != null) {
 			rowHolder.image.setImageBitmap(reminder.getImageAsBitmap());
 
@@ -115,6 +121,17 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			// If we have a description
 			if (!reminder.getDescription().equals("")) {
 				rowHolder.description.setText(reminder.getDescription());
+			}
+
+			// If the item is marked as complete
+			if (reminder.isCompleted()) {
+				// Hide the 'edit' button
+				rowHolder.editButton.setVisibility(View.GONE);
+				// Show the list name
+				listHelper = new ListHelper(context);
+				ListObject list = listHelper.getList(reminder.getListId());
+				rowHolder.belongingList.setText(String.format(context.getResources().getString(R.string.list_belonging), list.getTitle()));
+				rowHolder.belongingList.setVisibility(View.VISIBLE);
 			}
 		}
 
