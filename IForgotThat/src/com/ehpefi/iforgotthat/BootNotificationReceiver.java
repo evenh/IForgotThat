@@ -68,7 +68,7 @@ public class BootNotificationReceiver extends BroadcastReceiver {
 							alarmIntent.putExtra("id", reminder.getId());
 
 							// Set the alarm
-							alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, 1, alarmIntent, PendingIntent.FLAG_ONE_SHOT));
+							alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, reminder.getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
 							Log.d(TAG, "Added alarm for reminder with id " + reminder.getId());
 						}

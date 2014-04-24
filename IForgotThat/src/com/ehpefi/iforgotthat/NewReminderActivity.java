@@ -249,7 +249,8 @@ public class NewReminderActivity extends Activity {
 
 		if (insertedReminder > 0) {
 			// Creates an alarm if necessary
-			if (!reminderString.equals(ListElementObject.noAlarmString)) {
+			Log.d(TAG, "Value of reminderString: " + reminderString);
+			if (reminder != null && !reminderString.equals(ListElementObject.noAlarmString)) {
 				Log.d(TAG, "Setting an alarm for " + reminderString);
 
 				// Temporary calendar object
@@ -265,7 +266,7 @@ public class NewReminderActivity extends Activity {
 				AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
 				// Set the alarm
-				alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+				alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, insertedReminder, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 			}
 
 			// Go back to the selected list

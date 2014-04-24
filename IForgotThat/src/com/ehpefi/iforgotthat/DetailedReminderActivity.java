@@ -24,13 +24,13 @@ public class DetailedReminderActivity extends Activity {
 	private int id;
 	private int listID;
 	private ListElementObject reminder;
-	
+
 	// Helper
 	private ListElementHelper listElementHelper;
 
 	// For logging
 	public static final String TAG = "DetailedReminderActivity";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Standard initialization
@@ -45,8 +45,13 @@ public class DetailedReminderActivity extends Activity {
 		image = (ImageView) findViewById(R.id.reminder_image);
 		alarmText = (TextView) findViewById(R.id.alarm_text);
 
+		onNewIntent(getIntent());
+	}
+
+	@Override
+	public void onNewIntent(Intent intent) {
 		// Get the intent and its content
-		Bundle bundle = getIntent().getExtras();
+		Bundle bundle = intent.getExtras();
 
 		// Get extras
 		if (bundle != null) {
@@ -64,7 +69,7 @@ public class DetailedReminderActivity extends Activity {
 			} else {
 				description.setText(R.string.has_no_description);
 			}
-			
+
 			// Alarm
 			if (reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
 				alarmText.setVisibility(View.GONE);
