@@ -292,10 +292,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		camera.stopPreview();
-		camera.release();
-		camera = null;
-		isPreviewActive = false;
+		try {
+			camera.stopPreview();
+			camera.release();
+			camera = null;
+			isPreviewActive = false;
+		} catch (NullPointerException npe) {
+			Log.e(TAG, "camera is NULL!");
+		}
 	}
 
 	/**
