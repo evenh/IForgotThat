@@ -332,6 +332,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			}
 		} catch (NullPointerException npe) {
 			Log.w(TAG, "Couldn't toggle the flash, camera is NULL!");
+		} catch (RuntimeException re) {
+			Log.w(TAG, "Couldn't set parameters for the camera!");
+			onBackPressed();
 		}
 	}
 
