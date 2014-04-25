@@ -10,35 +10,39 @@
     <string name="save">Save</string>
     <!-- Main activity -->
     <string name="add_new_list">Add new list</string>
-    <string name="add_new_list_hint">What is the name of your list?</string>
-    <string name="rename_list_title">Renaming \'%s\'</string>
+    <string name="add_new_list_hint">Add new list</string>
+    <string name="rename_list_title">Rename \'%s\'</string>
     <string name="rename_list_hint">The new name of your list</string>
     <string name="rename_list_okbutton">Rename</string>
     <string name="has_no_lists">No lists</string>
     <string name="completed_items">Completed items</string>
-    <string name="list_name_empty">Please enter a valid name</string>
-    <string name="list_already_exists">The list \'%s\' already exists</string>
+    <string name="list_name_empty">List not created</string>
+    <string name="list_already_exists">\'%s\' already exists</string>
     <string name="list_creation_ok">List \'%s\' created</string>
     <string name="list_creation_fail">Couldn\'t create the list \'%s\'</string>
-    <string name="list_deletion_title">Delete list</string>
-    <string name="list_deletion_confirm">Do you really want to delete the list \'%s\' and all of its reminders?</string>
+    <string name="list_deletion_title">Delete list?</string>
+    <string name="list_deletion_confirm">All of it\'s content will be lost</string>
     <string name="list_deletion_ok">List \'%s\' deleted</string>
     <string name="list_deletion_fail">Couldn\'t delete the list \'%s\'</string>
-    <string name="list_rename_ok">List renamed from \'%1$s\' to \'%2$s\'</string>
+    <string name="list_rename_ok">Listname updated</string>
     <string name="list_rename_fail">Couldn\'t rename the list \'%s\'</string>
     <string name="list_menu_title">Edit \'%s\'</string>
     <string name="list_menu_rename">Rename</string>
     <string name="list_menu_delete">Delete</string>
     <!-- ListWithElementsActivity -->
-    <string name="list_elements_add_new">Add a new reminder</string>
+    <string name="list_elements_add_new">Add new reminder</string>
     <string name="has_no_reminders">No reminders</string>
     <string name="has_no_description">No description</string>
     <string name="has_no_alarm">No alarm specified</string>
     <string name="list_belonging">List: %s</string>
     <!-- NewReminderActivity -->
     <string name="are_you_sure">Are you sure?</string>
+    <string name="discard_changes">Discard changes?</string>
     <string name="thrash_current_reminder">Take a new photo?</string>
-    <string name="thrash_current_changes">You\'ll lose any changes?</string>
-    <string name="remember_hint">What do you want to remember?</string>
+    <string name="thrash_current_changes">All changes will be lost</string>
+    <string name="confirm_discard_changes">All changes will be lost</string>
+    <string name="remember_hint">Description (optional)</string>
     <string name="no_alarm">No alarm</string>
+    <string name="trash_photo">Trash this photo?</string>
+    <string name="confirm_trash_photo">Photo will be lost</string>
 </resources>
