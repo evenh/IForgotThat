@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ddd"
+    android:background="@drawable/background_texture"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
@@ -23,9 +23,9 @@
             android:layout_marginRight="8dp"
             android:clickable="true"
             android:drawableRight="@drawable/ic_action_new"
+            android:drawableLeft="@drawable/iforgotthatlogo"
             android:onClick="addNewListClicked"
-            android:text="@string/add_new_list"
-            android:textColor="#ddd"
+            android:textColor="#ddd" 
             android:textSize="25sp" />
 
         <EditText
@@ -45,7 +45,7 @@
         android:id="@+id/text_has_no_lists"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#ddd"
+        android:background="@drawable/background_texture"
         android:gravity="center"
         android:text="@string/has_no_lists"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -60,6 +60,7 @@
         android:layout_weight="1"
         android:listSelector="#00000000"
         swipe:swipeBackView="@+id/back"
+        android:isScrollContainer="false" 
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeDrawableChecked="@drawable/choice_selected"
         swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
@@ -71,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/menu_bottom_gradient"
+        android:background="@drawable/bottom_navigation_selector"
         android:onClick="showCompletedItems"
         android:text="@string/completed_items"
         android:textColor="#ddd" />

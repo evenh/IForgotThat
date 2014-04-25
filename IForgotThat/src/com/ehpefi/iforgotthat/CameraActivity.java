@@ -1,11 +1,13 @@
 package com.ehpefi.iforgotthat;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -17,40 +19,51 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
- * Responsible for capturing images for new list elements
+ * Handles the camera
  * 
  * @author Per Erik Finstad
- * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
-public class CameraActivity extends Activity {
-	ListHelper listHelper = new ListHelper(this);
-
-	private static final String TAG = "CameraActivity";
-	protected static final String MEDIA_TYPE_IMAGE = null;
-	private Camera mCamera;
-	private CameraPreview mPreview;
-	private PictureCallback mPicture;
-
+public class CameraActivity extends Activity implements SurfaceHolder.Callback {
+	// UI elements
+	private TextView title;
 	private ImageButton captureButton;
 	private ImageButton flashButton;
-	private int listID;
 	private String listTitle;
-	private TextView listName;
 
-	private TextView title;
+	// Camera
+	private Camera camera;
+	private SurfaceView surfaceView;
+	private SurfaceHolder surfaceHolder;
+	boolean isPreviewActive = false;
+	private PictureCallback mPicture;
+
+	// Helper class
+	ListHelper listHelper = new ListHelper(this);
+	private int listID;
+
+	// Used for logging
+	private static final String TAG = "CAMERA";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
+
+		// getWindow().setFormat(PixelFormat.UNKNOWN);
+		surfaceView = (SurfaceView) findViewById(R.id.camerapreview);
+		surfaceHolder = surfaceView.getHolder();
+		surfaceHolder.addCallback(this);
+
+		camera = getCameraInstance();
 
 		// Check for incoming data and set list title
 		Bundle bundle = getIntent().getExtras();
@@ -74,17 +87,18 @@ public class CameraActivity extends Activity {
 		captureButton = (ImageButton) findViewById(R.id.button_capture);
 		flashButton = (ImageButton) findViewById(R.id.button_flash);
 
-		// Create an instance of Camera
-		mCamera = getCameraInstance();
-
-		// Create preview view and set it as the content of our activity.
-		mPreview = new CameraPreview(this, mCamera);
-		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-		preview.addView(mPreview);
-
+		/**
+		 * Callback function to get the capture image
+		 * 
+		 * @param byte[] data, Camere camera
+		 * @since 1.0.0
+		 * 
+		 */
 		mPicture = new PictureCallback() {
 			@Override
 			public void onPictureTaken(byte[] data, Camera camera) {
+
+				Log.d(TAG, "Picture taken! Compressing image and passing it on to NewReminderActivity");
 				// Compress the data
 				data = compressImage(data);
 
@@ -93,40 +107,27 @@ public class CameraActivity extends Activity {
 			}
 		};
 
-		// capture image button listener
-		ImageButton captureButton = (ImageButton) findViewById(R.id.button_capture);
+		/**
+		 * Method to take the picture
+		 * 
+		 * @param View v
+		 * @since 1.0.0
+		 */
+		// Handle clicks for the captureButton
 		captureButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				captureButton.setEnabled(false);
 				// get an image from the camera
 				Log.d(TAG, "Photo in the taking!");
 
-				// Hack for the Google Nexus S
-				if (Build.MODEL.equals("Nexus S") && mCamera.getParameters().getFlashMode().equals(Parameters.FLASH_MODE_ON)) {
-					Log.i(TAG, "Google Nexus S detected, applying flash hack!");
-					Camera.Parameters tempParam = mCamera.getParameters();
-					tempParam.setFlashMode(Parameters.FLASH_MODE_TORCH);
-					mCamera.setParameters(tempParam);
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					mCamera.takePicture(null, null, mPicture);
-
-					try {
-						Thread.sleep(500);
-						tempParam.setFlashMode(Parameters.FLASH_MODE_ON);
-						mCamera.setParameters(tempParam);
-					} catch (InterruptedException ie) {
-						ie.printStackTrace();
-					} catch (Exception e) {
-						Log.e(TAG, "Exception while setting the parameters", e);
-					}
-
-				} else {
-					mCamera.takePicture(null, null, mPicture);
+				try {
+					camera.takePicture(null, null, mPicture);
+					Log.d(TAG, "Picture captured");
+				} catch (NullPointerException npe) {
+					Log.e(TAG, "camera is NULL! No picture taken!");
 				}
+
 			}
 		});
 
@@ -136,7 +137,7 @@ public class CameraActivity extends Activity {
 	 * Fires off the new intent to NewReminderActivity
 	 * 
 	 * @param image A compressed image as a byte array
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void createNewReminder(byte[] image) {
 		Intent intent = new Intent(this, NewReminderActivity.class);
@@ -150,51 +151,75 @@ public class CameraActivity extends Activity {
 		} else {
 			intent.putExtra("listID", 0);
 		}
-		
 
 		startActivity(intent);
 
-
-		//Flip transition
+		// Flip transition
 		overridePendingTransition(R.anim.flip_from_middle, R.anim.flip_to_middle);
+
 	}
 
 	/**
-	 * Compresses a raw image from the camera to JPEG with 70% quality
+	 * Method for check if the orientation of the surface changes
 	 * 
-	 * @param input A raw image in a byte array
-	 * @return A byte array containing the compressed image
-	 * @since 1.0
+	 * @param SurfaceHolder holder, int format, int width, int height
+	 * @since 1.0.0
+	 * 
 	 */
-	private byte[] compressImage(byte[] input) {
-		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
 
-		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
-		ByteArrayOutputStream blob = new ByteArrayOutputStream();
-
-		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-
-		if (Build.MODEL.equals("Nexus S") && display.getRotation() == Surface.ROTATION_0) {
-			Log.i(TAG, "Nexus S detected, applying rotation hack!");
-			Matrix matrix = new Matrix();
-			matrix.postRotate(90);
-			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
-			rotated.compress(Bitmap.CompressFormat.JPEG, 70, blob);
-		} else {
-			original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		// If preview is active, stop it
+		if (isPreviewActive) {
+			camera.stopPreview();
+			isPreviewActive = false;
 		}
 
-		byte[] compressed = blob.toByteArray();
-		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");
+		// If camera is not null
+		if (camera != null) {
+			// Try to start the preview
+			try {
+				camera.setPreviewDisplay(surfaceHolder);
+				camera.startPreview();
+				isPreviewActive = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-		return compressed;
+			// FIX/hack for rotation/stretch issue on NEXUS S
+			if (Build.MODEL.equals("Nexus S") && holder.getSurface() == null) {
+				// preview surface does not exist
+				return;
+			}
+
+			// Stop preview before making changes
+			try {
+				camera.stopPreview();
+			} catch (Exception e) {
+				// ignore: tried to stop a non-existent preview
+			}
+
+			// make any resize, rotate or reformatting changes here
+			if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+				camera.setDisplayOrientation(90);
+			} else {
+				camera.setDisplayOrientation(0);
+			}
+			// start preview with new settings
+			try {
+				camera.setPreviewDisplay(holder);
+				camera.startPreview();
+
+			} catch (Exception e) {
+				Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+			}
+		}
 	}
 
 	/**
-	 * Gets an instance of the camera
+	 * Gets an instance of the Camera
 	 * 
-	 * @return An instance of camera if successful, null otherwise
-	 * @since 1.0
+	 * @return An instance of Camera, may be null
 	 */
 	public static Camera getCameraInstance() {
 		Camera c = null;
@@ -228,33 +253,95 @@ public class CameraActivity extends Activity {
 	}
 
 	/**
+	 * Compresses a raw image from the camera to JPEG with 70% quality
+	 * 
+	 * @param input A raw image in a byte array
+	 * @return A byte array containing the compressed image
+	 * @since 1.0.0
+	 */
+	private byte[] compressImage(byte[] input) {
+		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
+
+		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
+		ByteArrayOutputStream blob = new ByteArrayOutputStream();
+
+		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+
+		if (Build.MODEL.equals("Nexus S") && display.getRotation() == Surface.ROTATION_0) {
+			Log.i(TAG, "Nexus S detected, applying rotation hack!");
+			Matrix matrix = new Matrix();
+			matrix.postRotate(90);
+			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+			rotated.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+		} else {
+			original.compress(Bitmap.CompressFormat.JPEG, 70, blob);
+		}
+
+		byte[] compressed = blob.toByteArray();
+		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");
+
+		return compressed;
+	}
+
+	/**
+	 * Method for release the camera and stop it from using the surface
+	 * 
+	 * @param Surfaceholder holder
+	 * @since 1.0.0
+	 */
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		try {
+			camera.stopPreview();
+			camera.release();
+			camera = null;
+			isPreviewActive = false;
+		} catch (NullPointerException npe) {
+			Log.e(TAG, "camera is NULL!");
+		}
+	}
+
+	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void flashOnOff(View v) {
-		Camera.Parameters param = mCamera.getParameters();
-		List<String> flashModes = param.getSupportedFlashModes();
+		try {
+			Camera.Parameters param = camera.getParameters();
+			List<String> flashModes = param.getSupportedFlashModes();
 
-		if (flashModes != null) {
-			String currentFlashMode = param.getFlashMode();
+			if (flashModes != null) {
+				String currentFlashMode = param.getFlashMode();
 
-			if (currentFlashMode.equals(Parameters.FLASH_MODE_OFF)) {
-				currentFlashMode = Parameters.FLASH_MODE_ON;
-			} else {
-				currentFlashMode = Parameters.FLASH_MODE_OFF;
+				if (currentFlashMode.equals(Parameters.FLASH_MODE_OFF)) {
+					currentFlashMode = Parameters.FLASH_MODE_ON;
+					flashButton.setImageResource(R.drawable.ic_action_flash_on);
+					Log.d(TAG, "Flash on!");
+
+				} else {
+					currentFlashMode = Parameters.FLASH_MODE_OFF;
+					flashButton.setImageResource(R.drawable.ic_action_flash_off);
+					Log.d(TAG, "Flash off!");
+				}
+
+				param.setFlashMode(currentFlashMode);
+				camera.setParameters(param);
 			}
-
-			param.setFlashMode(currentFlashMode);
-			mCamera.setParameters(param);
+		} catch (NullPointerException npe) {
+			Log.w(TAG, "Couldn't toggle the flash, camera is NULL!");
+		} catch (RuntimeException re) {
+			Log.w(TAG, "Couldn't set parameters for the camera!");
+			onBackPressed();
 		}
 	}
 
 	/**
 	 * Goes back to the MainActivity
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed
@@ -269,4 +356,9 @@ public class CameraActivity extends Activity {
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
 	}
-}// end of class CameraActivity
+
+	@Override
+	public void surfaceCreated(SurfaceHolder sh) {
+	}
+
+}

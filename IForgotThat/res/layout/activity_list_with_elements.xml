@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_texture"
     android:orientation="vertical"
     android:padding="0dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -14,7 +15,7 @@
         android:id="@+id/listName"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="@drawable/menu_top_gradient"
+        android:background="@drawable/top_navigation_selector"
         android:clickable="true"        
         android:paddingLeft="5dp"
         android:drawableLeft="@drawable/ic_action_back"
@@ -51,20 +52,21 @@
         swipe:swipeMode="left" />
 
     <GridLayout
-        android:layout_width="match_parent"
         android:id="@+id/newListElementHolder"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/menu_bottom_gradient"
+        android:background="@drawable/bottom_navigation_selector"
+        android:clickable="true"
         android:columnCount="1" >
 
         <ImageButton
             android:id="@+id/addNewListElement"
-            android:layout_width="80dp"
+            android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_column="0"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_row="0"
-            android:background="@drawable/menu_bottom_gradient"
+            android:background="@drawable/bottom_navigation_selector"
             android:onClick="newReminder"
             android:src="@drawable/ic_action_new" />
     </GridLayout>

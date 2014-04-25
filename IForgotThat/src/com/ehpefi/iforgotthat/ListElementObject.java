@@ -3,15 +3,23 @@ package com.ehpefi.iforgotthat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 /**
  * Contains information about a specific reminder
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListElementObject {
 	private int id;
@@ -37,10 +45,9 @@ public class ListElementObject {
 	 * @param alarm A Date object
 	 * @param completed Whether this item is checked off as complete or not
 	 * @param image A camera image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
-	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed,
-			byte[] image) {
+	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed, byte[] image) {
 		this.id = id;
 		this.listId = listId;
 		this.description = description;
@@ -60,10 +67,9 @@ public class ListElementObject {
 	 * @param alarm A date (String) in the format of "yyyy-MM-dd HH:mm:ss"
 	 * @param completed Whether this item is checked off as complete or not
 	 * @param image A camera image
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
-	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed,
-			byte[] image) {
+	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed, byte[] image) {
 		this.id = id;
 		this.listId = listId;
 		this.description = description;
@@ -146,11 +152,9 @@ public class ListElementObject {
 	@Override
 	public String toString() {
 		boolean hasImage = (image == null ? false : true);
-		
-		return String.format(
-				"ListElementObject [id=%s, listId=%s, description=%s, created=%s, alarm=%s, completed=%s hasImage=%s]",
-				id, listId, description, getCreatedAsString(), getAlarmAsString(), completed,
-				Boolean.toString(hasImage));
+
+		return String.format("ListElementObject [id=%s, listId=%s, description=%s, created=%s, alarm=%s, completed=%s hasImage=%s]", id, listId, description, getCreatedAsString(),
+				getAlarmAsString(), completed, Boolean.toString(hasImage));
 	}
 
 	public int getId() {
@@ -178,7 +182,11 @@ public class ListElementObject {
 	}
 
 	public String getAlarmAsString() {
-		return dtFormat.format(alarm);
+		try {
+			return dtFormat.format(alarm);
+		} catch (NullPointerException npe) {
+			return noAlarmString;
+		}
 	}
 
 	public static String getDateAsString(Date date) {
@@ -194,6 +202,10 @@ public class ListElementObject {
 
 	public byte[] getImage() {
 		return image;
+	}
+
+	public Bitmap getImageAsBitmap() {
+		return BitmapFactory.decodeByteArray(image, 0, image.length);
 	}
 
 	public void setListId(int listId) {
@@ -225,7 +237,11 @@ public class ListElementObject {
 		try {
 			setAlarm(dtFormat.parse(alarm));
 		} catch (ParseException e) {
-			Log.e(TAG, "Could not interepet the incoming String date '" + alarm + "' to a Date object!", e);
+			try {
+				setAlarm(dtFormat.parse(noAlarmString));
+			} catch (ParseException pe) {
+				Log.e(TAG, "We failed miserably!");
+			}
 		} catch (NullPointerException npe) {
 			try {
 				setAlarm(dtFormat.parse(noAlarmString));
@@ -241,5 +257,55 @@ public class ListElementObject {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	/**
+	 * Schedules an alarm for the currenct object
+	 * 
+	 * @param context The calling class
+	 * @since 1.0.0
+	 */
+	public void registerAlarm(Context context) {
+		// If we have a valid alarm
+		if (alarm != null && !getAlarmAsString().equals(noAlarmString)) {
+			// Temporary calendar object
+			Calendar tmp = Calendar.getInstance();
+			tmp.setTime(alarm);
+			Long time = tmp.getTimeInMillis();
+
+			// Create a new intent for the alarm receiver
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			alarmIntent.putExtra("id", getId());
+
+			// Alarm manager
+			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+			// Cancel any previous alarms and set a new alarm
+			alarmManager.cancel(PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+			Log.d(TAG, "Enabled alarm for reminder #" + getId());
+		}
+	}
+
+	public void cancelAlarm(Context context) {
+		// If we have a valid alarm
+		if (alarm != null && !getAlarmAsString().equals(noAlarmString)) {
+			// Create a new intent for the alarm receiver
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			alarmIntent.putExtra("id", getId());
+
+			// Alarm manager
+			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			// Cancel this alarm
+			alarmManager.cancel(PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			notificationManager.cancel(getId());
+
+			Log.d(TAG, "Canceled alarm for reminder #" + getId());
+		} else {
+			Log.d(TAG, "No alarm to cancel for reminder #" + getId());
+		}
 	}
 }

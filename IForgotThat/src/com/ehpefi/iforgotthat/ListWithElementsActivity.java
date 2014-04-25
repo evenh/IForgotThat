@@ -18,7 +18,7 @@ import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
  * 
  * @author Per Erik Finstad
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 public class ListWithElementsActivity extends Activity {
 	// UI Elements
@@ -66,6 +66,8 @@ public class ListWithElementsActivity extends Activity {
 			if (listTitle == null || listTitle.equals("")) {
 				listTitle = listHelper.getList(listID).getTitle();
 			}
+		} else {
+			Log.e(TAG, "Fatal error: no data recieved!");
 		}
 
 		// Get TextView for the list title and set its name
@@ -85,6 +87,22 @@ public class ListWithElementsActivity extends Activity {
 				position = pos;
 				Log.d(TAG, "Updated list position to " + pos);
 			}
+
+			// For clicks on the reminders
+			@Override
+			public void onClickFrontView(int position) {
+				// Get the object for the clicked reminder
+				ListElementObject reminder = (ListElementObject) remindersView.getItemAtPosition(position);
+
+				// Create an intent and pass the object and list id
+				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
+				intent.putExtra("id", reminder.getId());
+
+				startActivity(intent);
+
+				// Transition smoothly :)
+				overridePendingTransition(R.anim.right_in, R.anim.left_out);
+			}
 		});
 
 		showElements();
@@ -94,7 +112,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Triggers a delete operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void deleteElement(View button) {
 		Log.d(TAG, "Deletion requested for list element in position: " + position);
@@ -120,25 +138,38 @@ public class ListWithElementsActivity extends Activity {
 	 * Triggers an edit operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void editElement(View button) {
-		// TODO: Implement this
 		Log.d(TAG, "Edit requested!");
+
+		// Get object to be modified
+		ListElementObject editObject = listAdapter.getItem(position);
+		
+		// Create a new intent
+		Intent intent = new Intent(this, NewReminderActivity.class);
+		intent.putExtra("editMode", true);
+		intent.putExtra("id", editObject.getId());
+		intent.putExtra("listID", editObject.getListId());
+
+		// Fire off the new intent
+		startActivity(intent);
+
+		// Transition animation
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
 	/**
 	 * Triggers a completion operation of the current reminder
 	 * 
 	 * @param button The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void completeElement(View button) {
 		Log.d(TAG, "Completion requested for list element in position: " + position);
 
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
-
 
 		// Remove the list element from the array and mark the reminder as complete
 		elements.remove(position);
@@ -164,7 +195,7 @@ public class ListWithElementsActivity extends Activity {
 	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items"
 	 * special list
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	private void showElements() {
 		// If we are in the "complete" list, hide the new reminder button
@@ -188,7 +219,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Goes back to the MainActivity
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void backToLists(View v) {
 		// Calls the method that is called when the back button is pressed
@@ -207,10 +238,10 @@ public class ListWithElementsActivity extends Activity {
 	 * Opens the CameraActivity class for creating
 	 * 
 	 * @param v The view
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void newReminder(View v) {
-		Intent intent = new Intent(getApplicationContext(), CamTest.class);
+		Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
 
 		intent.putExtra("listID", listID);
 		startActivity(intent);

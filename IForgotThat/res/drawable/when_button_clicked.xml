@@ -4,8 +4,8 @@
 	<!--Styling for how the button should appear when clicked -->
 	<gradient   
 	    android:angle="270"
-	    android:startColor="#789"
-	    android:endColor="#567"/>
+	    android:startColor="#666"
+	    android:endColor="#888"/>
 	
 		<!-- roundedcorner -->
 	<corners    

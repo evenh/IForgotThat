@@ -14,7 +14,7 @@ import android.util.Log;
  * Performs CRUD operations on lists in the 'I Forgot This' app.
  * 
  * @author Even Holthe
- * @since 1.0
+ * @since 1.0.0
  */
 
 public class ListHelper extends SQLiteOpenHelper {
@@ -35,7 +35,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Constructs a new instance of the ListHelper class
 	 * 
 	 * @param context The context in which the new instance should be created, usually 'this'.
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListHelper(Context context) {
 		// Call the super class' constructor
@@ -88,7 +88,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Gets the total number of lists in the database
 	 *
 	 * @return The number of lists in the database
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public int numberOfLists() {
 		// Create a pointer to the database
@@ -110,7 +110,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param listTitle The title of the list
 	 * @return The id of the inserted list on success, 0 on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public int createNewList(String listTitle) {
 		// Create a pointer to the database
@@ -158,7 +158,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * Drops the list table completely (including all data) and re-creates a blank list table - use for
 	 * testing/debugging purposes only!
 	 * 
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public void dropAndRecreateListTable() {
 		// Create a pointer to the database
@@ -184,7 +184,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param OrderBy A static string from the ListHelper class (COL_ID, COL_TITLE, COL_TIMESTAMP)
 	 * @return A list of to do lists on success, an empty ArrayList on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ArrayList<ListObject> getAllLists(String OrderBy) {
 		// Create an ArrayList to hold our list elements
@@ -222,7 +222,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The id of the list from the database
 	 * @return A ListObject if successful, null on failure
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public ListObject getList(int id) {
 		// Create a pointer to the database
@@ -268,7 +268,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * @param id The id of the list to be deleted
 	 * @param context The context which is responsible for deleting
 	 * @return True if success, false otherwise
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean deleteList(int id, Context context) {
 		// Create a pointer to the database
@@ -310,7 +310,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * @param id The id of the existing list
 	 * @param newTitle The new title of the existing list
 	 * @return True if success, false otherwise
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean renameList(int id, String newTitle) {
 		// Create a pointer to the database
@@ -346,7 +346,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param title The list title to check if is unique (case insensitive)
 	 * @return True if the title is unique (not used), false otherwise
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean doesListWithTitleExist(String title) {
 		// Create a pointer to the database
@@ -380,7 +380,7 @@ public class ListHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param id The list id
 	 * @return True if the list exists, otherwise false
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public boolean doesListWithIdExist(int id) {
 		// Create a pointer to the database
