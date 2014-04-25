@@ -12,6 +12,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class ListElementHelper extends SQLiteOpenHelper {
+	// Context
+	private final Context context;
+
 	// Important constants for handling the database
 	private static final int VERSION = 1;
 	private static final String DATABASE_NAME = "ift.db";
@@ -40,6 +43,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	public ListElementHelper(Context context) {
 		// Call the super class' constructor
 		super(context, DATABASE_NAME, null, VERSION);
+		this.context = context;
 	}
 
 	@Override
@@ -169,6 +173,12 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 		// Log that we are deleting a list element
 		Log.i(TAG, "Deletion of list element with id " + id + " requested");
+
+		// Cancel the alarm if it exists
+		ListElementHelper helper = new ListElementHelper(context);
+		ListElementObject reminder = helper.getListElement(id);
+		reminder.cancelAlarm(context);
+		helper = null;
 
 		// Try to delete the list element
 		if (db.delete(TABLE_NAME, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {

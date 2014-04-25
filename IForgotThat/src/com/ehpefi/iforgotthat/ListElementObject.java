@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -46,8 +47,7 @@ public class ListElementObject {
 	 * @param image A camera image
 	 * @since 1.0.0
 	 */
-	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed,
-			byte[] image) {
+	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed, byte[] image) {
 		this.id = id;
 		this.listId = listId;
 		this.description = description;
@@ -69,8 +69,7 @@ public class ListElementObject {
 	 * @param image A camera image
 	 * @since 1.0.0
 	 */
-	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed,
-			byte[] image) {
+	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed, byte[] image) {
 		this.id = id;
 		this.listId = listId;
 		this.description = description;
@@ -153,11 +152,9 @@ public class ListElementObject {
 	@Override
 	public String toString() {
 		boolean hasImage = (image == null ? false : true);
-		
-		return String.format(
-				"ListElementObject [id=%s, listId=%s, description=%s, created=%s, alarm=%s, completed=%s hasImage=%s]",
-				id, listId, description, getCreatedAsString(), getAlarmAsString(), completed,
-				Boolean.toString(hasImage));
+
+		return String.format("ListElementObject [id=%s, listId=%s, description=%s, created=%s, alarm=%s, completed=%s hasImage=%s]", id, listId, description, getCreatedAsString(),
+				getAlarmAsString(), completed, Boolean.toString(hasImage));
 	}
 
 	public int getId() {
@@ -289,6 +286,26 @@ public class ListElementObject {
 
 			Log.d(TAG, "Enabled alarm for reminder #" + getId());
 		}
+	}
 
+	public void cancelAlarm(Context context) {
+		// If we have a valid alarm
+		if (alarm != null && !getAlarmAsString().equals(noAlarmString)) {
+			// Create a new intent for the alarm receiver
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			alarmIntent.putExtra("id", getId());
+
+			// Alarm manager
+			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			// Cancel this alarm
+			alarmManager.cancel(PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+			notificationManager.cancel(getId());
+
+			Log.d(TAG, "Canceled alarm for reminder #" + getId());
+		} else {
+			Log.d(TAG, "No alarm to cancel for reminder #" + getId());
+		}
 	}
 }
