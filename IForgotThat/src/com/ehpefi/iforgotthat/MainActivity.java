@@ -216,6 +216,7 @@ public class MainActivity extends Activity {
 				}).setNegativeButton(getResources().getString(R.string.no), new android.content.DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						listView.closeAnimate(position);
 						dialog.cancel();
 					}
 				}).create();
