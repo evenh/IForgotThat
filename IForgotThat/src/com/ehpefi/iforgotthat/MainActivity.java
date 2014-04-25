@@ -159,7 +159,13 @@ public class MainActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void addNewListClicked(View view) {
+		// Show the title name input
 		switcher.showNext();
+
+		// Request focus
+		listNameInput.requestFocus();
+
+		// If we have focus, show the keyboard
 		if (listNameInput.hasFocus()) {
 			imm.toggleSoftInputFromWindow(listNameInput.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
 		}
