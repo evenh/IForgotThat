@@ -23,9 +23,9 @@
             android:layout_marginRight="8dp"
             android:clickable="true"
             android:drawableRight="@drawable/ic_action_new"
+            android:drawableLeft="@drawable/iforgotthatlogo"
             android:onClick="addNewListClicked"
-            android:text="@string/add_new_list"
-            android:textColor="#ddd"
+            android:textColor="#ddd" 
             android:textSize="25sp" />
 
         <EditText
