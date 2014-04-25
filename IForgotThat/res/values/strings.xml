@@ -26,11 +26,7 @@
     <string name="list_deletion_fail">Couldn\'t delete the list \'%s\'</string>
     <string name="list_rename_ok">List renamed</string>
     <string name="list_rename_fail">Couldn\'t rename the list \'%s\'</string>
-    <string name="list_menu_title">Edit \'%s\'</string>
-    <string name="list_menu_rename">Rename</string>
-    <string name="list_menu_delete">Delete</string>
     <!-- ListWithElementsActivity -->
-    <string name="list_elements_add_new">Add a new reminder</string>
     <string name="has_no_reminders">No reminders</string>
     <string name="has_no_description">No description</string>
     <string name="has_no_alarm">No alarm specified</string>
