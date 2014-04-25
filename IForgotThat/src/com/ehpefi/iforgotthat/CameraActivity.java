@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 /**
  * Handles the camera
- *
+ * 
  * @author Per Erik Finstad
  * @since 1.0.0
  */
@@ -106,11 +106,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				createNewReminder(data);
 			}
 		};
-		
-		
-		
+
 		/**
 		 * Method to take the picture
+		 * 
 		 * @param View v
 		 * @since 1.0.0
 		 */
@@ -121,9 +120,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				captureButton.setEnabled(false);
 				// get an image from the camera
 				Log.d(TAG, "Photo in the taking!");
-				
-				camera.takePicture(null,null, mPicture);
-				Log.d(TAG, "Picture captured");
+
+				try {
+					camera.takePicture(null, null, mPicture);
+					Log.d(TAG, "Picture captured");
+				} catch (NullPointerException npe) {
+					Log.e(TAG, "camera is NULL! No picture taken!");
+				}
+
 			}
 		});
 
@@ -158,8 +162,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Method for check if the orientation of the surface changes
 	 * 
-	 * @param SurfaceHolder
-	 *              holder, int format, int width, int height
+	 * @param SurfaceHolder holder, int format, int width, int height
 	 * @since 1.0.0
 	 * 
 	 */
@@ -182,42 +185,42 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
 
-		// FIX/hack for rotation/stretch issue on NEXUS S
-		if (Build.MODEL.equals("Nexus S") && holder.getSurface() == null) {
-			// preview surface does not exist
-			return;
-		}
+			// FIX/hack for rotation/stretch issue on NEXUS S
+			if (Build.MODEL.equals("Nexus S") && holder.getSurface() == null) {
+				// preview surface does not exist
+				return;
+			}
 
-		// Stop preview before making changes
-		try {
-			camera.stopPreview();
-		} catch (Exception e) {
-			// ignore: tried to stop a non-existent preview
-		}
+			// Stop preview before making changes
+			try {
+				camera.stopPreview();
+			} catch (Exception e) {
+				// ignore: tried to stop a non-existent preview
+			}
 
-		// make any resize, rotate or reformatting changes here
-		if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
-			camera.setDisplayOrientation(90);
-		} else {
-			camera.setDisplayOrientation(0);
-		}
-		// start preview with new settings
-		try {
-			camera.setPreviewDisplay(holder);
-			camera.startPreview();
+			// make any resize, rotate or reformatting changes here
+			if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+				camera.setDisplayOrientation(90);
+			} else {
+				camera.setDisplayOrientation(0);
+			}
+			// start preview with new settings
+			try {
+				camera.setPreviewDisplay(holder);
+				camera.startPreview();
 
-		} catch (Exception e) {
-			Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+			} catch (Exception e) {
+				Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+			}
 		}
 	}
 
-    /**
-     * Gets an instance of the Camera
-     *
-     * @return An instance of Camera, may be null
-     */
+	/**
+	 * Gets an instance of the Camera
+	 * 
+	 * @return An instance of Camera, may be null
+	 */
 	public static Camera getCameraInstance() {
 		Camera c = null;
 		try {
@@ -283,8 +286,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	/**
 	 * Method for release the camera and stop it from using the surface
 	 * 
-	 * @param Surfaceholder
-	 *              holder
+	 * @param Surfaceholder holder
 	 * @since 1.0.0
 	 */
 
@@ -296,7 +298,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		isPreviewActive = false;
 	}
 
-
 	/**
 	 * Method for turning camera flash on/off. Default is off
 	 * 
@@ -304,25 +305,29 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	 * @since 1.0.0
 	 */
 	public void flashOnOff(View v) {
-		Camera.Parameters param = camera.getParameters();
-		List<String> flashModes = param.getSupportedFlashModes();
+		try {
+			Camera.Parameters param = camera.getParameters();
+			List<String> flashModes = param.getSupportedFlashModes();
 
-		if (flashModes != null) {
-			String currentFlashMode = param.getFlashMode();
+			if (flashModes != null) {
+				String currentFlashMode = param.getFlashMode();
 
-			if (currentFlashMode.equals(Parameters.FLASH_MODE_OFF)) {
-				currentFlashMode = Parameters.FLASH_MODE_ON;
-				flashButton.setImageResource(R.drawable.ic_action_flash_on);
-				Log.d(TAG, "Flash on!");
+				if (currentFlashMode.equals(Parameters.FLASH_MODE_OFF)) {
+					currentFlashMode = Parameters.FLASH_MODE_ON;
+					flashButton.setImageResource(R.drawable.ic_action_flash_on);
+					Log.d(TAG, "Flash on!");
 
-			} else {
-				currentFlashMode = Parameters.FLASH_MODE_OFF;
-				flashButton.setImageResource(R.drawable.ic_action_flash_off);
-				Log.d(TAG, "Flash off!");
+				} else {
+					currentFlashMode = Parameters.FLASH_MODE_OFF;
+					flashButton.setImageResource(R.drawable.ic_action_flash_off);
+					Log.d(TAG, "Flash off!");
+				}
+
+				param.setFlashMode(currentFlashMode);
+				camera.setParameters(param);
 			}
-
-			param.setFlashMode(currentFlashMode);
-			camera.setParameters(param);
+		} catch (NullPointerException npe) {
+			Log.w(TAG, "Couldn't toggle the flash, camera is NULL!");
 		}
 	}
 
