@@ -33,8 +33,10 @@ public class MainActivity extends Activity {
 	EditText listNameInput;
 	TextView hasNoLists;
 
+	// Utilities
 	ViewSwitcher switcher;
 	public int position;
+	InputMethodManager imm;
 
 	// Database related
 	ListHelper listHelper;
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
 		// Initialize helpers
 		listHelper = new ListHelper(this);
 		listElementHelper = new ListElementHelper(this);
+		imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		// Fetch all the lists from the database
 		allLists = listHelper.getAllLists(ListHelper.COL_ID);
@@ -157,6 +160,9 @@ public class MainActivity extends Activity {
 	 */
 	public void addNewListClicked(View view) {
 		switcher.showNext();
+		if (listNameInput.hasFocus()) {
+			imm.toggleSoftInputFromWindow(listNameInput.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+		}
 	}
 
 	/**
@@ -293,7 +299,6 @@ public class MainActivity extends Activity {
 			displayToast(getResources().getString(R.string.list_name_empty));
 
 			// Dismiss keyboard and switch back to text saying "Add new list"
-			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(listNameInput.getWindowToken(), 0);
 			switcher.showNext();
 
@@ -315,7 +320,6 @@ public class MainActivity extends Activity {
 				// Tell the user that everything went OK
 				displayToast(String.format(getResources().getString(R.string.list_creation_ok), inputName));
 				// Close the keyboard
-				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(listNameInput.getWindowToken(), 0);
 				// Show the add new list text
 				switcher.showNext();
