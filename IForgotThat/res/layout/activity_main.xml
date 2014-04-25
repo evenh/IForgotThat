@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ddd"
+    android:background="@drawable/background_texture"
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
@@ -45,7 +45,7 @@
         android:id="@+id/text_has_no_lists"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#ddd"
+        android:background="@drawable/background_texture"
         android:gravity="center"
         android:text="@string/has_no_lists"
         android:textAppearance="?android:attr/textAppearanceLarge"
