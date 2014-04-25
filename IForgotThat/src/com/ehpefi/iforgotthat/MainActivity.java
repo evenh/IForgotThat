@@ -261,7 +261,7 @@ public class MainActivity extends Activity {
 						} else {
 							// Try to rename the list
 							if (listHelper.renameList(currentList.getId(), newTitle)) {
-								displayToast(String.format(getResources().getString(R.string.list_rename_ok), currentList.getTitle(), newTitle));
+								displayToast(getResources().getString(R.string.list_rename_ok));
 
 								// Rename the local object
 								currentList.setTitle(newTitle);
