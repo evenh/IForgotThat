@@ -19,7 +19,7 @@
             android:layout_gravity="left|center"
             android:layout_marginLeft="10dp"
             android:layout_row="0"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_selector"
             android:onClick="deleteElement"
             android:src="@drawable/ic_action_cancel" />
         
@@ -30,7 +30,7 @@
             android:layout_column="0"
             android:layout_gravity="center_horizontal|center"
             android:layout_row="0"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_selector"
             android:onClick="editElement"
             android:src="@drawable/ic_action_edit" />
 
@@ -42,19 +42,19 @@
             android:layout_gravity="right|center"
             android:layout_marginRight="10dp"
             android:layout_row="0"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_selector"
             android:onClick="completeElement"
             android:src="@drawable/ic_action_accept" />
         
     </GridLayout>
 
         <LinearLayout
-        android:id="@+id/front"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal"
-        android:background="@drawable/list_item_gradient"
-        android:tag="front" >
+            android:id="@+id/front"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/list_selector"
+            android:orientation="horizontal"
+            android:tag="front" >
 
         <ImageView
             android:id="@+id/reminderImage"

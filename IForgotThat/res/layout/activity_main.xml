@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@drawable/menu_bottom_gradient"
+        android:background="@drawable/bottom_navigation_selector"
         android:onClick="showCompletedItems"
         android:text="@string/completed_items"
         android:textColor="#ddd" />

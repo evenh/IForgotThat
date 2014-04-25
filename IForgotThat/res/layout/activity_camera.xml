@@ -22,15 +22,15 @@
 		    android:layout_height="50dp"
 		    android:layout_alignParentEnd="false"
 		    android:layout_gravity="left"
-		    android:background="@drawable/menu_top_gradient"
-		    android:paddingLeft="5dp"
-       		android:drawableLeft="@drawable/ic_action_back"
-        	android:drawablePadding="-40sp"
+		    android:background="@drawable/top_navigation_selector"
 		    android:clickable="true"
+		    android:drawableLeft="@drawable/ic_action_back"
+		    android:drawablePadding="-40sp"
 		    android:gravity="center"
+		    android:onClick="backToLists"
+		    android:paddingLeft="5dp"
 		    android:textColor="#fefefe"
-		    android:textSize="20sp"
-		    android:onClick="backToLists" />
+		    android:textSize="20sp" />
 
 	</GridLayout>
 

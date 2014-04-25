@@ -19,7 +19,7 @@
             android:layout_gravity="left|center"
             android:layout_marginLeft="20dp"
             android:layout_row="0"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_selector"
             android:onClick="deleteList"
             android:src="@drawable/ic_action_cancel" />
 
@@ -31,7 +31,7 @@
             android:layout_gravity="right|center"
             android:layout_marginRight="20dp"
             android:layout_row="0"
-            android:background="@drawable/button_style"
+            android:background="@drawable/button_selector"
             android:onClick="renameList"
             android:src="@drawable/ic_action_edit" />
 
@@ -41,7 +41,7 @@
         android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/list_item_gradient"
+        android:background="@drawable/list_selector"
         android:orientation="horizontal"
         android:tag="front" >
 

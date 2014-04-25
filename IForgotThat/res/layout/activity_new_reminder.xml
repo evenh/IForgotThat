@@ -8,13 +8,13 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_alignParentEnd="false"
-        android:background="@drawable/menu_top_gradient"
-        android:paddingLeft="5dp"
+        android:background="@drawable/top_navigation_selector"
+        android:clickable="true"
         android:drawableLeft="@drawable/ic_action_back"
         android:drawablePadding="-40sp"
-        android:clickable="true"
         android:gravity="center"
         android:onClick="onBackPressed"
+        android:paddingLeft="5dp"
         android:textColor="#fefefe"
         android:textSize="20sp" />
 
