@@ -272,6 +272,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 					cursor.getString(2), cursor.getString(4), cursor.getString(5), completed, cursor.getBlob(6));
 
 			// Close the database connection
+			cursor.close();
 			db.close();
 
 			// Return the list
