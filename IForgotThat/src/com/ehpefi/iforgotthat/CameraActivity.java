@@ -267,8 +267,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 
-		if (Build.MODEL.equals("Nexus S") && display.getRotation() == Surface.ROTATION_0) {
-			Log.i(TAG, "Nexus S detected, applying rotation hack!");
+		// If the rotation is 0, rotate 90 degrees (this is a common "problem")
+		if (display.getRotation() == Surface.ROTATION_0) {
 			Matrix matrix = new Matrix();
 			matrix.postRotate(90);
 			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
