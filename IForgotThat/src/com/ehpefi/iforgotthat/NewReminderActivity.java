@@ -319,6 +319,10 @@ public class NewReminderActivity extends Activity {
 		onBackPressed();
 	}
 
+	public void pickGeofence(View v) {
+		Log.d(TAG, "The user wants to set a geolocation");
+	}
+
 	@Override
 	public void onBackPressed() {
 		final Context context = this;
