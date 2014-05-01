@@ -8,6 +8,13 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <!-- Google Play Services -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -17,6 +24,10 @@
         android:name="android.hardware.camera"
         android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <!--  Google Play Services -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <application
         android:allowBackup="true"
@@ -53,6 +64,10 @@
             android:name="com.ehpefi.iforgotthat.CameraActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.ehpefi.iforgotthat.GeofenceActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <receiver android:name=".AlarmReceiver" />
         <receiver
@@ -63,6 +78,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!-- Debug key -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyD6mQAacvnKpo62BHZ9JtbXafDBiwKOmxU" />
     </application>
 
 </manifest>

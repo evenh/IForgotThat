@@ -321,6 +321,12 @@ public class NewReminderActivity extends Activity {
 
 	public void pickGeofence(View v) {
 		Log.d(TAG, "The user wants to set a geolocation");
+
+		Intent intent = new Intent(this, GeofenceActivity.class);
+		intent.putExtra("listID", listID);
+		intent.putExtra("title", listTitle);
+
+		startActivity(intent);
 	}
 
 	@Override
@@ -338,31 +344,30 @@ public class NewReminderActivity extends Activity {
 			message = R.string.confirm_trash_photo;
 		}
 
-		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(action).setMessage(message)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// Create an intent
-						Intent intent;
+		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(action).setMessage(message).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// Create an intent
+				Intent intent;
 
-						// Which activity should be fired?
-						if (!editMode) {
-							intent = new Intent(context, CameraActivity.class);
-						} else {
-							intent = new Intent(context, ListWithElementsActivity.class);
-						}
+				// Which activity should be fired?
+				if (!editMode) {
+					intent = new Intent(context, CameraActivity.class);
+				} else {
+					intent = new Intent(context, ListWithElementsActivity.class);
+				}
 
-						intent.putExtra("listID", listID);
-						startActivity(intent);
-						// Transition animation
-						overridePendingTransition(R.anim.left_in, R.anim.right_out);
-					}
-				}).setNegativeButton(R.string.no, new android.content.DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				}).create();
+				intent.putExtra("listID", listID);
+				startActivity(intent);
+				// Transition animation
+				overridePendingTransition(R.anim.left_in, R.anim.right_out);
+			}
+		}).setNegativeButton(R.string.no, new android.content.DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		}).create();
 
 		confirmDeletion.show();
 	}
