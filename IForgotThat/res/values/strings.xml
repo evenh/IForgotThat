@@ -40,4 +40,6 @@
     <string name="no_alarm">No alarm</string>
     <string name="trash_photo">Trash this photo?</string>
     <string name="confirm_trash_photo">This photo will be lost</string>
+    <!-- GeofenceActivity -->
+    <string name="pick_a_location">Pick a location</string>
 </resources>
