@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
 	SwipeListView listView;
 	EditText listNameInput;
 	TextView hasNoLists;
+	Button showCompletedReminders;
 
 	// Utilities
 	ViewSwitcher switcher;
@@ -64,6 +66,7 @@ public class MainActivity extends Activity {
 		listNameInput = (EditText) findViewById(R.id.editable_add_list_input);
 		hasNoLists = (TextView) findViewById(R.id.text_has_no_lists);
 		switcher = (ViewSwitcher) findViewById(R.id.add_list_switcher);
+		showCompletedReminders = (Button) findViewById(R.id.btn_show_completed);
 
 		// Initialize helpers
 		listHelper = new ListHelper(this);
@@ -83,7 +86,8 @@ public class MainActivity extends Activity {
 		});
 
 		listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-			// Whenever a row has been slided to show the back, update the list position
+			// Whenever a row has been slided to show the back, update the list
+			// position
 			@Override
 			public void onOpened(int pos, boolean toRight) {
 				position = pos;
@@ -112,7 +116,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Takes care of showing an empty message if there are no lists, and all the lists if number of lists > 0
+	 * Takes care of showing an empty message if there are no lists, and all the
+	 * lists if number of lists > 0
 	 * 
 	 * @since 1.0.0
 	 */
@@ -133,12 +138,21 @@ public class MainActivity extends Activity {
 		// Show the list view if we have data
 		hasNoLists.setVisibility(View.GONE);
 		listView.setVisibility(View.VISIBLE);
+
+		// Show the completed reminders when completed>=1
+		if (listElementHelper.getCompletedItems().size() >= 1) {
+			showCompletedReminders.setVisibility(View.VISIBLE);
+		} else {
+			showCompletedReminders.setVisibility(View.GONE);
+		}
+
 	}
 
 	/**
 	 * Shows the completed items
 	 * 
-	 * @param view The view
+	 * @param view
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void showCompletedItems(View view) {
@@ -155,7 +169,8 @@ public class MainActivity extends Activity {
 	/**
 	 * Requests the change from TextView to EditText
 	 * 
-	 * @param view The view
+	 * @param view
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void addNewListClicked(View view) {
@@ -174,7 +189,8 @@ public class MainActivity extends Activity {
 	/**
 	 * Convenience method for displaying a toast message
 	 * 
-	 * @param message The message to display
+	 * @param message
+	 *            The message to display
 	 * @since 1.0.0
 	 */
 	private void displayToast(String message) {
@@ -193,12 +209,13 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles clicks on the "delete list" button
 	 * 
-	 * @param view The view
+	 * @param view
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void deleteList(View view) {
 		// Get the object to be deleted
-		currentList = (ListObject) listAdapter.getItem(position);
+		currentList = listAdapter.getItem(position);
 
 		// Create a dialog box to confirm deletion
 		AlertDialog confirmDeletion = new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.list_deletion_title))
@@ -238,7 +255,7 @@ public class MainActivity extends Activity {
 
 	public void renameList(View view) {
 		// Get the object to be renamed
-		currentList = (ListObject) listAdapter.getItem(position);
+		currentList = listAdapter.getItem(position);
 
 		// Inflate layout
 		View renameLayout = getLayoutInflater().inflate(R.layout.rename_list, null);
@@ -279,6 +296,7 @@ public class MainActivity extends Activity {
 					}
 				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					// Cancel button
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
 						// Close the slider
@@ -292,7 +310,8 @@ public class MainActivity extends Activity {
 	/**
 	 * Handle the user input after they have provided a list name
 	 * 
-	 * @param view The view
+	 * @param view
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void addNewListTextEntered(View view) {
@@ -332,7 +351,8 @@ public class MainActivity extends Activity {
 				// Reset the text in the EditText
 				listNameInput.setText("");
 			} else {
-				// Just display a toast telling the user that the creation of a new list failed
+				// Just display a toast telling the user that the creation of a
+				// new list failed
 				displayToast(String.format(getResources().getString(R.string.list_creation_fail), inputName));
 			}
 		}
@@ -343,6 +363,7 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 	}
 
+	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(Intent.ACTION_MAIN);
 		intent.addCategory(Intent.CATEGORY_HOME);
