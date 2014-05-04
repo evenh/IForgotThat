@@ -58,7 +58,7 @@ public class DetailedReminderActivity extends Activity {
 			id = bundle.getInt("id");
 			reminder = listElementHelper.getListElement(id);
 			Log.d(TAG, "Got the following reminder: " + reminder.toString());
-			listID = reminder.getListId();
+			listID = bundle.getInt("listID");
 
 			// Image
 			image.setImageBitmap(reminder.getImageAsBitmap());

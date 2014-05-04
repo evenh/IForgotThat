@@ -64,7 +64,11 @@ public class ListWithElementsActivity extends Activity {
 			listTitle = bundle.getString("title");
 			listID = bundle.getInt("listID");
 			if (listTitle == null || listTitle.equals("")) {
-				listTitle = listHelper.getList(listID).getTitle();
+				try {
+					listTitle = listHelper.getList(listID).getTitle();
+				} catch (NullPointerException npe) {
+					listTitle = getResources().getString(R.string.completed_items);
+				}
 			}
 		} else {
 			Log.e(TAG, "Fatal error: no data recieved!");
@@ -82,7 +86,9 @@ public class ListWithElementsActivity extends Activity {
 
 		// Listener
 		remindersView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-			// Whenever a row has been slided to show the back, update the list position
+			// Whenever a row has been slided to show the back, update the list
+			// position
+			@Override
 			public void onOpened(int pos, boolean toRight) {
 				position = pos;
 				Log.d(TAG, "Updated list position to " + pos);
@@ -97,6 +103,7 @@ public class ListWithElementsActivity extends Activity {
 				// Create an intent and pass the object and list id
 				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
 				intent.putExtra("id", reminder.getId());
+				intent.putExtra("listID", listID);
 
 				startActivity(intent);
 
@@ -111,7 +118,8 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers a delete operation of the current reminder
 	 * 
-	 * @param button The view
+	 * @param button
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void deleteElement(View button) {
@@ -120,7 +128,8 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Remove the list element from the array and delete the object from the database
+		// Remove the list element from the array and delete the object from the
+		// database
 		elements.remove(position);
 		listElementHelper.deleteListElement(reminderObject.getId());
 
@@ -137,7 +146,8 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers an edit operation of the current reminder
 	 * 
-	 * @param button The view
+	 * @param button
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void editElement(View button) {
@@ -145,7 +155,7 @@ public class ListWithElementsActivity extends Activity {
 
 		// Get object to be modified
 		ListElementObject editObject = listAdapter.getItem(position);
-		
+
 		// Create a new intent
 		Intent intent = new Intent(this, NewReminderActivity.class);
 		intent.putExtra("editMode", true);
@@ -162,7 +172,8 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers a completion operation of the current reminder
 	 * 
-	 * @param button The view
+	 * @param button
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void completeElement(View button) {
@@ -171,7 +182,8 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Remove the list element from the array and mark the reminder as complete
+		// Remove the list element from the array and mark the reminder as
+		// complete
 		elements.remove(position);
 
 		if (listID != ListElementHelper.COMPLETED_LIST_ID) {
@@ -192,8 +204,8 @@ public class ListWithElementsActivity extends Activity {
 	}
 
 	/**
-	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items"
-	 * special list
+	 * Takes care of switching the views depending on the number of lists and if
+	 * the user is in the "completed items" special list
 	 * 
 	 * @since 1.0.0
 	 */
@@ -237,7 +249,8 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Opens the CameraActivity class for creating
 	 * 
-	 * @param v The view
+	 * @param v
+	 *            The view
 	 * @since 1.0.0
 	 */
 	public void newReminder(View v) {
