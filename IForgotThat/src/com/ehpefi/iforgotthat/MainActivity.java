@@ -82,12 +82,7 @@ public class MainActivity extends Activity {
 
 		// Swipe listener
 		listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-
-		});
-
-		listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-			// Whenever a row has been slided to show the back, update the list
-			// position
+			// Whenever a row has been slided to show the back, update the list position
 			@Override
 			public void onOpened(int pos, boolean toRight) {
 				position = pos;
@@ -116,8 +111,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Takes care of showing an empty message if there are no lists, and all the
-	 * lists if number of lists > 0
+	 * Takes care of showing an empty message if there are no lists, and all the lists if number of lists > 0
 	 * 
 	 * @since 1.0.0
 	 */
