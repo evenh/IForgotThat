@@ -92,6 +92,9 @@ public class MainActivity extends Activity {
 			// For clicks on the list names
 			@Override
 			public void onClickFrontView(int position) {
+				// Dismiss the keyboard (if visible)
+				imm.hideSoftInputFromWindow(listNameInput.getWindowToken(), 0);
+
 				// Get the object for the clicked list
 				ListObject list = (ListObject) listView.getItemAtPosition(position);
 
