@@ -51,9 +51,12 @@ public class NewReminderActivity extends Activity {
 	private Date reminder;
 	private String reminderString;
 	private byte[] image;
+	private int geofenceId;
 
 	// Used for logging
 	private static final String TAG = "NewReminderActivity";
+
+	private static final int GEOFENCE_REQUEST = 42;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class NewReminderActivity extends Activity {
 		addAlarmButton = (ImageButton) findViewById(R.id.btn_addAlarm);
 		// Set the description to an empty string by default
 		descriptionText = "";
+
+		// Geofence is 0 by default
+		geofenceId = 0;
 
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
@@ -326,7 +332,17 @@ public class NewReminderActivity extends Activity {
 		intent.putExtra("listID", listID);
 		intent.putExtra("title", listTitle);
 
-		startActivity(intent);
+		startActivityForResult(intent, GEOFENCE_REQUEST);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == GEOFENCE_REQUEST && resultCode == Activity.RESULT_OK) {
+			Bundle extras = data.getExtras();
+			Log.d(TAG, "geofenceId recieved: " + extras.getInt("geofenceId"));
+			geofenceId = extras.getInt("geofenceId");
+		}
 	}
 
 	@Override

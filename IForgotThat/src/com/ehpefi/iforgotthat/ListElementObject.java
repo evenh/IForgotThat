@@ -22,13 +22,14 @@ import android.util.Log;
  * @since 1.0.0
  */
 public class ListElementObject {
-	private int id;
+	private final int id;
 	private int listId;
 	private String description;
 	private Date created;
 	private Date alarm;
 	private boolean completed;
 	private byte[] image;
+	private int geofenceId = 0;
 
 	public final static String dtFormatString = "yyyy-MM-dd HH:mm:ss";
 	public final static String noAlarmString = "0001-01-01 01:01:01";
@@ -55,6 +56,30 @@ public class ListElementObject {
 		this.alarm = alarm;
 		this.completed = completed;
 		this.image = image;
+	}
+
+	/**
+	 * Constructor for the ListElementObject class with geofence.
+	 * 
+	 * @param id The list element's id
+	 * @param listId The list id which the list element is associated with
+	 * @param description The user's description of this reminder
+	 * @param created A Date object
+	 * @param alarm A Date object
+	 * @param completed Whether this item is checked off as complete or not
+	 * @param image A camera image
+	 * @param geofenceId A geofence id from the database
+	 * @since 1.0.0
+	 */
+	public ListElementObject(int id, int listId, String description, Date created, Date alarm, boolean completed, byte[] image, int geofenceId) {
+		this.id = id;
+		this.listId = listId;
+		this.description = description;
+		this.created = created;
+		this.alarm = alarm;
+		this.completed = completed;
+		this.image = image;
+		this.geofenceId = geofenceId;
 	}
 
 	/**
@@ -89,6 +114,7 @@ public class ListElementObject {
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((dtFormat == null) ? 0 : dtFormat.hashCode());
 		result = prime * result + id;
+		result = prime * result + geofenceId;
 		result = prime * result + Arrays.hashCode(image);
 		result = prime * result + listId;
 		return result;
@@ -114,6 +140,9 @@ public class ListElementObject {
 			return false;
 		}
 		if (completed != other.completed) {
+			return false;
+		}
+		if (geofenceId != other.geofenceId) {
 			return false;
 		}
 		if (created == null) {
@@ -204,6 +233,10 @@ public class ListElementObject {
 		return image;
 	}
 
+	public int getGeofenceId() {
+		return geofenceId;
+	}
+
 	public Bitmap getImageAsBitmap() {
 		return BitmapFactory.decodeByteArray(image, 0, image.length);
 	}
@@ -259,8 +292,12 @@ public class ListElementObject {
 		this.image = image;
 	}
 
+	public void setGeofenceId(int geofenceId) {
+		this.geofenceId = geofenceId;
+	}
+
 	/**
-	 * Schedules an alarm for the currenct object
+	 * Schedules an alarm for the current object
 	 * 
 	 * @param context The calling class
 	 * @since 1.0.0
@@ -288,6 +325,12 @@ public class ListElementObject {
 		}
 	}
 
+	/**
+	 * Cancels the alarm for the current reminder
+	 * 
+	 * @param context
+	 * @since 1.0.0
+	 */
 	public void cancelAlarm(Context context) {
 		// If we have a valid alarm
 		if (alarm != null && !getAlarmAsString().equals(noAlarmString)) {

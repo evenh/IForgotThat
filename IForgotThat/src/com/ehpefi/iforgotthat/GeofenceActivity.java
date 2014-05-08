@@ -4,15 +4,20 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +48,9 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	private LocationRequest locationRequest;
 	private Geocoder geocoder;
 
+	private Marker userGeofence;
+	private static final int GEOFENCE_RADIUS_IN_METERS = 50;
+
 	// Milliseconds per second
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	// Update frequency in seconds
@@ -55,7 +63,9 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 
 	// UI
-	private TextView statusBar;
+	private Button saveGeofence;
+	// Notification
+	Toast toast;
 
 	public static final String TAG = "GeofenceActivity";
 
@@ -64,10 +74,11 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_geofence);
 
-		// Find our status field
-		statusBar = (TextView) findViewById(R.id.statusBar);
+		// Find our save button
+		saveGeofence = (Button) findViewById(R.id.saveGeofenceButton);
+		saveGeofence.setText(String.format(getResources().getString(R.string.save_geofence), GEOFENCE_RADIUS_IN_METERS));
 
-		// Geocoder
+		// Reversing coordinates to addresses
 		geocoder = new Geocoder(this);
 
 		// Get the map from resources
@@ -93,8 +104,9 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 				} catch (IOException e) {
 				}
 
-				// createGeofence(dragLat, dragLong, distance, "CIRCLE", "GEOFENCE");
+				// createGeofence(dragLat, dragLong, GEOFENCE_RADIUS_IN_METERS, "CIRCLE", "GEOFENCE");
 				marker.setTitle(address);
+				userGeofence = marker;
 				Toast.makeText(GeofenceActivity.this, "Address: " + address, Toast.LENGTH_SHORT).show();
 				Log.i(TAG, "on drag end :" + dragLat + " dragLong :" + dragLong);
 			}
@@ -128,7 +140,7 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
-		statusBar.setText("Connection failed");
+		Log.e(TAG, "Connection failed to LocationClient");
 	}
 
 	@Override
@@ -149,12 +161,64 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 14.0f));
 
-		Marker stopMarker = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
+		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
 				.title("Your current location").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 
 		currentLocation = lastKnownLocation;
 		centerMapOnUserLocation();
 
+	}
+
+	/**
+	 * Saves the actual geofence
+	 * 
+	 * @param v The view
+	 * @since 1.0.0
+	 */
+	public void saveGeofence(View v) {
+		Log.d(TAG, "Geofence saving requested");
+		final GeofenceHelper gfHelper = new GeofenceHelper(this);
+
+		// Reusing rename_list dialog for entering a new name
+		View nameLayout = getLayoutInflater().inflate(R.layout.rename_list, null);
+		// Set text inside the EditText (a hint so the user can specify a geofence name)
+		((EditText) nameLayout.findViewById(R.id.new_list_name)).setHint(R.string.name_geofence_hint);
+
+		AlertDialog nameDialog = new AlertDialog.Builder(this).setView(nameLayout).setTitle(R.string.name_geofence)
+				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+					@Override
+					// When the user has pressed "Rename"
+					public void onClick(DialogInterface dialog, int id) {
+						// Get the input text (the new title)
+						EditText geofenceInput = (EditText) ((AlertDialog) dialog).findViewById(R.id.new_list_name);
+						String geofenceName = geofenceInput.getText().toString();
+
+						// Check for empty input
+						if (geofenceName.equals("") || geofenceName == null || geofenceName.trim().length() == 0) {
+							displayToast(getResources().getString(R.string.name_geofence_empty));
+						} else {
+							// Save the geofence and return
+							int geofenceId = gfHelper.createNewGeofence(userGeofence.getPosition().latitude, userGeofence.getPosition().longitude, GEOFENCE_RADIUS_IN_METERS,
+									userGeofence.getTitle(), geofenceName);
+
+							Log.d(TAG, "Saved geofence has ID " + geofenceId);
+
+							// Create an empty intent, just to carry data back to NewReminderActivity
+							Intent resultIntent = new Intent();
+							resultIntent.putExtra("geofenceId", geofenceId);
+							setResult(Activity.RESULT_OK, resultIntent);
+							finish();
+						}
+					}
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					// Cancel button
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				}).create();
+
+		nameDialog.show();
 	}
 
 	/**
@@ -173,13 +237,44 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		currentLocation = location;
 	}
 
-	public void backToEditing(View v) {
+	@Override
+	public void onDisconnected() {
+		Log.d(TAG, "LocationClient disconnected");
+	}
+
+	/**
+	 * Convenience method for triggering onBackPressed()
+	 * 
+	 * @param v
+	 * @since 1.0.0
+	 */
+	public void onBackPressed(View v) {
 		onBackPressed();
 	}
 
 	@Override
-	public void onDisconnected() {
-		statusBar.setText("Disconnected");
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
+
+	/**
+	 * Convenience method for displaying a toast message
+	 * 
+	 * @param message The message to display
+	 * @since 1.0.0
+	 */
+	private void displayToast(String message) {
+		// If there is an active toast, cancel it
+		if (toast != null) {
+			toast.cancel();
+		}
+
+		// Create a toast
+		toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+		// Set the position to right above the keyboard (on Nexus S at least)
+		toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -50);
+		toast.show();
 	}
 
 }

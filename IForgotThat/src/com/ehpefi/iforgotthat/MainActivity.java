@@ -148,8 +148,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Shows the completed items
 	 * 
-	 * @param view
-	 *            The view
+	 * @param view The view
 	 * @since 1.0.0
 	 */
 	public void showCompletedItems(View view) {
@@ -166,8 +165,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Requests the change from TextView to EditText
 	 * 
-	 * @param view
-	 *            The view
+	 * @param view The view
 	 * @since 1.0.0
 	 */
 	public void addNewListClicked(View view) {
@@ -186,8 +184,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Convenience method for displaying a toast message
 	 * 
-	 * @param message
-	 *            The message to display
+	 * @param message The message to display
 	 * @since 1.0.0
 	 */
 	private void displayToast(String message) {
@@ -206,8 +203,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles clicks on the "delete list" button
 	 * 
-	 * @param view
-	 *            The view
+	 * @param view The view
 	 * @since 1.0.0
 	 */
 	public void deleteList(View view) {
@@ -307,8 +303,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Handle the user input after they have provided a list name
 	 * 
-	 * @param view
-	 *            The view
+	 * @param view The view
 	 * @since 1.0.0
 	 */
 	public void addNewListTextEntered(View view) {
