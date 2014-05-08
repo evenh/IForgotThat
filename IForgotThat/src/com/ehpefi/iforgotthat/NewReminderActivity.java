@@ -286,26 +286,33 @@ public class NewReminderActivity extends Activity {
 		Log.d(TAG, "List title: " + listTitle);
 		Log.d(TAG, "Description: " + descriptionText);
 		Log.d(TAG, "Alarm: " + reminderString);
+		Log.d(TAG, "GeofenceID: " + geofenceId);
 
 		// If regular mode
 		if (!editMode) {
-			int insertedReminder = listElementHelper.createNewListElement(listID, descriptionText, reminderString, image);
+			int insertedReminder = listElementHelper.createNewListElement(listID, descriptionText, reminderString, image, geofenceId);
 
 			if (insertedReminder > 0) {
 				// Creates an alarm if necessary
 				ListElementObject inserted = listElementHelper.getListElement(insertedReminder);
 				inserted.registerAlarm(this);
+				// Add geofence alarm
+				if (geofenceId > 0) {
+					inserted.registerGeofence(this);
+				}
 			} else {
 				Log.e(TAG, "Couldn't save the reminder!");
 			}
 		} else {
 			editObject.setDescription(descriptionText);
 			editObject.setAlarm(reminderString);
+			editObject.setGeofenceId(geofenceId);
 
 			Log.d(TAG, "Updated object: " + editObject.toString());
 			// If updating was a success, register the alarm
 			if (listElementHelper.updateListElement(editObject) != null) {
 				editObject.registerAlarm(this);
+				editObject.registerGeofence(this);
 			} else {
 				Log.e(TAG, "Couldn't update object with id #" + editObject.getId());
 			}

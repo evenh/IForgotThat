@@ -1,7 +1,5 @@
 package com.ehpefi.iforgotthat;
 
-import java.util.Calendar;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -190,7 +188,7 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		return false;
 	}
 
-	public Geofence getGeofence(int id) {
+	public Geofence getGeofence(int id, int reminderId) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -205,9 +203,8 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 			// Move to the only record
 			cursor.moveToFirst();
 
-			Geofence fence = new Geofence.Builder().setRequestId("GEO" + cursor.getInt(0) + Calendar.getInstance().get(Calendar.MILLISECOND))
-					.setCircularRegion(cursor.getDouble(1), cursor.getDouble(2), Float.valueOf(cursor.getInt(3))).setExpirationDuration(Geofence.NEVER_EXPIRE)
-					.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER).build();
+			Geofence fence = new Geofence.Builder().setRequestId("GEO" + reminderId).setCircularRegion(cursor.getDouble(1), cursor.getDouble(2), Float.valueOf(cursor.getInt(3)))
+					.setExpirationDuration(Geofence.NEVER_EXPIRE).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER).build();
 
 			// Close the database connection
 			cursor.close();

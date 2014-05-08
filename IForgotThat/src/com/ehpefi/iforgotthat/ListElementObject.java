@@ -2,9 +2,11 @@ package com.ehpefi.iforgotthat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -13,7 +15,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Log;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationStatusCodes;
 
 /**
  * Contains information about a specific reminder
@@ -30,6 +39,8 @@ public class ListElementObject {
 	private boolean completed;
 	private byte[] image;
 	private int geofenceId = 0;
+
+	LocationClient locClient;
 
 	public final static String dtFormatString = "yyyy-MM-dd HH:mm:ss";
 	public final static String noAlarmString = "0001-01-01 01:01:01";
@@ -102,6 +113,29 @@ public class ListElementObject {
 		setAlarm(alarm);
 		this.completed = completed;
 		this.image = image;
+	}
+
+	/**
+	 * Constructor for the ListElementObject class using Strings instead of Date objects + geofence.
+	 * 
+	 * @param id The list element's id
+	 * @param listId The list id which the list element is associated with
+	 * @param description The user's description of this reminder
+	 * @param created A date (String) in the format of "yyyy-MM-dd HH:mm:ss"
+	 * @param alarm A date (String) in the format of "yyyy-MM-dd HH:mm:ss"
+	 * @param completed Whether this item is checked off as complete or not
+	 * @param image A camera image
+	 * @since 1.0.0
+	 */
+	public ListElementObject(int id, int listId, String description, String created, String alarm, boolean completed, byte[] image, int geofenceId) {
+		this.id = id;
+		this.listId = listId;
+		this.description = description;
+		setCreated(created);
+		setAlarm(alarm);
+		this.completed = completed;
+		this.image = image;
+		this.geofenceId = geofenceId;
 	}
 
 	@Override
@@ -322,6 +356,122 @@ public class ListElementObject {
 			alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
 			Log.d(TAG, "Enabled alarm for reminder #" + getId());
+		}
+	}
+
+	/**
+	 * Schedules a geofence for the current object
+	 * 
+	 * @param context The calling class
+	 * @since 1.0.0
+	 */
+	public void registerGeofence(Context context) {
+		Log.d(TAG, "registerGeofence() called. geofenceId for this object: " + geofenceId);
+		final Context ct = context;
+		// If we have a valid geofence
+		if (geofenceId > 0) {
+			// Create a new location client
+			locClient = new LocationClient(ct, new GooglePlayServicesClient.ConnectionCallbacks() {
+				@Override
+				public void onConnected(Bundle bundle) {
+					addGeofence(ct);
+				}
+
+				@Override
+				public void onDisconnected() {
+				}
+			}, new GooglePlayServicesClient.OnConnectionFailedListener() {
+				@Override
+				public void onConnectionFailed(ConnectionResult arg0) {
+				}
+			});
+
+			locClient.connect();
+		}
+	}
+
+	/**
+	 * Private helper method for adding geofences
+	 * 
+	 * @param context The calling class
+	 * @since 1.0.0
+	 */
+	private void addGeofence(Context context) {
+		Log.d(TAG, "addGeofence() called");
+		GeofenceHelper gfHelper = new GeofenceHelper(context);
+		// Get the geofence
+		List<Geofence> gfList = new ArrayList<Geofence>();
+		gfList.add(gfHelper.getGeofence(geofenceId, id));
+		// Create a pending intent
+		Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+		alarmIntent.putExtra("id", getId());
+
+		locClient.addGeofences(gfList, PendingIntent.getBroadcast(context, getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT),
+				new LocationClient.OnAddGeofencesResultListener() {
+					@Override
+					public void onAddGeofencesResult(int statusCode, String[] arg1) {
+						if (statusCode == LocationStatusCodes.SUCCESS) {
+							Log.i(TAG, "Added geofence for reminder #" + getId());
+						} else {
+							Log.e(TAG, "Couldn't add geofence for reminder #" + getId());
+						}
+					}
+				});
+	}
+
+	private void deleteGeofence(Context context) {
+		GeofenceHelper gfHelper = new GeofenceHelper(context);
+		// Get the geofence
+		List<String> removeList = new ArrayList<String>();
+		Geofence gf = gfHelper.getGeofence(geofenceId, id);
+		// Add it to the removal list
+		removeList.add(gf.getRequestId());
+
+		locClient.removeGeofences(removeList, new LocationClient.OnRemoveGeofencesResultListener() {
+			@Override
+			public void onRemoveGeofencesByRequestIdsResult(int statusCode, String[] geofenceRequestIds) {
+				if (statusCode == LocationStatusCodes.SUCCESS) {
+					Log.i(TAG, "Canceled geofence for reminder #" + getId());
+				} else {
+					Log.e(TAG, "Couldn't cancel geofence for reminder #" + getId());
+				}
+			}
+
+			@Override
+			public void onRemoveGeofencesByPendingIntentResult(int statusCode, PendingIntent pendingIntent) {
+			}
+		});
+	}
+
+	/**
+	 * Cancels the geofence for the current reminder
+	 * 
+	 * @param context
+	 * @since 1.0.0
+	 */
+	public void cancelGeofence(Context context) {
+		final Context ct = context;
+		// If we have a valid geofence
+		if (geofenceId > 0) {
+			// Create a new location client
+			locClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
+				@Override
+				public void onConnected(Bundle bundle) {
+					deleteGeofence(ct);
+				}
+
+				@Override
+				public void onDisconnected() {
+				}
+			}, new GooglePlayServicesClient.OnConnectionFailedListener() {
+				@Override
+				public void onConnectionFailed(ConnectionResult arg0) {
+				}
+			});
+
+			locClient.connect();
+		} else {
+			Log.d(TAG, "No geofence to cancel for reminder #" + getId());
 		}
 	}
 

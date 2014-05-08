@@ -34,6 +34,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	public static final String COL_ALARM_TIMESTAMP = "alarm_timestamp";
 	public static final String COL_COMPLETED = "completed";
 	private static final String COL_IMAGE = "image";
+	private static final String COL_GEOFENCE = "geofence_id";
 
 	// Specify which class that logs messages
 	private static final String TAG = "ListElementHelper";
@@ -59,8 +60,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		// SQL to create the 'items' table
 		String createItemsSQL = String.format("CREATE TABLE %s (%s integer PRIMARY KEY AUTOINCREMENT NOT NULL, %s integer NOT NULL, "
 				+ "%s varchar(255), %s DATETIME DEFAULT CURRENT_TIMESTAMP, %s DATETIME, %s integer(1) NOT NULL DEFAULT(0), "
-				+ "%s blob NOT NULL,FOREIGN KEY(%s) REFERENCES list(_id))", TABLE_NAME, COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_CREATED_TIMESTAMP, COL_ALARM_TIMESTAMP,
-				COL_COMPLETED, COL_IMAGE, COL_LIST_ID);
+				+ "%s blob NOT NULL, %s integer NOT NULL, FOREIGN KEY(%s) REFERENCES list(_id))", TABLE_NAME, COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_CREATED_TIMESTAMP,
+				COL_ALARM_TIMESTAMP, COL_COMPLETED, COL_IMAGE, COL_GEOFENCE, COL_LIST_ID);
 
 		// Create the table
 		try {
@@ -110,7 +111,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	 * @return The id of the inserted list element on success, 0 on failure
 	 * @since 1.0.0
 	 */
-	public int createNewListElement(int listId, String description, String alarm, byte[] image) {
+	public int createNewListElement(int listId, String description, String alarm, byte[] image, int geofenceId) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
 
@@ -120,6 +121,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		values.put(COL_DESCRIPTION, description);
 		values.put(COL_ALARM_TIMESTAMP, alarm);
 		values.put(COL_IMAGE, image);
+		values.put(COL_GEOFENCE, geofenceId);
 
 		// Try to save the list element
 		try {
@@ -180,6 +182,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		ListElementHelper helper = new ListElementHelper(context);
 		ListElementObject reminder = helper.getListElement(id);
 		reminder.cancelAlarm(context);
+		reminder.cancelGeofence(context);
 		helper = null;
 
 		// Try to delete the list element
@@ -253,8 +256,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting one list from the database
-		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
-				COL_ALARM_TIMESTAMP, COL_IMAGE, TABLE_NAME, COL_ID, id);
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
+				COL_ALARM_TIMESTAMP, COL_IMAGE, COL_GEOFENCE, TABLE_NAME, COL_ID, id);
 
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
@@ -269,7 +272,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 			// Create the list object
 			ListElementObject listElement = new ListElementObject(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), completed,
-					cursor.getBlob(6));
+					cursor.getBlob(6), cursor.getInt(7));
 
 			// Close the database connection
 			cursor.close();
@@ -305,8 +308,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting list elements matching the list id
-		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
-				COL_ALARM_TIMESTAMP, COL_IMAGE, TABLE_NAME, COL_LIST_ID, id);
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
+				COL_ALARM_TIMESTAMP, COL_IMAGE, COL_GEOFENCE, TABLE_NAME, COL_LIST_ID, id);
 
 		// Cursor who points at the current record
 		Cursor cursor = db.rawQuery(sql, null);
@@ -318,7 +321,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 			try {
 				listElements.add(new ListElementObject(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), completed, cursor
-						.getBlob(6)));
+						.getBlob(6), cursor.getInt(7)));
 			} catch (Exception e) {
 				Log.e(TAG, "Could not create ListElementObject in getListElementsForListId(), the following exception was thrown", e);
 			}
@@ -370,8 +373,8 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting all list elements from the database which is completed
-		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
-				COL_ALARM_TIMESTAMP, COL_IMAGE, TABLE_NAME, COL_COMPLETED, 1);
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
+				COL_ALARM_TIMESTAMP, COL_IMAGE, COL_GEOFENCE, TABLE_NAME, COL_COMPLETED, 1);
 
 		// Cursor who points at the current record
 		Cursor cursor = db.rawQuery(sql, null);
@@ -383,7 +386,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 
 			try {
 				completedItems.add(new ListElementObject(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), completed, cursor
-						.getBlob(6)));
+						.getBlob(6), cursor.getInt(7)));
 			} catch (Exception e) {
 				Log.e(TAG, "Could not create ListElementObject in getCompletedItems(), the following exception was thrown", e);
 			}
@@ -437,6 +440,7 @@ public class ListElementHelper extends SQLiteOpenHelper {
 		if (updatedListElement.getImage() != null) {
 			values.put(COL_IMAGE, updatedListElement.getImage());
 		}
+		values.put(COL_GEOFENCE, updatedListElement.getGeofenceId());
 
 		// Create a pointer to the database
 		SQLiteDatabase db = getWritableDatabase();
