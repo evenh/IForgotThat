@@ -5,13 +5,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -54,11 +52,11 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	// Milliseconds per second
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	// Update frequency in seconds
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 120;
 	// Update frequency in milliseconds
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
 	// The fastest update frequency, in seconds
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 80;
 	// A fast frequency ceiling in milliseconds
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 
@@ -104,7 +102,6 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 				} catch (IOException e) {
 				}
 
-				// createGeofence(dragLat, dragLong, GEOFENCE_RADIUS_IN_METERS, "CIRCLE", "GEOFENCE");
 				marker.setTitle(address);
 				userGeofence = marker;
 				Toast.makeText(GeofenceActivity.this, "Address: " + address, Toast.LENGTH_SHORT).show();
@@ -156,17 +153,8 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 
 		locationClient.requestLocationUpdates(locationRequest, this);
 
-		// Move camera to last known location
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), 14.0f));
-
-		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
-				.title("Your current location").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
-
-		currentLocation = lastKnownLocation;
-		centerMapOnUserLocation();
-
+		// Display a toast that the we are currently fetching a location
+		displayToast(getResources().getString(R.string.getting_location));
 	}
 
 	/**
@@ -234,7 +222,19 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 
 	@Override
 	public void onLocationChanged(Location location) {
+		Log.d(TAG, "New location found!");
 		currentLocation = location;
+
+		// Clear the marker from the map to prevent multiple markers
+		map.clear();
+
+		// Move camera to last known location
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 14.0f));
+
+		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+				.title("Your current location").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
+
+		centerMapOnUserLocation();
 	}
 
 	@Override
