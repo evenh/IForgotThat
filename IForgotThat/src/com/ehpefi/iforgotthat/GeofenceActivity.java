@@ -16,6 +16,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,7 +49,8 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	private Geocoder geocoder;
 
 	private Marker userGeofence;
-	private static final int GEOFENCE_RADIUS_IN_METERS = 50;
+	private static final int GEOFENCE_MAX_RADIUS_IN_METERS = 200;
+	private int currentGeofenceRadius = 50;
 
 	// Milliseconds per second
 	private static final int MILLISECONDS_PER_SECOND = 1000;
@@ -56,12 +59,13 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	// Update frequency in milliseconds
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
 	// The fastest update frequency, in seconds
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 80;
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
 	// A fast frequency ceiling in milliseconds
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 
 	// UI
 	private Button saveGeofence;
+	private SeekBar geofenceRadius;
 	// Notification
 	Toast toast;
 
@@ -74,7 +78,27 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 
 		// Find our save button
 		saveGeofence = (Button) findViewById(R.id.saveGeofenceButton);
-		saveGeofence.setText(String.format(getResources().getString(R.string.save_geofence), GEOFENCE_RADIUS_IN_METERS));
+		saveGeofence.setText(String.format(getResources().getString(R.string.save_geofence), currentGeofenceRadius));
+
+		// Find our progress bar
+		geofenceRadius = (SeekBar) findViewById(R.id.geofenceRadius);
+		geofenceRadius.setMax(GEOFENCE_MAX_RADIUS_IN_METERS);
+		geofenceRadius.setProgress(currentGeofenceRadius);
+		geofenceRadius.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				currentGeofenceRadius = progress;
+				saveGeofence.setText(String.format(getResources().getString(R.string.save_geofence), currentGeofenceRadius));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
 
 		// Reversing coordinates to addresses
 		geocoder = new Geocoder(this);
@@ -186,7 +210,7 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 							displayToast(getResources().getString(R.string.name_geofence_empty));
 						} else {
 							// Save the geofence and return
-							int geofenceId = gfHelper.createNewGeofence(userGeofence.getPosition().latitude, userGeofence.getPosition().longitude, GEOFENCE_RADIUS_IN_METERS,
+							int geofenceId = gfHelper.createNewGeofence(userGeofence.getPosition().latitude, userGeofence.getPosition().longitude, currentGeofenceRadius,
 									userGeofence.getTitle(), geofenceName);
 
 							Log.d(TAG, "Saved geofence has ID " + geofenceId);
