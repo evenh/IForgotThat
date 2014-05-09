@@ -9,12 +9,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -66,8 +69,21 @@ public class NewReminderActivity extends Activity {
 		// Initialize UI elements
 		description = (EditText) findViewById(R.id.reminder_title);
 		listName = (TextView) findViewById(R.id.listName);
-		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
 		alarmPreview = (TextView) findViewById(R.id.alarm_preview);
+		imageHolder = (ImageView) findViewById(R.id.camera_user_image);
+
+		// set the imageholder size to match the device
+		ViewGroup.LayoutParams layoutParams = imageHolder.getLayoutParams();
+		Log.d(TAG, "Width before " + layoutParams.width);
+
+		layoutParams.width = this.getDeviceWidth();
+		layoutParams.height = this.getDeviceWidth();
+
+		imageHolder.setLayoutParams(layoutParams);
+		layoutParams = imageHolder.getLayoutParams();
+		Log.d(TAG, "Width after " + layoutParams.width);
+		
+		
 
 		addAlarmButton = (ImageButton) findViewById(R.id.btn_addAlarm);
 		// Set the description to an empty string by default
@@ -393,6 +409,20 @@ public class NewReminderActivity extends Activity {
 		}).create();
 
 		confirmDeletion.show();
+	}
+
+	// find the width of the device
+	public int getDeviceWidth() {
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Log.d(TAG, "The device width is: " + size.x + "px");
+		// int width = size.x;
+		// int height = size.y;
+		// int width = (int) (size.x / 1.5);
+		int width = size.x;
+
+		return width;
 	}
 
 }
