@@ -18,6 +18,7 @@ public class DetailedReminderActivity extends Activity {
 	// UI
 	private TextView description;
 	private TextView alarmText;
+	private TextView geolocation;
 	private ImageView image;
 
 	// Data fields
@@ -44,6 +45,7 @@ public class DetailedReminderActivity extends Activity {
 		description = (TextView) findViewById(R.id.description);
 		image = (ImageView) findViewById(R.id.reminder_image);
 		alarmText = (TextView) findViewById(R.id.alarm_text);
+		geolocation = (TextView) findViewById(R.id.geolocation_text);
 
 		onNewIntent(getIntent());
 	}
@@ -75,6 +77,14 @@ public class DetailedReminderActivity extends Activity {
 				alarmText.setVisibility(View.GONE);
 			} else {
 				alarmText.setText(reminder.getAlarmAsString());
+			}
+
+			if (reminder.getGeofenceId() > 0) {
+				Log.d(TAG, "Has geofence");
+				GeofenceHelper gfHelper = new GeofenceHelper(this);
+				geolocation.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
+			} else {
+				geolocation.setVisibility(View.GONE);
 			}
 		}
 	}

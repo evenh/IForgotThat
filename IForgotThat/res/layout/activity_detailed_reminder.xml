@@ -46,4 +46,15 @@
     </FrameLayout>
 
     <!-- Maybe buttons for editing, checking as complete and deleting? -->
+
+    <TextView
+        android:id="@+id/geolocation_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:drawableRight="@android:drawable/ic_menu_mylocation"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="#eee" />
+
 </LinearLayout>

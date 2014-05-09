@@ -1,11 +1,16 @@
 package com.ehpefi.iforgotthat;
 
+import java.io.IOException;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -186,6 +191,46 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		db.close();
 
 		return false;
+	}
+
+	public String getAddressForGeofence(int id) {
+		String address = "No address available";
+
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting one geofence from the database
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LAT, COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME, COL_ID, id);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// As long as we have exactly one result
+		if (cursor.getCount() == 1) {
+			// Move to the only record
+			cursor.moveToFirst();
+			Geocoder gc = new Geocoder(context);
+			try {
+				List<Address> addresses = gc.getFromLocation(cursor.getDouble(1), cursor.getDouble(2), 1);
+				address = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
+			} catch (IOException e) {
+			}
+			// Close the database connection
+			cursor.close();
+			db.close();
+
+			// Return the geofence address
+			return address;
+		}
+
+		Log.e(TAG, "The cursor in getAddressForGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+
+		// Close the database connection
+		cursor.close();
+		db.close();
+
+		// Fail
+		return null;
 	}
 
 	public Geofence getGeofence(int id, int reminderId) {
