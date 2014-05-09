@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,6 +65,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		surfaceHolder.addCallback(this);
 
 		camera = getCameraInstance();
+
 
 		// Check for incoming data and set list title
 		Bundle bundle = getIntent().getExtras();
@@ -230,14 +232,27 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				Parameters params = c.getParameters();
 
 				List<Camera.Size> cameraSizes = params.getSupportedPictureSizes();
+				// prints a list of available sizes
+				for (Size list : cameraSizes) {
+					Log.d(TAG, "Height: " + list.height + "px" + " Width: " + list.width);
+				}
+
 				// selects the smallest resolution (last item in array)
 				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
-				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
+				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x"
+						+ selectedPictureSize.height);
 				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
 
 				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
+
+				// prints a list of available sizes
+				for (Size list : previewSizes) {
+					Log.d(TAG, "Height: " + list.height + "px" + " Width: " + list.width);
+				}
+
 				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
-				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
+				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x"
+						+ selectedPreviewSize.height);
 				// params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
 
 				c.setParameters(params);
