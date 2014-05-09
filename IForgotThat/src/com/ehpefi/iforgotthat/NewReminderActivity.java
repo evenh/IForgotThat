@@ -417,9 +417,7 @@ public class NewReminderActivity extends Activity {
 		Point size = new Point();
 		display.getSize(size);
 		Log.d(TAG, "The device width is: " + size.x + "px");
-		// int width = size.x;
-		// int height = size.y;
-		// int width = (int) (size.x / 1.5);
+
 		int width = size.x;
 
 		return width;
