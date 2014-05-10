@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -30,6 +31,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -49,13 +52,14 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 	private Geocoder geocoder;
 
 	private Marker userGeofence;
+	private Circle userGeofenceCircle;
 	private static final int GEOFENCE_MAX_RADIUS_IN_METERS = 200;
 	private int currentGeofenceRadius = 50;
 
 	// Milliseconds per second
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 	// Update frequency in seconds
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 120;
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 30;
 	// Update frequency in milliseconds
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
 	// The fastest update frequency, in seconds
@@ -89,6 +93,9 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				currentGeofenceRadius = progress;
 				saveGeofence.setText(String.format(getResources().getString(R.string.save_geofence), currentGeofenceRadius));
+				if (userGeofenceCircle != null) {
+					userGeofenceCircle.setRadius(currentGeofenceRadius);
+				}
 			}
 
 			@Override
@@ -114,26 +121,32 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 
 			@Override
 			public void onMarkerDragEnd(Marker marker) {
+				// Get position
 				LatLng dragPosition = marker.getPosition();
 				double dragLat = dragPosition.latitude;
 				double dragLong = dragPosition.longitude;
 
-				String address = "No address available";
+				// Set initial address to an error message
+				String address = getResources().getString(R.string.no_address_available);
 
+				// Fetch the address via the geocoder
 				try {
 					List<Address> addresses = geocoder.getFromLocation(dragLat, dragLong, 1);
 					address = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
 				} catch (IOException e) {
 				}
 
+				// Update the marker's title
 				marker.setTitle(address);
 				userGeofence = marker;
 				Toast.makeText(GeofenceActivity.this, "Address: " + address, Toast.LENGTH_SHORT).show();
-				Log.i(TAG, "on drag end :" + dragLat + " dragLong :" + dragLong);
+
+				drawCircle();
 			}
 
 			@Override
 			public void onMarkerDragStart(Marker marker) {
+				userGeofenceCircle.remove();
 			}
 
 		});
@@ -170,6 +183,8 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		locationRequest = LocationRequest.create();
 		// Use high accuracy
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		// Trigger again after 200m movement
+		locationRequest.setSmallestDisplacement(200);
 		// Set the update interval to 5 seconds
 		locationRequest.setInterval(UPDATE_INTERVAL);
 		// Set the fastest update interval to 1 second
@@ -258,12 +273,29 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
 				.title("Your current location").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 
+		drawCircle();
 		centerMapOnUserLocation();
 	}
 
 	@Override
 	public void onDisconnected() {
 		Log.d(TAG, "LocationClient disconnected");
+	}
+
+	/**
+	 * Convenience method for drawing circles around a marker
+	 * 
+	 * @since 1.0.0
+	 */
+	private void drawCircle() {
+		// Handle circles around the marker
+		if (userGeofence != null) {
+			LatLng markerPosition = userGeofence.getPosition();
+
+			CircleOptions circleOptions = new CircleOptions().center(markerPosition).radius(currentGeofenceRadius).fillColor(Color.TRANSPARENT).strokeColor(Color.BLUE)
+					.strokeWidth(8);
+			userGeofenceCircle = map.addCircle(circleOptions);
+		}
 	}
 
 	/**

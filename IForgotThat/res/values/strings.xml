@@ -47,4 +47,5 @@
     <string name="name_geofence_empty">No name specified</string>
     <string name="name_geofence_hint">The name of your geofence</string>
     <string name="save_geofence">Save geofence (%sm radius)</string>
+    <string name="no_address_available">No address available</string>
 </resources>

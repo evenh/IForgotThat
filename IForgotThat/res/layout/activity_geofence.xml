@@ -2,23 +2,23 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
+
     <TextView
-		    android:id="@+id/backToEditing"
-		    android:layout_width="fill_parent"
-		    android:layout_height="50dp"
-		    android:layout_alignParentEnd="false"
-		    android:layout_gravity="left"
-		    android:background="@drawable/top_navigation_selector"
-		    android:clickable="true"
-		    android:drawableLeft="@drawable/ic_action_back"
-		    android:drawablePadding="-40sp"
-		    android:gravity="center"
-		    android:onClick="onBackPressed"
-		    android:paddingLeft="5dp"
-		    android:text="@string/pick_a_location"
-		    android:textColor="#fefefe"
-		    android:textSize="20sp" />
+        android:id="@+id/backToEditing"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="false"
+        android:layout_gravity="left"
+        android:background="@drawable/top_navigation_selector"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_action_back"
+        android:drawablePadding="-40sp"
+        android:gravity="center"
+        android:onClick="onBackPressed"
+        android:paddingLeft="5dp"
+        android:text="@string/pick_a_location"
+        android:textColor="#fefefe"
+        android:textSize="20sp" />
 
     <fragment
         android:id="@+id/map"
@@ -36,6 +36,9 @@
         android:id="@+id/saveGeofenceButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="saveGeofence"
-        android:layout_weight="1" />
-    </LinearLayout>
+        android:layout_weight="1"
+        android:background="@drawable/bottom_navigation_selector"
+        android:textColor="#ddd"
+        android:onClick="saveGeofence" />
+
+</LinearLayout>
