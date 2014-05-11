@@ -70,8 +70,13 @@ public class BootNotificationReceiver extends BroadcastReceiver {
 							// Set the alarm
 							alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, reminder.getId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-							Log.d(TAG, "Added alarm for reminder with id " + reminder.getId());
+							Log.i(TAG, "Added alarm for reminder with id " + reminder.getId());
 						}
+					}
+					// Geofence alarms
+					if (reminder != null && reminder.getGeofenceId() > 0) {
+						Log.i(TAG, "Got reminder " + reminder.getId() + " with geofence");
+						reminder.registerGeofence(context);
 					}
 				}
 			}
