@@ -24,6 +24,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 /**
  * Takes a picture from CameraActivity and user input to create a new reminder
@@ -392,12 +396,34 @@ public class NewReminderActivity extends Activity {
 	public void pickGeofence() {
 		Log.d(TAG, "The user wants to set a geolocation");
 
-		Intent intent = new Intent(this, GeofenceActivity.class);
-		intent.putExtra("listID", listID);
-		intent.putExtra("title", listTitle);
+		// Check for Google Play Services
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		Log.d(TAG, "Google Play Services status: " + status);
 
-		startActivityForResult(intent, GEOFENCE_REQUEST);
-		overridePendingTransition(R.anim.right_in, R.anim.left_out);
+		switch (status) {
+		// If Google Play Services is available and installed
+			case ConnectionResult.SUCCESS:
+				// Start GeofenceActivity
+				Intent intent = new Intent(this, GeofenceActivity.class);
+				intent.putExtra("listID", listID);
+				intent.putExtra("title", listTitle);
+
+				startActivityForResult(intent, GEOFENCE_REQUEST);
+				overridePendingTransition(R.anim.right_in, R.anim.left_out);
+			break;
+
+			// If available for install
+			case ConnectionResult.SERVICE_MISSING:
+			case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+			case ConnectionResult.SERVICE_DISABLED:
+				GooglePlayServicesUtil.getErrorDialog(status, this, 0).show();
+			break;
+
+			// If everything else fails
+			default:
+				Toast.makeText(this, R.string.unsupported_device, Toast.LENGTH_LONG).show();
+			break;
+		}
 	}
 
 	@Override
