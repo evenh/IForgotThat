@@ -82,8 +82,6 @@ public class NewReminderActivity extends Activity {
 		imageHolder.setLayoutParams(layoutParams);
 		layoutParams = imageHolder.getLayoutParams();
 		Log.d(TAG, "Width after " + layoutParams.width);
-		
-		
 
 		addAlarmButton = (ImageButton) findViewById(R.id.btn_addAlarm);
 		// Set the description to an empty string by default
@@ -212,76 +210,107 @@ public class NewReminderActivity extends Activity {
 	}
 
 	/**
-	 * Shows an AlertDialog containing a date and time picker
+	 * Makes the user select either time or geofence based alarm
 	 * 
 	 * @param view The view
 	 * @since 1.0.0
 	 */
-	public void showAlarmDialog(View view) {
+	public void pickAlarmType(View view) {
 		// Disable the alarm button, we don't want double tapping
 		addAlarmButton.setEnabled(false);
 
 		if (!addAlarmButton.isEnabled()) {
-			// Get the custom date+time dialog
-			final LayoutInflater inflater = getLayoutInflater();
-			final View dateTimeView = inflater.inflate(R.layout.datetime_dialog, null);
-			// Get the UI elements for the custom dialog
-			final DatePicker datePicker = (DatePicker) dateTimeView.findViewById(R.id.datePicker);
-			final TimePicker timePicker = (TimePicker) dateTimeView.findViewById(R.id.timePicker);
-
-			datePicker.setMinDate(System.currentTimeMillis() - 1000);
-
-			// If the user has previously selected a date+time
-			if (reminder != null) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(reminder);
-
-				datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
-				timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
-				timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
-			}
-
-			AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
-					.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+			AlertDialog pickAlarmDialog = new AlertDialog.Builder(this).setTitle(R.string.alarm_type).setMessage(R.string.alarm_type_text).setCancelable(true)
+					.setPositiveButton(R.string.alarm_time, new DialogInterface.OnClickListener() {
+						// Time based alarm
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-
-							// Get the selected date + time
-							Calendar cal = Calendar.getInstance();
-							cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
-
-							reminder = new Date(cal.getTimeInMillis());
-							reminderString = ListElementObject.getDateAsString(reminder);
-							handleAlarmPreview();
-							Log.d(TAG, "The user selected this reminder: " + ListElementObject.getDateAsString(reminder));
-
 							addAlarmButton.setEnabled(true);
+							showAlarmDialog();
+							dialog.dismiss();
+						}
+					}).setNeutralButton(R.string.alarm_geo, new DialogInterface.OnClickListener() {
+						// Geofence based alarm
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							addAlarmButton.setEnabled(true);
+							pickGeofence();
 							dialog.dismiss();
 						}
 					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						// Cancel
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "The user canceled the date+time dialog");
-							addAlarmButton.setEnabled(true);
-							dialog.cancel();
-						}
-					}).setNeutralButton(R.string.no_alarm, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "The user selected 'No alarm'");
-
-							reminder = null;
-							reminderString = ListElementObject.getDateAsString(null);
-							handleAlarmPreview();
-
 							addAlarmButton.setEnabled(true);
 							dialog.cancel();
 						}
 					}).create();
 
-			alarmDialog.show();
+			pickAlarmDialog.show();
+		}
+	}
+
+	/**
+	 * Shows an AlertDialog containing a date and time picker
+	 * 
+	 * @param view The view
+	 * @since 1.0.0
+	 */
+	public void showAlarmDialog() {
+		// Get the custom date+time dialog
+		final LayoutInflater inflater = getLayoutInflater();
+		final View dateTimeView = inflater.inflate(R.layout.datetime_dialog, null);
+		// Get the UI elements for the custom dialog
+		final DatePicker datePicker = (DatePicker) dateTimeView.findViewById(R.id.datePicker);
+		final TimePicker timePicker = (TimePicker) dateTimeView.findViewById(R.id.timePicker);
+
+		datePicker.setMinDate(System.currentTimeMillis() - 1000);
+
+		// If the user has previously selected a date+time
+		if (reminder != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(reminder);
+
+			datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
+			timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
 		}
 
+		AlertDialog alarmDialog = new AlertDialog.Builder(this).setTitle("Set alarm").setCancelable(true).setView(dateTimeView)
+				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Get the selected date + time
+						Calendar cal = Calendar.getInstance();
+						cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
+
+						reminder = new Date(cal.getTimeInMillis());
+						reminderString = ListElementObject.getDateAsString(reminder);
+						handleAlarmPreview();
+						Log.d(TAG, "The user selected this reminder: " + ListElementObject.getDateAsString(reminder));
+
+						dialog.dismiss();
+					}
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "The user canceled the date+time dialog");
+						dialog.cancel();
+					}
+				}).setNeutralButton(R.string.no_alarm, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "The user selected 'No alarm'");
+
+						reminder = null;
+						reminderString = ListElementObject.getDateAsString(null);
+						handleAlarmPreview();
+
+						dialog.cancel();
+					}
+				}).create();
+
+		alarmDialog.show();
 	}
 
 	/**
@@ -344,11 +373,23 @@ public class NewReminderActivity extends Activity {
 		startActivity(intent);
 	}
 
+	/**
+	 * Convenience method for calling onBackPressed()
+	 * 
+	 * @param v The view
+	 * @since 1.0.0
+	 */
 	public void onBackPressed(View v) {
 		onBackPressed();
 	}
 
-	public void pickGeofence(View v) {
+	/**
+	 * Shows the geofence picker
+	 * 
+	 * @param v The view
+	 * @since 1.0.0
+	 */
+	public void pickGeofence() {
 		Log.d(TAG, "The user wants to set a geolocation");
 
 		Intent intent = new Intent(this, GeofenceActivity.class);
@@ -356,6 +397,7 @@ public class NewReminderActivity extends Activity {
 		intent.putExtra("title", listTitle);
 
 		startActivityForResult(intent, GEOFENCE_REQUEST);
+		overridePendingTransition(R.anim.right_in, R.anim.left_out);
 	}
 
 	@Override
@@ -411,7 +453,12 @@ public class NewReminderActivity extends Activity {
 		confirmDeletion.show();
 	}
 
-	// find the width of the device
+	/**
+	 * Finds the current device's display with
+	 * 
+	 * @return The width of the display
+	 * @since 1.0.0
+	 */
 	public int getDeviceWidth() {
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
