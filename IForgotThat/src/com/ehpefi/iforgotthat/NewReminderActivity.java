@@ -64,11 +64,14 @@ public class NewReminderActivity extends Activity {
 	private static final String TAG = "NewReminderActivity";
 
 	private static final int GEOFENCE_REQUEST = 42;
+	private Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_reminder);
+
+		context = this;
 
 		// Initialize UI elements
 		description = (EditText) findViewById(R.id.reminder_title);
@@ -230,7 +233,20 @@ public class NewReminderActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							addAlarmButton.setEnabled(true);
-							showAlarmDialog();
+							if (geofenceId == 0) {
+								showAlarmDialog();
+							} else {
+								// If a geofence alarm exists
+								AlertDialog geofenceAlarmSet = new AlertDialog.Builder(context).setTitle(R.string.alarm_already_set)
+										.setMessage(R.string.alarm_already_set_geofence).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog, int which) {
+												dialog.dismiss();
+											}
+										}).create();
+
+								geofenceAlarmSet.show();
+							}
 							dialog.dismiss();
 						}
 					}).setNeutralButton(R.string.alarm_geo, new DialogInterface.OnClickListener() {
@@ -238,7 +254,21 @@ public class NewReminderActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							addAlarmButton.setEnabled(true);
-							pickGeofence();
+							if (reminder == null) {
+								pickGeofence();
+							} else {
+								// If a time based alarm exists
+								AlertDialog geofenceAlarmSet = new AlertDialog.Builder(context).setTitle(R.string.alarm_already_set).setMessage(R.string.alarm_already_set_time)
+										.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog, int which) {
+												dialog.dismiss();
+											}
+										}).create();
+
+								geofenceAlarmSet.show();
+							}
+
 							dialog.dismiss();
 						}
 					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
