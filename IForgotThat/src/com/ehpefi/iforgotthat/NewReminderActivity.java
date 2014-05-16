@@ -515,7 +515,7 @@ public class NewReminderActivity extends Activity {
 					ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.deleteGeofenceButton);
 
 					title.setText(gfData.get(position).title);
-					address.setText(gfData.get(position).address);
+					address.setText(gfData.get(position).address + "\n" + String.format(getResources().getString(R.string.m_radius), (int) gfData.get(position).distance));
 
 					deleteButton.setFocusable(false);
 					deleteButton.setTag(R.id.TAG_ID, gfData.get(position).id);

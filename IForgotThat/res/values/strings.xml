@@ -52,6 +52,7 @@
     <string name="pick_geofence">Pick a geofence</string>
     <string name="no_geofence">No geofence</string>
     <string name="create_new_geofence">Create new</string>
+    <string name="m_radius">(%sm radius)</string>
     <!-- GeofenceActivity -->
     <string name="getting_location">Finding your location...</string>
     <string name="pick_a_location">Pick a location</string>
