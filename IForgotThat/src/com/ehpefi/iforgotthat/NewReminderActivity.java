@@ -135,6 +135,7 @@ public class NewReminderActivity extends Activity {
 				// Init geofence
 				if (editObject.getGeofenceId() > 0) {
 					geofenceId = editObject.getGeofenceId();
+					handleAlarmPreview();
 				}
 
 				// Init description
@@ -198,12 +199,21 @@ public class NewReminderActivity extends Activity {
 	 * @since 1.0.0
 	 */
 	public void handleAlarmPreview() {
-		// Sets the alarm preview
-		if (reminder == null || reminderString == null || reminderString.equals("")) {
+		// If we don't have any alarm at all
+		if (reminder == null || reminderString == null || reminderString.equals("") || geofenceId == 0) {
 			alarmPreview.setVisibility(View.GONE);
-		} else {
+		}
+
+		// If we have a geofence
+		if (geofenceId > 0) {
+			alarmPreview.setVisibility(View.VISIBLE);
+			alarmPreview.setText(gfHelper.getAddressForGeofence(geofenceId));
+			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_mylocation, 0);
+		} else if (reminder != null && !reminderString.equals("")) {
+			// Time based alarm
 			alarmPreview.setVisibility(View.VISIBLE);
 			alarmPreview.setText(reminderString);
+			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_alarms, 0);
 		}
 	}
 
@@ -276,7 +286,7 @@ public class NewReminderActivity extends Activity {
 						public void onClick(DialogInterface dialog, int which) {
 							addAlarmButton.setEnabled(true);
 							if (reminder == null) {
-								pickGeofence();
+								checkGpsAndShowPicker();
 							} else {
 								// If a time based alarm exists
 								AlertDialog geofenceAlarmSet = new AlertDialog.Builder(context).setTitle(R.string.alarm_already_set).setMessage(R.string.alarm_already_set_time)
@@ -439,12 +449,11 @@ public class NewReminderActivity extends Activity {
 	}
 
 	/**
-	 * Shows the geofence picker
+	 * Method for checking for Google Play Services and displaying the picker
 	 * 
-	 * @param v The view
 	 * @since 1.0.0
 	 */
-	public void pickGeofence() {
+	public void checkGpsAndShowPicker() {
 		Log.d(TAG, "The user wants to set a geolocation");
 
 		// Check for Google Play Services
@@ -471,7 +480,15 @@ public class NewReminderActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Shows the actual geofence picker
+	 * 
+	 * @since 1.0.0
+	 */
 	private void showGeofencePicker() {
+		// Force refresh of data
+		gfData = gfHelper.getAllGeofences();
+
 		// If we don't have any geofences
 		if (gfData == null || gfData.size() == 0) {
 			// GeofenceActivity intent
@@ -522,6 +539,7 @@ public class NewReminderActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							geofenceId = 0;
+							handleAlarmPreview();
 							dialog.dismiss();
 						}
 					}).setPositiveButton(R.string.create_new_geofence, new DialogInterface.OnClickListener() {
@@ -546,6 +564,7 @@ public class NewReminderActivity extends Activity {
 					Log.d(TAG, "Geofence selected!");
 					GeofenceData geofence = adapter.getItem(position);
 					geofenceId = geofence.id;
+					handleAlarmPreview();
 					geofencesList.dismiss();
 				}
 			});
@@ -582,6 +601,7 @@ public class NewReminderActivity extends Activity {
 			Bundle extras = data.getExtras();
 			Log.d(TAG, "geofenceId recieved: " + extras.getInt("geofenceId"));
 			geofenceId = extras.getInt("geofenceId");
+			handleAlarmPreview();
 		}
 	}
 
