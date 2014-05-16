@@ -70,8 +70,14 @@ public class NewReminderActivity extends Activity {
 	// Used for logging
 	private static final String TAG = "NewReminderActivity";
 
-	private static final int GEOFENCE_REQUEST = 42;
 	private Context context;
+
+	// Geofences
+	private GeofenceHelper gfHelper;
+	private ArrayList<GeofenceData> gfData;
+	private Dialog geofencesList;
+	ArrayAdapter<GeofenceData> adapter;
+	private static final int GEOFENCE_REQUEST = 42;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,9 @@ public class NewReminderActivity extends Activity {
 
 		// Geofence is 0 by default
 		geofenceId = 0;
+		// Geofence helpers
+		gfHelper = new GeofenceHelper(context);
+		gfData = gfHelper.getAllGeofences();
 
 		// Check for incoming data
 		Bundle bundle = getIntent().getExtras();
@@ -122,6 +131,11 @@ public class NewReminderActivity extends Activity {
 
 				reminderString = ListElementObject.getDateAsString(reminder);
 				handleAlarmPreview();
+
+				// Init geofence
+				if (editObject.getGeofenceId() > 0) {
+					geofenceId = editObject.getGeofenceId();
+				}
 
 				// Init description
 				descriptionText = editObject.getDescription();
@@ -458,71 +472,107 @@ public class NewReminderActivity extends Activity {
 	}
 
 	private void showGeofencePicker() {
-		// Get custom layout
-		View geofenceListLayout = getLayoutInflater().inflate(R.layout.list_geofences, null);
-		ListView gfDataHolder = (ListView) geofenceListLayout.findViewById(R.id.geofences_list);
+		// If we don't have any geofences
+		if (gfData == null || gfData.size() == 0) {
+			// GeofenceActivity intent
+			Intent intent = new Intent(context, GeofenceActivity.class);
+			intent.putExtra("listID", listID);
+			intent.putExtra("title", listTitle);
+			startActivityForResult(intent, GEOFENCE_REQUEST);
+			overridePendingTransition(R.anim.right_in, R.anim.left_out);
+		} else {
+			// Get custom layout
+			View geofenceListLayout = getLayoutInflater().inflate(R.layout.list_geofences, null);
+			ListView gfDataHolder = (ListView) geofenceListLayout.findViewById(R.id.geofences_list);
 
-		// Get data
-		GeofenceHelper gfHelper = new GeofenceHelper(context);
-		final ArrayList<GeofenceHelper.GeofenceData> gfData = gfHelper.getAllGeofences();
+			// Create a custom adapter
+			adapter = new ArrayAdapter<GeofenceData>(context, R.layout.list_geofences_element, android.R.id.text1, gfData) {
+				@Override
+				public View getView(int position, View convertView, ViewGroup parent) {
+					if (convertView == null) {
+						convertView = getLayoutInflater().inflate(R.layout.list_geofences_element, parent, false);
+					}
 
-		// Create a custom adapter
-		final ArrayAdapter<GeofenceData> adapter = new ArrayAdapter<GeofenceData>(context, R.layout.list_geofences_element, android.R.id.text1, gfData) {
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				if (convertView == null) {
-					convertView = getLayoutInflater().inflate(R.layout.list_geofences_element, parent, false);
+					TextView title = (TextView) convertView.findViewById(R.id.geofenceTitle);
+					TextView address = (TextView) convertView.findViewById(R.id.geofenceAddress);
+					ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.deleteGeofenceButton);
+
+					title.setText(gfData.get(position).title);
+					address.setText(gfData.get(position).address);
+
+					deleteButton.setFocusable(false);
+					deleteButton.setTag(R.id.TAG_ID, gfData.get(position).id);
+					deleteButton.setTag(R.id.TAG_POSITION, position);
+
+					return convertView;
 				}
+			};
 
-				TextView title = (TextView) convertView.findViewById(R.id.geofenceTitle);
-				TextView address = (TextView) convertView.findViewById(R.id.geofenceAddress);
+			// Connect our custom adapter
+			gfDataHolder.setAdapter(adapter);
 
-				title.setText(gfData.get(position).title);
-				address.setText(gfData.get(position).address);
-				return convertView;
-			}
-		};
+			// Create a dialog for the user to pick a geofence
+			geofencesList = new AlertDialog.Builder(context).setCancelable(true).setTitle(R.string.pick_geofence).setView(geofenceListLayout)
+					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					}).setNeutralButton(R.string.no_geofence, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							geofenceId = 0;
+							dialog.dismiss();
+						}
+					}).setPositiveButton(R.string.create_new_geofence, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// GeofenceActivity intent
+							Intent intent = new Intent(context, GeofenceActivity.class);
+							intent.putExtra("listID", listID);
+							intent.putExtra("title", listTitle);
+							startActivityForResult(intent, GEOFENCE_REQUEST);
+							overridePendingTransition(R.anim.right_in, R.anim.left_out);
+						}
+					}).create();
 
-		// Connect our custom adapter
-		gfDataHolder.setAdapter(adapter);
+			// Show the dialog
+			geofencesList.show();
 
-		// Create a dialog for the user to pick a geofence
-		final Dialog geofencesList = new AlertDialog.Builder(context).setCancelable(true).setTitle(R.string.pick_geofence).setView(geofenceListLayout)
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				}).setNeutralButton(R.string.no_geofence, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						geofenceId = 0;
-						dialog.dismiss();
-					}
-				}).setPositiveButton(R.string.create_new_geofence, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// GeofenceActivity intent
-						Intent intent = new Intent(context, GeofenceActivity.class);
-						intent.putExtra("listID", listID);
-						intent.putExtra("title", listTitle);
-						startActivityForResult(intent, GEOFENCE_REQUEST);
-						overridePendingTransition(R.anim.right_in, R.anim.left_out);
-					}
-				}).create();
+			// When the user picks a geofence
+			gfDataHolder.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					Log.d(TAG, "Geofence selected!");
+					GeofenceData geofence = adapter.getItem(position);
+					geofenceId = geofence.id;
+					geofencesList.dismiss();
+				}
+			});
+		}
+	}
 
-		// Show the dialog
-		geofencesList.show();
+	/**
+	 * Deletes a geofence from the database
+	 * 
+	 * @param v The delete button that is clicked
+	 * @since 1.0.0
+	 */
+	public void deleteGeofence(View v) {
+		// Get the ID and the position of the geofence to delete
+		int id = Integer.parseInt(v.getTag(R.id.TAG_ID).toString());
+		int position = Integer.parseInt(v.getTag(R.id.TAG_POSITION).toString());
+		// Delete from array
+		gfData.remove(position);
+		// Delete from database
+		gfHelper.deleteGeofence(id);
+		// Notify that the dataset has changed
+		adapter.notifyDataSetChanged();
 
-		// When the user picks a geofence
-		gfDataHolder.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				GeofenceData geofence = adapter.getItem(position);
-				geofenceId = geofence.id;
-				geofencesList.dismiss();
-			}
-		});
+		// If the user deleted all geofences
+		if (gfData.size() == 0) {
+			geofencesList.dismiss();
+		}
 	}
 
 	@Override
