@@ -270,8 +270,16 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		// Move camera to last known location
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 14.0f));
 
-		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-				.title("Your current location").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
+		// Get current address
+		String address = getResources().getString(R.string.no_address_available);
+		try {
+			List<Address> addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+			address = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
+		} catch (IOException e) {
+		}
+
+		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).title(address)
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
 
 		drawCircle();
 		centerMapOnUserLocation();
