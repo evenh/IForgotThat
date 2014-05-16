@@ -420,27 +420,31 @@ public class ListElementObject {
 	}
 
 	private void deleteGeofence(Context context) {
-		GeofenceHelper gfHelper = new GeofenceHelper(context);
-		// Get the geofence
-		List<String> removeList = new ArrayList<String>();
-		Geofence gf = gfHelper.getGeofence(geofenceId, id);
-		// Add it to the removal list
-		removeList.add(gf.getRequestId());
+		if (geofenceId > 0) {
+			GeofenceHelper gfHelper = new GeofenceHelper(context);
+			// Get the geofence
+			List<String> removeList = new ArrayList<String>();
+			Geofence gf = gfHelper.getGeofence(geofenceId, id);
+			// Add it to the removal list
+			removeList.add(gf.getRequestId());
 
-		locClient.removeGeofences(removeList, new LocationClient.OnRemoveGeofencesResultListener() {
-			@Override
-			public void onRemoveGeofencesByRequestIdsResult(int statusCode, String[] geofenceRequestIds) {
-				if (statusCode == LocationStatusCodes.SUCCESS) {
-					Log.i(TAG, "Canceled geofence for reminder #" + getId());
-				} else {
-					Log.e(TAG, "Couldn't cancel geofence for reminder #" + getId());
+			locClient.removeGeofences(removeList, new LocationClient.OnRemoveGeofencesResultListener() {
+				@Override
+				public void onRemoveGeofencesByRequestIdsResult(int statusCode, String[] geofenceRequestIds) {
+					if (statusCode == LocationStatusCodes.SUCCESS) {
+						Log.i(TAG, "Canceled geofence for reminder #" + getId());
+					} else {
+						Log.e(TAG, "Couldn't cancel geofence for reminder #" + getId());
+					}
 				}
-			}
 
-			@Override
-			public void onRemoveGeofencesByPendingIntentResult(int statusCode, PendingIntent pendingIntent) {
-			}
-		});
+				@Override
+				public void onRemoveGeofencesByPendingIntentResult(int statusCode, PendingIntent pendingIntent) {
+				}
+			});
+		} else {
+			Log.i(TAG, "No geofence to cancel for reminder #" + id);
+		}
 	}
 
 	/**

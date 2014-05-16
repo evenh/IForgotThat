@@ -173,7 +173,16 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		// Log that we are deleting a list element
 		Log.i(TAG, "Deletion of geofence with id " + id + " requested");
 
-		// TODO: What to do with reminders which has this geofence?
+		// For reminders that has this geofence, set it's geofence to 0
+		ListElementHelper leh = new ListElementHelper(context);
+		ArrayList<ListElementObject> reminders = leh.getItemsWithGeofence(id);
+		if (reminders.size() > 0) {
+			for (ListElementObject reminder : leh.getItemsWithGeofence(id)) {
+				Log.d(TAG, "Resetting geofenceId to 0 for reminder with id " + reminder.getId());
+				reminder.setGeofenceId(0);
+				leh.updateListElement(reminder);
+			}
+		}
 
 		// Try to delete the list element
 		if (db.delete(TABLE_NAME, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
@@ -194,8 +203,14 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		return false;
 	}
 
+	/**
+	 * Gets the saved address of a geofence in the database
+	 * 
+	 * @param id The geofence id
+	 * @return The address of the geofence on success, "No address available" otherwise
+	 */
 	public String getAddressForGeofence(int id) {
-		String address = "No address available";
+		String address = context.getString(R.string.no_address_available);
 
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();
@@ -234,7 +249,12 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		return null;
 	}
 
-	// Class to hold our geofence data
+	/**
+	 * A simple class for holding geofence data
+	 * 
+	 * @author Even Holthe
+	 * @since 1.0.0
+	 */
 	public class GeofenceData {
 		public int id;
 		public double lat;
@@ -244,6 +264,12 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		public String title;
 	}
 
+	/**
+	 * Gets all the geofences in the database. For populating a ListView so the user can pick a single geofence
+	 * 
+	 * @return An array of simple GeofenceData objects on success, empty array on failure
+	 * @since 1.0.0
+	 */
 	public ArrayList<GeofenceHelper.GeofenceData> getAllGeofences() {
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();
@@ -254,13 +280,13 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
 
+		// Array to hold our data
+		ArrayList<GeofenceHelper.GeofenceData> returnData = new ArrayList<GeofenceHelper.GeofenceData>();
+
 		// As long as we have exactly one result
 		if (cursor != null && cursor.getCount() >= 1) {
 			// Move to the only record
 			cursor.moveToFirst();
-
-			// Array to hold our data
-			ArrayList<GeofenceHelper.GeofenceData> returnData = new ArrayList<GeofenceHelper.GeofenceData>();
 
 			for (int i = 0; i < cursor.getCount(); i++) {
 				GeofenceData data = new GeofenceData();
@@ -294,6 +320,14 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		return null;
 	}
 
+	/**
+	 * Gets a specific geofence
+	 * 
+	 * @param id The id of the geofence from the database
+	 * @param reminderId The id of the ListElementObject
+	 * @return An Android Geofence object
+	 * @since 1.0.0
+	 */
 	public Geofence getGeofence(int id, int reminderId) {
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();

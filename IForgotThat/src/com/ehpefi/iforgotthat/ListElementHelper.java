@@ -401,6 +401,47 @@ public class ListElementHelper extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Gets all list elements which has a specific geofence
+	 * 
+	 * @return An ArrayList of ListElementObject which has a specific geofence on success, an empty list of these on failure
+	 * @since 1.0.0
+	 */
+	public ArrayList<ListElementObject> getItemsWithGeofence(int geofenceId) {
+		// Create an ArrayList to hold our list elements
+		ArrayList<ListElementObject> geofenceItems = new ArrayList<ListElementObject>();
+
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting all list elements from the database which has a specific geofence
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LIST_ID, COL_DESCRIPTION, COL_COMPLETED, COL_CREATED_TIMESTAMP,
+				COL_ALARM_TIMESTAMP, COL_IMAGE, COL_GEOFENCE, TABLE_NAME, COL_GEOFENCE, geofenceId);
+
+		// Cursor who points at the current record
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// Iterate over the results
+		while (cursor.moveToNext()) {
+			// Get completion status -> convert to boolean
+			boolean completed = (cursor.getInt(3) == 1 ? true : false);
+
+			try {
+				geofenceItems.add(new ListElementObject(cursor.getInt(0), cursor.getInt(1), cursor.getString(2), cursor.getString(4), cursor.getString(5), completed, cursor
+						.getBlob(6), cursor.getInt(7)));
+			} catch (Exception e) {
+				Log.e(TAG, "Could not create ListElementObject in getItemsWithGeofence(), the following exception was thrown", e);
+			}
+		}
+
+		// Close the database connection
+		cursor.close();
+		db.close();
+
+		// Return the list
+		return geofenceItems;
+	}
+
+	/**
 	 * Updates the database with an updated object
 	 * 
 	 * @param updatedListElement The object with updated information

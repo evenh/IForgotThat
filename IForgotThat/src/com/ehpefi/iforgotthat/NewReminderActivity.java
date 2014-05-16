@@ -588,6 +588,12 @@ public class NewReminderActivity extends Activity {
 		// Notify that the dataset has changed
 		adapter.notifyDataSetChanged();
 
+		// If this is the geofence that the user has currently selected
+		if (id == geofenceId) {
+			geofenceId = 0;
+			handleAlarmPreview();
+		}
+
 		// If the user deleted all geofences
 		if (gfData.size() == 0) {
 			geofencesList.dismiss();
