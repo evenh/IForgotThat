@@ -1,10 +1,12 @@
 package com.ehpefi.iforgotthat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,14 +20,17 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.ehpefi.iforgotthat.GeofenceHelper.GeofenceData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -433,13 +438,7 @@ public class NewReminderActivity extends Activity {
 		switch (status) {
 		// If Google Play Services is available and installed
 			case ConnectionResult.SUCCESS:
-				// Start GeofenceActivity
-				Intent intent = new Intent(this, GeofenceActivity.class);
-				intent.putExtra("listID", listID);
-				intent.putExtra("title", listTitle);
-
-				startActivityForResult(intent, GEOFENCE_REQUEST);
-				overridePendingTransition(R.anim.right_in, R.anim.left_out);
+				showGeofencePicker();
 			break;
 
 			// If available for install
@@ -454,6 +453,61 @@ public class NewReminderActivity extends Activity {
 				Toast.makeText(this, R.string.unsupported_device, Toast.LENGTH_LONG).show();
 			break;
 		}
+	}
+
+	private void showGeofencePicker() {
+		// Get custom layout
+		View geofenceListLayout = getLayoutInflater().inflate(R.layout.list_geofences, null);
+		ListView gfDataHolder = (ListView) geofenceListLayout.findViewById(R.id.geofences_list);
+
+		// Get data
+		GeofenceHelper gfHelper = new GeofenceHelper(context);
+		final ArrayList<GeofenceHelper.GeofenceData> gfData = gfHelper.getAllGeofences();
+
+		// Create a custom adapter
+		final ArrayAdapter<GeofenceData> adapter = new ArrayAdapter<GeofenceData>(context, android.R.layout.simple_list_item_2, android.R.id.text1, gfData) {
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View view = super.getView(position, convertView, parent);
+				TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+				TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+				text1.setText(gfData.get(position).title);
+				text2.setText(gfData.get(position).address);
+				return view;
+			}
+		};
+
+		// Connect our custom adapter
+		gfDataHolder.setAdapter(adapter);
+
+		// Create a dialog for the user to pick a geofence
+		Dialog geofencesList = new AlertDialog.Builder(context).setCancelable(true).setTitle(R.string.pick_geofence).setView(geofenceListLayout)
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				}).setNeutralButton(R.string.no_geofence, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						geofenceId = 0;
+						dialog.dismiss();
+					}
+				}).setPositiveButton(R.string.create_new_geofence, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// GeofenceActivity intent
+						Intent intent = new Intent(context, GeofenceActivity.class);
+						intent.putExtra("listID", listID);
+						intent.putExtra("title", listTitle);
+						startActivityForResult(intent, GEOFENCE_REQUEST);
+						overridePendingTransition(R.anim.right_in, R.anim.left_out);
+					}
+				}).create();
+
+		// Show the dialog
+		geofencesList.show();
 	}
 
 	@Override

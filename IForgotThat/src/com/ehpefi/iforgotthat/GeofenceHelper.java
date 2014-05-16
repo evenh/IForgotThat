@@ -1,6 +1,7 @@
 package com.ehpefi.iforgotthat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -224,6 +225,66 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		}
 
 		Log.e(TAG, "The cursor in getAddressForGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+
+		// Close the database connection
+		cursor.close();
+		db.close();
+
+		// Fail
+		return null;
+	}
+
+	// Class to hold our geofence data
+	public class GeofenceData {
+		public int id;
+		public double lat;
+		public double lon;
+		public float distance;
+		public String address;
+		public String title;
+	}
+
+	public ArrayList<GeofenceHelper.GeofenceData> getAllGeofences() {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting all geofences from the database
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s", COL_ID, COL_LAT, COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// As long as we have exactly one result
+		if (cursor != null && cursor.getCount() >= 1) {
+			// Move to the only record
+			cursor.moveToFirst();
+
+			// Array to hold our data
+			ArrayList<GeofenceHelper.GeofenceData> returnData = new ArrayList<GeofenceHelper.GeofenceData>();
+
+			for (int i = 0; i < cursor.getCount(); i++) {
+				GeofenceData data = new GeofenceData();
+				data.id = cursor.getInt(0);
+				data.lat = cursor.getDouble(1);
+				data.lon = cursor.getDouble(2);
+				data.distance = Float.valueOf(cursor.getInt(3));
+				data.address = cursor.getString(4);
+				data.title = cursor.getString(5);
+
+				returnData.add(data);
+
+				cursor.moveToNext();
+			}
+
+			// Close the database connection
+			cursor.close();
+			db.close();
+
+			// Return the geofence
+			return returnData;
+		}
+
+		Log.e(TAG, "The cursor in getGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
 
 		// Close the database connection
 		cursor.close();

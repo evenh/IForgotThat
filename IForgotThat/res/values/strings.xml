@@ -49,6 +49,9 @@
     <string name="alarm_already_set">Alarm already set</string>
     <string name="alarm_already_set_geofence">Geofence alarm already set. Please remove that alarm and try again.</string>
     <string name="alarm_already_set_time">Time based alarm already set. Please remove that alarm and try again.</string>
+    <string name="pick_geofence">Pick a geofence</string>
+    <string name="no_geofence">No geofence</string>
+    <string name="create_new_geofence">Create new</string>
     <!-- GeofenceActivity -->
     <string name="getting_location">Finding your location...</string>
     <string name="pick_a_location">Pick a location</string>
