@@ -467,16 +467,19 @@ public class NewReminderActivity extends Activity {
 		final ArrayList<GeofenceHelper.GeofenceData> gfData = gfHelper.getAllGeofences();
 
 		// Create a custom adapter
-		final ArrayAdapter<GeofenceData> adapter = new ArrayAdapter<GeofenceData>(context, android.R.layout.simple_list_item_2, android.R.id.text1, gfData) {
+		final ArrayAdapter<GeofenceData> adapter = new ArrayAdapter<GeofenceData>(context, R.layout.list_geofences_element, android.R.id.text1, gfData) {
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
-				View view = super.getView(position, convertView, parent);
-				TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-				TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+				if (convertView == null) {
+					convertView = getLayoutInflater().inflate(R.layout.list_geofences_element, parent, false);
+				}
 
-				text1.setText(gfData.get(position).title);
-				text2.setText(gfData.get(position).address);
-				return view;
+				TextView title = (TextView) convertView.findViewById(R.id.geofenceTitle);
+				TextView address = (TextView) convertView.findViewById(R.id.geofenceAddress);
+
+				title.setText(gfData.get(position).title);
+				address.setText(gfData.get(position).address);
+				return convertView;
 			}
 		};
 
