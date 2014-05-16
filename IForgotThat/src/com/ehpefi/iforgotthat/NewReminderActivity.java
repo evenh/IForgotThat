@@ -20,6 +20,8 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -482,7 +484,7 @@ public class NewReminderActivity extends Activity {
 		gfDataHolder.setAdapter(adapter);
 
 		// Create a dialog for the user to pick a geofence
-		Dialog geofencesList = new AlertDialog.Builder(context).setCancelable(true).setTitle(R.string.pick_geofence).setView(geofenceListLayout)
+		final Dialog geofencesList = new AlertDialog.Builder(context).setCancelable(true).setTitle(R.string.pick_geofence).setView(geofenceListLayout)
 				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -508,6 +510,16 @@ public class NewReminderActivity extends Activity {
 
 		// Show the dialog
 		geofencesList.show();
+
+		// When the user picks a geofence
+		gfDataHolder.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				GeofenceData geofence = adapter.getItem(position);
+				geofenceId = geofence.id;
+				geofencesList.dismiss();
+			}
+		});
 	}
 
 	@Override
