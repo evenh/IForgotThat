@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -211,6 +212,12 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 	 */
 	public String getAddressForGeofence(int id) {
 		String address = context.getString(R.string.no_address_available);
+
+		// Check for internet connection
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (cm.getActiveNetworkInfo() == null) {
+			return address;
+		}
 
 		// Create a pointer to the database
 		SQLiteDatabase db = getReadableDatabase();

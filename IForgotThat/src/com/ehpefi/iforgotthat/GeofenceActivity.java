@@ -5,12 +5,14 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -129,11 +131,15 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 				// Set initial address to an error message
 				String address = getResources().getString(R.string.no_address_available);
 
-				// Fetch the address via the geocoder
-				try {
-					List<Address> addresses = geocoder.getFromLocation(dragLat, dragLong, 1);
-					address = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
-				} catch (IOException e) {
+				// Check for Internet connectivity
+				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				if (cm.getActiveNetworkInfo() != null) {
+					// Fetch the address via the geocoder
+					try {
+						List<Address> addresses = geocoder.getFromLocation(dragLat, dragLong, 1);
+						address = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
+					} catch (IOException e) {
+					}
 				}
 
 				// Update the marker's title
