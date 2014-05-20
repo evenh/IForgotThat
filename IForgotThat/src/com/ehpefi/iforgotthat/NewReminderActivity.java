@@ -1,8 +1,10 @@
 package com.ehpefi.iforgotthat;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -515,6 +520,33 @@ public class NewReminderActivity extends Activity {
 					ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.deleteGeofenceButton);
 
 					title.setText(gfData.get(position).title);
+
+					// If we don't have a known address and have Internet, update the address in the database
+					ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+					if (cm.getActiveNetworkInfo() != null && (gfData.get(position).address.equals(getResources().getString(R.string.no_address_available)))) {
+						Log.d(TAG, "Internet + no address. Trying to update address in the database..");
+						// New objects
+						String resolvedAddress = getResources().getString(R.string.no_address_available);
+						GeofenceData currentGeofence = gfData.get(position);
+						// Try to resolve address
+						Geocoder gc = new Geocoder(context);
+						try {
+							List<Address> addresses = gc.getFromLocation(currentGeofence.lat, currentGeofence.lon, 1);
+							resolvedAddress = addresses.get(0).getAddressLine(0) + ", " + addresses.get(0).getAddressLine(1);
+						} catch (IOException e) {
+						}
+
+						// If we have a valid address
+						if (resolvedAddress != getResources().getString(R.string.no_address_available)) {
+							// Update in the database
+							if (gfHelper.setAddressForGeofence(currentGeofence.id, resolvedAddress)) {
+								gfData = gfHelper.getAllGeofences();
+								// Notify that the dataset has changed
+								adapter.notifyDataSetChanged();
+							}
+						}
+					}
+
 					address.setText(gfData.get(position).address + "\n" + String.format(getResources().getString(R.string.m_radius), (int) gfData.get(position).distance));
 
 					deleteButton.setFocusable(false);

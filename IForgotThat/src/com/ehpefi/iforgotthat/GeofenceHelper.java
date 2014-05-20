@@ -205,6 +205,39 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Updates the address for a given geofence
+	 * 
+	 * @param id The id of the geofence in the database
+	 * @param newAddress The new address for the geofence
+	 * @return True on success, false otherwise
+	 * @since 1.0.0
+	 */
+	public boolean setAddressForGeofence(int id, String newAddress) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getWritableDatabase();
+
+		// Provide updated data
+		ContentValues values = new ContentValues();
+		values.put(COL_ID, id);
+		values.put(COL_ADDRESS, newAddress);
+
+		// Try to update the list element
+		if (db.update(TABLE_NAME, values, COL_ID + "=?", new String[] { Integer.toString(id) }) == 1) {
+			Log.i(TAG, "The address for geofence with id " + id + " was successfully set to " + newAddress + "!");
+
+			// Close the database connection
+			db.close();
+
+			return true;
+		}
+		Log.e(TAG, "Couldn't update the address for geofence with id " + id);
+
+		db.close();
+
+		return false;
+	}
+
+	/**
 	 * Gets the saved address of a geofence in the database
 	 * 
 	 * @param id The geofence id
