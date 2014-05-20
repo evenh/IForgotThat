@@ -19,9 +19,10 @@ import android.widget.TextView;
  */
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	// Our data
-	private ArrayList<ListElementObject> elements;
+	private final ArrayList<ListElementObject> elements;
 	private ListElementHelper listElementHelper;
 	private ListHelper listHelper;
+	private final GeofenceHelper gfHelper;
 
 	// Context and data
 	public Context context;
@@ -34,6 +35,8 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		super(context, textViewResourceId, elements);
 		this.elements = elements;
 		this.context = context;
+
+		gfHelper = new GeofenceHelper(this.context);
 	}
 
 	@Override
@@ -116,6 +119,11 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			// If we have an alarm
 			if (!reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
 				rowHolder.alarm.setText(reminder.getAlarmAsString());
+			}
+
+			// If we have a geofence alarm
+			if (reminder.getGeofenceId() > 0) {
+				rowHolder.alarm.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
 			}
 
 			// If we have a description
