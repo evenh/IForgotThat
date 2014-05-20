@@ -28,6 +28,7 @@ public class DetailedReminderActivity extends Activity {
 
 	// Helper
 	private ListElementHelper listElementHelper;
+	private ListHelper listHelper;
 
 	// For logging
 	public static final String TAG = "DetailedReminderActivity";
@@ -40,6 +41,7 @@ public class DetailedReminderActivity extends Activity {
 
 		// Init helper
 		listElementHelper = new ListElementHelper(this);
+		listHelper = new ListHelper(this);
 
 		// UI init
 		description = (TextView) findViewById(R.id.description);
@@ -62,20 +64,16 @@ public class DetailedReminderActivity extends Activity {
 			Log.d(TAG, "Got the following reminder: " + reminder.toString());
 			listID = bundle.getInt("listID");
 
-			// Check for a completed item
+			// Check for a completed item + description
 			if (listID != ListElementHelper.COMPLETED_LIST_ID) {
 				listID = reminder.getListId();
+				description.setText(listHelper.getList(listID).getTitle());
+			} else {
+				description.setText(R.string.completed_items);
 			}
 
 			// Image
 			image.setImageBitmap(reminder.getImageAsBitmap());
-
-			// Description
-			if (!reminder.getDescription().equals("")) {
-				description.setText(reminder.getDescription());
-			} else {
-				description.setText(R.string.has_no_description);
-			}
 
 			// Alarm
 			if (reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
