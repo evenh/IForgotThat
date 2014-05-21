@@ -104,6 +104,7 @@ public class NewReminderActivity extends Activity {
 		layoutParams.width = this.getDeviceWidth();
 		layoutParams.height = this.getDeviceWidth();
 
+
 		imageHolder.setLayoutParams(layoutParams);
 		layoutParams = imageHolder.getLayoutParams();
 		Log.d(TAG, "Width after " + layoutParams.width);

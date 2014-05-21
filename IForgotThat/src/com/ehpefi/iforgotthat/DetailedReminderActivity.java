@@ -2,9 +2,12 @@ package com.ehpefi.iforgotthat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,7 +53,18 @@ public class DetailedReminderActivity extends Activity {
 		geolocation = (TextView) findViewById(R.id.geolocation_text);
 
 		onNewIntent(getIntent());
-	}
+		
+		// set the imageholder size to match the device
+		ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
+		Log.d(TAG, "Width before " + layoutParams.width);
+
+		layoutParams.width = this.getDeviceWidth();
+		layoutParams.height = this.getDeviceWidth();
+		
+		image.setLayoutParams(layoutParams);
+		layoutParams = image.getLayoutParams();
+		Log.d(TAG, "Width after " + layoutParams.width);
+}
 
 	@Override
 	public void onNewIntent(Intent intent) {
@@ -90,6 +104,23 @@ public class DetailedReminderActivity extends Activity {
 				geolocation.setVisibility(View.GONE);
 			}
 		}
+	}
+
+	/**
+	 * Finds the current device's display with
+	 * 
+	 * @return The width of the display
+	 * @since 1.0.0
+	 */
+	public int getDeviceWidth() {
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Log.d(TAG, "The device width is: " + size.x + "px");
+
+		int width = size.x;
+
+		return width;
 	}
 
 	@Override
