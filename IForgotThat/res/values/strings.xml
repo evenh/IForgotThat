@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- App strings -->
     <string name="app_name">I Forgot That</string>
     <string name="action_settings">Settings</string>
@@ -43,24 +42,24 @@
     <string name="trash_photo">Trash this photo?</string>
     <string name="confirm_trash_photo">This photo will be lost</string>
     <string name="alarm_time">Time</string>
-    <string name="alarm_geo">Geofence</string>
-    <string name="alarm_type">Alarm type</string>
+    <string name="alarm_geo">Location</string>
+    <string name="alarm_type">Set an alarm?</string>
     <string name="alarm_type_text">Pick a suitable alarm type</string>
     <string name="unsupported_device">Unsupported for this device</string>
     <string name="alarm_already_set">Alarm already set</string>
-    <string name="alarm_already_set_geofence">Geofence alarm already set. Please remove that alarm and try again.</string>
+    <string name="alarm_already_set_geofence">Location based alarm already set. Please remove that alarm and try again.</string>
     <string name="alarm_already_set_time">Time based alarm already set. Please remove that alarm and try again.</string>
-    <string name="pick_geofence">Pick a geofence</string>
-    <string name="no_geofence">No geofence</string>
+    <string name="pick_geofence">Select a location</string>
+    <string name="no_geofence">No location</string>
     <string name="create_new_geofence">Create new</string>
     <string name="m_radius">(%sm radius)</string>
     <!-- GeofenceActivity -->
     <string name="getting_location">Finding your location...</string>
     <string name="pick_a_location">Pick a location</string>
-    <string name="name_geofence">Geofence name</string>
+    <string name="name_geofence">Location name</string>
     <string name="name_geofence_empty">No name specified</string>
-    <string name="name_geofence_hint">The name of your geofence</string>
-    <string name="save_geofence">Save geofence (%sm radius)</string>
+    <string name="name_geofence_hint">The name of your location</string>
+    <string name="save_geofence">Save location (%sm radius)</string>
     <string name="no_address_available">No address available</string>
     <!-- Utils -->
     <string name="no_loc_providers_enabled_ok">Enable Location Services</string>
