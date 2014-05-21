@@ -361,6 +361,54 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * Gets a specific geofence, meant to be used for listing out data
+	 * 
+	 * @return An simple GeofenceData object on success, null on failure
+	 * @param id The id of the geofence in the database
+	 * @since 1.0.0
+	 */
+	public GeofenceData getGeofence(int id) {
+		// Create a pointer to the database
+		SQLiteDatabase db = getReadableDatabase();
+
+		// The SQL for selecting all geofences from the database
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE %s = %d", COL_ID, COL_LAT, COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME, COL_ID, id);
+
+		// Cursor who points at the result
+		Cursor cursor = db.rawQuery(sql, null);
+
+		// As long as we have exactly one result
+		if (cursor != null && cursor.getCount() >= 1) {
+			// Move to the only record
+			cursor.moveToFirst();
+
+			GeofenceData data = new GeofenceData();
+			data.id = cursor.getInt(0);
+			data.lat = cursor.getDouble(1);
+			data.lon = cursor.getDouble(2);
+			data.distance = Float.valueOf(cursor.getInt(3));
+			data.address = cursor.getString(4);
+			data.title = cursor.getString(5);
+
+			// Close the database connection
+			cursor.close();
+			db.close();
+
+			// Return the geofence
+			return data;
+		}
+
+		Log.e(TAG, "The cursor in getGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+
+		// Close the database connection
+		cursor.close();
+		db.close();
+
+		// Fail
+		return null;
+	}
+
+	/**
 	 * Gets a specific geofence
 	 * 
 	 * @param id The id of the geofence from the database

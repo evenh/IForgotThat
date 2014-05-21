@@ -53,18 +53,18 @@ public class DetailedReminderActivity extends Activity {
 		geolocation = (TextView) findViewById(R.id.geolocation_text);
 
 		onNewIntent(getIntent());
-		
+
 		// set the imageholder size to match the device
 		ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
 		Log.d(TAG, "Width before " + layoutParams.width);
 
 		layoutParams.width = this.getDeviceWidth();
 		layoutParams.height = this.getDeviceWidth();
-		
+
 		image.setLayoutParams(layoutParams);
 		layoutParams = image.getLayoutParams();
 		Log.d(TAG, "Width after " + layoutParams.width);
-}
+	}
 
 	@Override
 	public void onNewIntent(Intent intent) {
@@ -99,7 +99,7 @@ public class DetailedReminderActivity extends Activity {
 			if (reminder.getGeofenceId() > 0) {
 				Log.d(TAG, "Has geofence");
 				GeofenceHelper gfHelper = new GeofenceHelper(this);
-				geolocation.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
+				geolocation.setText((gfHelper.getGeofence(reminder.getGeofenceId()).title));
 			} else {
 				geolocation.setVisibility(View.GONE);
 			}

@@ -124,7 +124,8 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 
 			// If we have a geofence alarm
 			if (reminder.getGeofenceId() > 0) {
-				rowHolder.alarm.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
+				rowHolder.alarm.setText((gfHelper.getGeofence(reminder.getGeofenceId()).title));
+				// rowHolder.alarm.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
 			}
 
 			// If we have a description
