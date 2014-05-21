@@ -64,6 +64,7 @@
         swipe:swipeCloseAllItemsWhenMoveList="true"
         swipe:swipeDrawableChecked="@drawable/choice_selected"
         swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
+        swipe:swipeOpenOnLongPress="false"
         swipe:swipeFrontView="@+id/front"
         swipe:swipeMode="left" />
 
