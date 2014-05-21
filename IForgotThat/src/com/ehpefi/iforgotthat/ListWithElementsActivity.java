@@ -118,8 +118,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers a delete operation of the current reminder
 	 * 
-	 * @param button
-	 *            The view
+	 * @param button The view
 	 * @since 1.0.0
 	 */
 	public void deleteElement(View button) {
@@ -146,8 +145,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers an edit operation of the current reminder
 	 * 
-	 * @param button
-	 *            The view
+	 * @param button The view
 	 * @since 1.0.0
 	 */
 	public void editElement(View button) {
@@ -172,8 +170,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Triggers a completion operation of the current reminder
 	 * 
-	 * @param button
-	 *            The view
+	 * @param button The view
 	 * @since 1.0.0
 	 */
 	public void completeElement(View button) {
@@ -204,8 +201,7 @@ public class ListWithElementsActivity extends Activity {
 	}
 
 	/**
-	 * Takes care of switching the views depending on the number of lists and if
-	 * the user is in the "completed items" special list
+	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items" special list
 	 * 
 	 * @since 1.0.0
 	 */
@@ -249,8 +245,7 @@ public class ListWithElementsActivity extends Activity {
 	/**
 	 * Opens the CameraActivity class for creating
 	 * 
-	 * @param v
-	 *            The view
+	 * @param v The view
 	 * @since 1.0.0
 	 */
 	public void newReminder(View v) {
