@@ -471,7 +471,9 @@ public class NewReminderActivity extends Activity {
 		switch (status) {
 		// If Google Play Services is available and installed
 			case ConnectionResult.SUCCESS:
-				showGeofencePicker();
+				if (Utils.isLocationEnabled(this)) {
+					showGeofencePicker();
+				}
 			break;
 
 			// If available for install

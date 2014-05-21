@@ -9,6 +9,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="ok">OK</string>
+    <string name="close">Close</string>
     <!-- Main activity -->
     <string name="add_new_list">Add a new list</string>
     <string name="add_new_list_hint">Add a new list</string>
@@ -61,4 +62,8 @@
     <string name="name_geofence_hint">The name of your geofence</string>
     <string name="save_geofence">Save geofence (%sm radius)</string>
     <string name="no_address_available">No address available</string>
+    <!-- Utils -->
+    <string name="no_loc_providers_enabled_ok">Enable Location Services</string>
+    <string name="no_loc_providers_enabled_title">No Location Services Enabled</string>
+    <string name="no_loc_providers_enabled_message">Enable Location Services in order to use geofences</string>
 </resources>
