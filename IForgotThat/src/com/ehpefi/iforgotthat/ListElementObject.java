@@ -272,7 +272,10 @@ public class ListElementObject {
 	}
 
 	public Bitmap getImageAsBitmap() {
-		return BitmapFactory.decodeByteArray(image, 0, image.length);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPurgeable = true;
+
+		return BitmapFactory.decodeByteArray(image, 0, image.length, options);
 	}
 
 	public void setListId(int listId) {

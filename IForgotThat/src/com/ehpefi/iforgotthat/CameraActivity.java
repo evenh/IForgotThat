@@ -66,7 +66,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		camera = getCameraInstance();
 
-
 		// Check for incoming data and set list title
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
@@ -239,8 +238,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 				// selects the smallest resolution (last item in array)
 				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
-				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x"
-						+ selectedPictureSize.height);
+				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
 				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
 
 				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
@@ -251,8 +249,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				}
 
 				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
-				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x"
-						+ selectedPreviewSize.height);
+				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
 				// params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
 
 				c.setParameters(params);
@@ -277,7 +274,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private byte[] compressImage(byte[] input) {
 		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
 
-		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPurgeable = true;
+
+		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length, options);
 		ByteArrayOutputStream blob = new ByteArrayOutputStream();
 
 		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -294,6 +294,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		byte[] compressed = blob.toByteArray();
 		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");
+
+		original = null;
+		blob = null;
 
 		return compressed;
 	}

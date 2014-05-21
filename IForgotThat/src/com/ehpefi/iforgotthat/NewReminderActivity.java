@@ -104,7 +104,6 @@ public class NewReminderActivity extends Activity {
 		layoutParams.width = this.getDeviceWidth();
 		layoutParams.height = this.getDeviceWidth();
 
-
 		imageHolder.setLayoutParams(layoutParams);
 		layoutParams = imageHolder.getLayoutParams();
 		Log.d(TAG, "Width after " + layoutParams.width);
@@ -172,7 +171,10 @@ public class NewReminderActivity extends Activity {
 			}
 
 			if (image != null) {
-				imageHolder.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPurgeable = true;
+
+				imageHolder.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length, options));
 			}
 
 		} else {

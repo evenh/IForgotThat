@@ -3,6 +3,7 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	// Our data
 	private final ArrayList<ListElementObject> elements;
-	private ListElementHelper listElementHelper;
+	private final ListElementHelper listElementHelper;
 	private ListHelper listHelper;
 	private final GeofenceHelper gfHelper;
 
@@ -36,6 +37,8 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		this.elements = elements;
 		this.context = context;
 
+		// Initialize new helper instances
+		listElementHelper = new ListElementHelper(this.context);
 		gfHelper = new GeofenceHelper(this.context);
 	}
 
@@ -104,9 +107,6 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			rowHolder = (ElementRow) view.getTag();
 		}
 
-		// Initialize a new helper instance
-		listElementHelper = new ListElementHelper(getContext());
-
 		// Get the current object
 		reminder = getItem(position);
 
@@ -114,7 +114,8 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		rowHolder.belongingList.setVisibility(View.GONE);
 
 		if (reminder != null) {
-			rowHolder.image.setImageBitmap(reminder.getImageAsBitmap());
+			Bitmap reminderImage = reminder.getImageAsBitmap();
+			rowHolder.image.setImageBitmap(reminderImage);
 
 			// If we have an alarm
 			if (!reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
@@ -143,6 +144,11 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			}
 		}
 
+		reminder = null;
 		return view;
+	}
+
+	public void clearData() {
+		elements.clear();
 	}
 }
