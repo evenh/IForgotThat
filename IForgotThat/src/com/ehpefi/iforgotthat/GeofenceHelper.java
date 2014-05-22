@@ -81,8 +81,7 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onOpen(SQLiteDatabase db) {
-		// Maybe somewhat hacky, but SQLiteOpenHelper doesn't call onCreate() for a new
-		// table, just a new database completely
+		// Maybe somewhat hacky, but SQLiteOpenHelper doesn't call onCreate() for a new table, just a new database completely
 
 		// Ask the database if the table 'items' exist
 		Cursor cursor = db.rawQuery(String.format("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%s'", TABLE_NAME), null);
@@ -315,8 +314,8 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting all geofences from the database
-		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s ORDER BY %s %s", COL_ID, COL_LAT,
-				COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME, COL_ID, "DESC");
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s ORDER BY %s %s", COL_ID, COL_LAT, COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME, COL_ID,
+				"DESC");
 
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
