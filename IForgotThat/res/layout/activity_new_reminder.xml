@@ -39,7 +39,9 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textColor="#eee" />
+            android:textColor="#eee"
+            android:textSize="14sp" />
+
     </FrameLayout>
 
     <EditText

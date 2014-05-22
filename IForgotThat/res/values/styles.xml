@@ -12,10 +12,17 @@
         -->
     </style>
 
-    <!-- Application theme. -->
+    <!-- General style theme applied to all activities -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--  Set general layout styles here and apply them to the desired view -->
+    <style name="iForgotThatLayout">
+        <item name="android:textColor">#ddd</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
     </style>
 
 </resources>
