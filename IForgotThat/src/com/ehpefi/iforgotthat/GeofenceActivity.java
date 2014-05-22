@@ -285,7 +285,7 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		}
 
 		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).title(address)
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_place)));
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.geolocation_marker)));
 
 		drawCircle();
 		centerMapOnUserLocation();
@@ -306,8 +306,8 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		if (userGeofence != null) {
 			LatLng markerPosition = userGeofence.getPosition();
 
-			CircleOptions circleOptions = new CircleOptions().center(markerPosition).radius(currentGeofenceRadius).fillColor(Color.TRANSPARENT).strokeColor(Color.BLUE)
-					.strokeWidth(8);
+			CircleOptions circleOptions = new CircleOptions().center(markerPosition).radius(currentGeofenceRadius).fillColor(Color.TRANSPARENT)
+					.strokeColor(Color.parseColor("#6dcaec")).strokeWidth(8);
 			userGeofenceCircle = map.addCircle(circleOptions);
 		}
 	}
