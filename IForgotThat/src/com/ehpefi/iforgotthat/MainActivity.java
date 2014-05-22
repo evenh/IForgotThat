@@ -253,7 +253,9 @@ public class MainActivity extends Activity {
 		// Inflate layout
 		View renameLayout = getLayoutInflater().inflate(R.layout.rename_list, null);
 		// Set text inside the EditText (the current list name)
-		((EditText) renameLayout.findViewById(R.id.new_list_name)).setText(currentList.getTitle());
+		EditText textBox = ((EditText) renameLayout.findViewById(R.id.new_list_name));
+		textBox.setText(currentList.getTitle());
+		textBox.setSelection(textBox.getText().length());
 
 		AlertDialog renameDialog = new AlertDialog.Builder(this).setView(renameLayout)
 				.setTitle(String.format(getResources().getString(R.string.rename_list_title), currentList.getTitle()))

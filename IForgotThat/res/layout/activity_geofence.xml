@@ -17,7 +17,7 @@
         android:onClick="onBackPressed"
         android:paddingLeft="5dp"
         android:text="@string/pick_a_location"
-        android:textColor="#fefefe"
+        android:textColor="@color/icon_grey"
         android:textSize="20sp" />
 
     <fragment

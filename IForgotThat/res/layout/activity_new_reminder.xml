@@ -15,7 +15,7 @@
         android:gravity="center"
         android:onClick="onBackPressed"
         android:paddingLeft="5dp"
-        android:textColor="#fefefe"
+        android:textColor="@color/icon_grey"
         android:textSize="20sp" />
 
     <FrameLayout

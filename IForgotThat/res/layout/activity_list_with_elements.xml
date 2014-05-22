@@ -23,7 +23,7 @@
         android:gravity="center"
         android:onClick="backToLists"
         android:text=""
-        android:textColor="#fefefe"
+        android:textColor="@color/icon_grey"
         android:textSize="20sp" />
 
     <TextView
@@ -34,7 +34,7 @@
         android:gravity="center"
         android:text="@string/has_no_reminders"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/gray" />
+        android:textColor="@color/transparent_grey" />
 
     <com.ehpefi.iforgotthat.swipelistview.SwipeListView
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
