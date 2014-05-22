@@ -215,7 +215,7 @@ public class NewReminderActivity extends Activity {
 		// If we have a geofence
 		if (geofenceId > 0) {
 			alarmPreview.setVisibility(View.VISIBLE);
-			alarmPreview.setText(gfHelper.getAddressForGeofence(geofenceId));
+			alarmPreview.setText((gfHelper.getGeofence(geofenceId)).title);
 			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_mylocation, 0);
 		} else if (reminder != null && !reminderString.equals("")) {
 			// Time based alarm

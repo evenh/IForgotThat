@@ -37,6 +37,7 @@
             android:lines="1"
             android:onClick="addNewListTextEntered"
             android:singleLine="true"
+            android:inputType="textCapSentences"
             android:textColor="#fefefe" >
         </EditText>
     </ViewSwitcher>
