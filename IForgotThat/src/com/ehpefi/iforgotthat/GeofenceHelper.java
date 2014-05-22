@@ -315,7 +315,8 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 
 		// The SQL for selecting all geofences from the database
-		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s", COL_ID, COL_LAT, COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME);
+		String sql = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s ORDER BY %s %s", COL_ID, COL_LAT,
+				COL_LON, COL_DISTANCE, COL_ADDRESS, COL_TITLE, TABLE_NAME, COL_ID, "DESC");
 
 		// Cursor who points at the result
 		Cursor cursor = db.rawQuery(sql, null);
