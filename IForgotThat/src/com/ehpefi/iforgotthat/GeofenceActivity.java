@@ -285,7 +285,7 @@ public class GeofenceActivity extends Activity implements GooglePlayServicesClie
 		}
 
 		userGeofence = map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).title(address)
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_place)));
 
 		drawCircle();
 		centerMapOnUserLocation();
