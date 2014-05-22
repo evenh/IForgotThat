@@ -93,6 +93,13 @@ public class DetailedReminderActivity extends Activity {
 					description.setText(desc);
 				}
 			} else {
+				// Item is complete
+				// check if description exists
+				if (desc.trim().equals("")) {
+					description.setVisibility(View.GONE);
+				} else {
+					description.setText(desc);
+				}
 				title.setText(R.string.completed_items);
 			}
 
