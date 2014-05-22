@@ -110,7 +110,7 @@ public class DetailedReminderActivity extends Activity {
 			if (reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
 				alarmText.setVisibility(View.GONE);
 			} else {
-				alarmText.setText(reminder.getAlarmAsString());
+				alarmText.setText(reminder.getAlarmAsLocalizedString(this));
 			}
 
 			if (reminder.getGeofenceId() > 0) {

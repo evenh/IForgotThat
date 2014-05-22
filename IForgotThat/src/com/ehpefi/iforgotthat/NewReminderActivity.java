@@ -218,9 +218,13 @@ public class NewReminderActivity extends Activity {
 			alarmPreview.setText((gfHelper.getGeofence(geofenceId)).title);
 			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_mylocation, 0);
 		} else if (reminder != null && !reminderString.equals("")) {
+			// Local formatting
+			java.text.DateFormat localizedDateFormat = android.text.format.DateFormat.getDateFormat(context);
+			java.text.DateFormat localizedTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
+
 			// Time based alarm
 			alarmPreview.setVisibility(View.VISIBLE);
-			alarmPreview.setText(reminderString);
+			alarmPreview.setText(localizedDateFormat.format(reminder) + " " + localizedTimeFormat.format(reminder));
 			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_alarms, 0);
 		}
 	}

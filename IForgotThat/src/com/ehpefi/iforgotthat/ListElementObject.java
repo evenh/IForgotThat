@@ -252,6 +252,18 @@ public class ListElementObject {
 		}
 	}
 
+	public String getAlarmAsLocalizedString(Context context) {
+		java.text.DateFormat localizedDateFormat = android.text.format.DateFormat.getDateFormat(context);
+		java.text.DateFormat localizedTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
+
+		try {
+			return localizedDateFormat.format(alarm) + " " + localizedTimeFormat.format(alarm);
+		} catch (NullPointerException npe) {
+			return noAlarmString;
+		}
+
+	}
+
 	public static String getDateAsString(Date date) {
 		if (date == null) {
 			return noAlarmString;

@@ -119,7 +119,7 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 
 			// If we have an alarm
 			if (!reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
-				rowHolder.alarm.setText(reminder.getAlarmAsString());
+				rowHolder.alarm.setText(reminder.getAlarmAsLocalizedString(context));
 			}
 
 			// If we have a geofence alarm
