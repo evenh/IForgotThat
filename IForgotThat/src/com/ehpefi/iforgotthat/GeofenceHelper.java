@@ -350,7 +350,7 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 			return returnData;
 		}
 
-		Log.e(TAG, "The cursor in getGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+		Log.i(TAG, "No geofences in the database!");
 
 		// Close the database connection
 		cursor.close();
@@ -398,7 +398,7 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 			return data;
 		}
 
-		Log.e(TAG, "The cursor in getGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+		Log.e(TAG, "The cursor in getGeofence() (GeofenceData) contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
 
 		// Close the database connection
 		cursor.close();
@@ -442,7 +442,7 @@ public class GeofenceHelper extends SQLiteOpenHelper {
 			return fence;
 		}
 
-		Log.e(TAG, "The cursor in getGeofence() contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
+		Log.e(TAG, "The cursor in getGeofence() (Geofence) contains an unexpected value: " + cursor.getCount() + ". Returning a null object!");
 
 		// Close the database connection
 		cursor.close();
