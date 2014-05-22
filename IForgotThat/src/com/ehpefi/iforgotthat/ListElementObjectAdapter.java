@@ -3,6 +3,7 @@ package com.ehpefi.iforgotthat;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,10 @@ import android.widget.TextView;
  */
 public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 	// Our data
-	private ArrayList<ListElementObject> elements;
-	private ListElementHelper listElementHelper;
+	private final ArrayList<ListElementObject> elements;
+	private final ListElementHelper listElementHelper;
 	private ListHelper listHelper;
+	private final GeofenceHelper gfHelper;
 
 	// Context and data
 	public Context context;
@@ -34,6 +36,10 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		super(context, textViewResourceId, elements);
 		this.elements = elements;
 		this.context = context;
+
+		// Initialize new helper instances
+		listElementHelper = new ListElementHelper(this.context);
+		gfHelper = new GeofenceHelper(this.context);
 	}
 
 	@Override
@@ -101,9 +107,6 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			rowHolder = (ElementRow) view.getTag();
 		}
 
-		// Initialize a new helper instance
-		listElementHelper = new ListElementHelper(getContext());
-
 		// Get the current object
 		reminder = getItem(position);
 
@@ -111,11 +114,18 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 		rowHolder.belongingList.setVisibility(View.GONE);
 
 		if (reminder != null) {
-			rowHolder.image.setImageBitmap(reminder.getImageAsBitmap());
+			Bitmap reminderImage = reminder.getImageAsBitmap();
+			rowHolder.image.setImageBitmap(reminderImage);
 
 			// If we have an alarm
 			if (!reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
-				rowHolder.alarm.setText(reminder.getAlarmAsString());
+				rowHolder.alarm.setText(reminder.getAlarmAsLocalizedString(context));
+			}
+
+			// If we have a geofence alarm
+			if (reminder.getGeofenceId() > 0) {
+				rowHolder.alarm.setText((gfHelper.getGeofence(reminder.getGeofenceId()).title));
+				// rowHolder.alarm.setText(gfHelper.getAddressForGeofence(reminder.getGeofenceId()));
 			}
 
 			// If we have a description
@@ -135,6 +145,11 @@ public class ListElementObjectAdapter extends ArrayAdapter<ListElementObject> {
 			}
 		}
 
+		reminder = null;
 		return view;
+	}
+
+	public void clearData() {
+		elements.clear();
 	}
 }

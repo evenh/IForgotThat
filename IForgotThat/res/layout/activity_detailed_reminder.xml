@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/description"
+        android:id="@+id/detailed_view_title"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@drawable/top_navigation_selector"
@@ -15,7 +15,7 @@
         android:gravity="center"
         android:onClick="onBackPressed"
         android:paddingLeft="5dp"
-        android:textColor="#fefefe"
+        android:textColor="@color/icon_grey"
         android:textSize="20sp" />
 
     <FrameLayout
@@ -24,26 +24,46 @@
 
         <ImageView
             android:id="@+id/reminder_image"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:scaleType="matrix"
-            android:src="@drawable/ic_launcher" />
-
-        <TextView
-            android:id="@+id/alarm_text"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:background="#80000000"
-            android:drawableRight="@drawable/ic_action_alarms"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="#eee" />
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher" />
     </FrameLayout>
 
     <!-- Maybe buttons for editing, checking as complete and deleting? -->
+
+    <TextView
+        android:id="@+id/description"
+        style="@style/iForgotThatLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:paddingBottom="20dp"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/geolocation_text"
+        style="@style/iForgotThatLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:drawableRight="@android:drawable/ic_menu_mylocation"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/alarm_text"
+        style="@style/iForgotThatLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:drawableRight="@drawable/ic_action_alarms"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="14sp" />
+
 </LinearLayout>

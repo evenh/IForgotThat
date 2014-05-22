@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -230,12 +231,23 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				Parameters params = c.getParameters();
 
 				List<Camera.Size> cameraSizes = params.getSupportedPictureSizes();
+				// prints a list of available sizes
+				for (Size list : cameraSizes) {
+					Log.d(TAG, "Height: " + list.height + "px" + " Width: " + list.width);
+				}
+
 				// selects the smallest resolution (last item in array)
 				Camera.Size selectedPictureSize = cameraSizes.get(cameraSizes.size() - 1);
 				Log.i(TAG, "Camera resolution selected: " + selectedPictureSize.width + "x" + selectedPictureSize.height);
 				params.setPictureSize(selectedPictureSize.width, selectedPictureSize.height);
 
 				List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
+
+				// prints a list of available sizes
+				for (Size list : previewSizes) {
+					Log.d(TAG, "Height: " + list.height + "px" + " Width: " + list.width);
+				}
+
 				Camera.Size selectedPreviewSize = previewSizes.get(previewSizes.size() - 1);
 				Log.i(TAG, "Preview resolution selected: " + selectedPreviewSize.width + "x" + selectedPreviewSize.height);
 				// params.setPreviewSize(selectedPreviewSize.width, selectedPreviewSize.height);
@@ -262,13 +274,16 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private byte[] compressImage(byte[] input) {
 		Log.d(TAG, "Size of image before compression: " + input.length / 1024 + " kB");
 
-		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPurgeable = true;
+
+		Bitmap original = BitmapFactory.decodeByteArray(input, 0, input.length, options);
 		ByteArrayOutputStream blob = new ByteArrayOutputStream();
 
 		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 
-		if (Build.MODEL.equals("Nexus S") && display.getRotation() == Surface.ROTATION_0) {
-			Log.i(TAG, "Nexus S detected, applying rotation hack!");
+		// If the rotation is 0, rotate 90 degrees (this is a common "problem")
+		if (display.getRotation() == Surface.ROTATION_0) {
 			Matrix matrix = new Matrix();
 			matrix.postRotate(90);
 			Bitmap rotated = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
@@ -279,6 +294,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		byte[] compressed = blob.toByteArray();
 		Log.d(TAG, "Size of image after compression: " + compressed.length / 1024 + " kB");
+
+		original = null;
+		blob = null;
 
 		return compressed;
 	}

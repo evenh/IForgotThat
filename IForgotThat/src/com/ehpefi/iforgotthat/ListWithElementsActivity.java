@@ -6,9 +6,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ehpefi.iforgotthat.swipelistview.BaseSwipeListViewListener;
 import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
@@ -42,6 +44,9 @@ public class ListWithElementsActivity extends Activity {
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
 
+	// Notification
+	Toast toast;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Standard initialization
@@ -64,7 +69,11 @@ public class ListWithElementsActivity extends Activity {
 			listTitle = bundle.getString("title");
 			listID = bundle.getInt("listID");
 			if (listTitle == null || listTitle.equals("")) {
-				listTitle = listHelper.getList(listID).getTitle();
+				try {
+					listTitle = listHelper.getList(listID).getTitle();
+				} catch (NullPointerException npe) {
+					listTitle = getResources().getString(R.string.completed_items);
+				}
 			}
 		} else {
 			Log.e(TAG, "Fatal error: no data recieved!");
@@ -82,7 +91,9 @@ public class ListWithElementsActivity extends Activity {
 
 		// Listener
 		remindersView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-			// Whenever a row has been slided to show the back, update the list position
+			// Whenever a row has been slided to show the back, update the list
+			// position
+			@Override
 			public void onOpened(int pos, boolean toRight) {
 				position = pos;
 				Log.d(TAG, "Updated list position to " + pos);
@@ -97,6 +108,7 @@ public class ListWithElementsActivity extends Activity {
 				// Create an intent and pass the object and list id
 				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
 				intent.putExtra("id", reminder.getId());
+				intent.putExtra("listID", listID);
 
 				startActivity(intent);
 
@@ -120,7 +132,8 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Remove the list element from the array and delete the object from the database
+		// Remove the list element from the array and delete the object from the
+		// database
 		elements.remove(position);
 		listElementHelper.deleteListElement(reminderObject.getId());
 
@@ -145,7 +158,7 @@ public class ListWithElementsActivity extends Activity {
 
 		// Get object to be modified
 		ListElementObject editObject = listAdapter.getItem(position);
-		
+
 		// Create a new intent
 		Intent intent = new Intent(this, NewReminderActivity.class);
 		intent.putExtra("editMode", true);
@@ -171,14 +184,17 @@ public class ListWithElementsActivity extends Activity {
 		// Get the object to be deleted
 		ListElementObject reminderObject = listAdapter.getItem(position);
 
-		// Remove the list element from the array and mark the reminder as complete
+		// Remove the list element from the array and mark the reminder as
+		// complete
 		elements.remove(position);
 
 		if (listID != ListElementHelper.COMPLETED_LIST_ID) {
 			listElementHelper.setListElementComplete(reminderObject.getId(), true);
+			displayToast(getResources().getString(R.string.reminder_completed));
 		} else {
 			// We are in the completed section
 			listElementHelper.setListElementComplete(reminderObject.getId(), false);
+			displayToast(getResources().getString(R.string.reminder_uncompleted));
 		}
 
 		// Refresh view
@@ -192,8 +208,7 @@ public class ListWithElementsActivity extends Activity {
 	}
 
 	/**
-	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items"
-	 * special list
+	 * Takes care of switching the views depending on the number of lists and if the user is in the "completed items" special list
 	 * 
 	 * @since 1.0.0
 	 */
@@ -232,6 +247,25 @@ public class ListWithElementsActivity extends Activity {
 		startActivityForResult(intent, 0);
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
+
+	/**
+	 * Convenience method for displaying a toast message
+	 * 
+	 * @param message The message to display
+	 * @since 1.0.0
+	 */
+	private void displayToast(String message) {
+		// If there is an active toast, cancel it
+		if (toast != null) {
+			toast.cancel();
+		}
+
+		// Create a toast
+		toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+		// Set the position to right above the keyboard (on Nexus S at least)
+		toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -50);
+		toast.show();
 	}
 
 	/**

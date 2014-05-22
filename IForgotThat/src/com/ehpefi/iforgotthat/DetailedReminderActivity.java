@@ -2,9 +2,12 @@ package com.ehpefi.iforgotthat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +19,10 @@ import android.widget.TextView;
  */
 public class DetailedReminderActivity extends Activity {
 	// UI
+	private TextView title;
 	private TextView description;
 	private TextView alarmText;
+	private TextView geolocation;
 	private ImageView image;
 
 	// Data fields
@@ -27,6 +32,8 @@ public class DetailedReminderActivity extends Activity {
 
 	// Helper
 	private ListElementHelper listElementHelper;
+	private ListHelper listHelper;
+	private String desc;
 
 	// For logging
 	public static final String TAG = "DetailedReminderActivity";
@@ -39,13 +46,27 @@ public class DetailedReminderActivity extends Activity {
 
 		// Init helper
 		listElementHelper = new ListElementHelper(this);
+		listHelper = new ListHelper(this);
 
 		// UI init
+		title = (TextView) findViewById(R.id.detailed_view_title);
 		description = (TextView) findViewById(R.id.description);
 		image = (ImageView) findViewById(R.id.reminder_image);
 		alarmText = (TextView) findViewById(R.id.alarm_text);
+		geolocation = (TextView) findViewById(R.id.geolocation_text);
 
 		onNewIntent(getIntent());
+
+		// set the imageholder size to match the device
+		ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
+		Log.d(TAG, "Width before " + layoutParams.width);
+
+		layoutParams.width = this.getDeviceWidth();
+		layoutParams.height = this.getDeviceWidth();
+
+		image.setLayoutParams(layoutParams);
+		layoutParams = image.getLayoutParams();
+		Log.d(TAG, "Width after " + layoutParams.width);
 	}
 
 	@Override
@@ -58,25 +79,65 @@ public class DetailedReminderActivity extends Activity {
 			id = bundle.getInt("id");
 			reminder = listElementHelper.getListElement(id);
 			Log.d(TAG, "Got the following reminder: " + reminder.toString());
-			listID = reminder.getListId();
+			listID = bundle.getInt("listID");
+			desc = reminder.getDescription();
+
+			// Check for a completed item + description
+			if (listID != ListElementHelper.COMPLETED_LIST_ID) {
+				listID = reminder.getListId();
+				title.setText(listHelper.getList(listID).getTitle());
+				// check if description exists
+				if (desc.trim().equals("")) {
+					description.setVisibility(View.GONE);
+				} else {
+					description.setText(desc);
+				}
+			} else {
+				// Item is complete
+				// check if description exists
+				if (desc.trim().equals("")) {
+					description.setVisibility(View.GONE);
+				} else {
+					description.setText(desc);
+				}
+				title.setText(R.string.completed_items);
+			}
 
 			// Image
 			image.setImageBitmap(reminder.getImageAsBitmap());
-
-			// Description
-			if (!reminder.getDescription().equals("")) {
-				description.setText(reminder.getDescription());
-			} else {
-				description.setText(R.string.has_no_description);
-			}
 
 			// Alarm
 			if (reminder.getAlarmAsString().equals(ListElementObject.noAlarmString)) {
 				alarmText.setVisibility(View.GONE);
 			} else {
-				alarmText.setText(reminder.getAlarmAsString());
+				alarmText.setText(reminder.getAlarmAsLocalizedString(this));
+			}
+
+			if (reminder.getGeofenceId() > 0) {
+				Log.d(TAG, "Has geofence");
+				GeofenceHelper gfHelper = new GeofenceHelper(this);
+				geolocation.setText((gfHelper.getGeofence(reminder.getGeofenceId()).title));
+			} else {
+				geolocation.setVisibility(View.GONE);
 			}
 		}
+	}
+
+	/**
+	 * Finds the current device's display with
+	 * 
+	 * @return The width of the display
+	 * @since 1.0.0
+	 */
+	public int getDeviceWidth() {
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Log.d(TAG, "The device width is: " + size.x + "px");
+
+		int width = size.x;
+
+		return width;
 	}
 
 	@Override

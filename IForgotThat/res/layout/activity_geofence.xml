@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/backToEditing"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="false"
+        android:layout_gravity="left"
+        android:background="@drawable/top_navigation_selector"
+        android:clickable="true"
+        android:drawableLeft="@drawable/ic_action_back"
+        android:drawablePadding="-40sp"
+        android:gravity="center"
+        android:onClick="onBackPressed"
+        android:paddingLeft="5dp"
+        android:text="@string/pick_a_location"
+        android:textColor="@color/icon_grey"
+        android:textSize="20sp" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="30" />
+
+    <SeekBar
+        android:id="@+id/geofenceRadius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/saveGeofenceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/bottom_navigation_selector"
+        android:textColor="#ddd"
+        android:onClick="saveGeofence" />
+
+</LinearLayout>

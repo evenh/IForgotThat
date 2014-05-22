@@ -16,7 +16,7 @@ import android.util.Log;
  * @since 1.0.0
  */
 public class AlarmReceiver extends BroadcastReceiver {
-	private static final String TAG = "BroadcastReceiver";
+	private static final String TAG = "AlarmReceiver";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
