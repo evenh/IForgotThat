@@ -44,11 +44,11 @@
     <string name="alarm_time">Time</string>
     <string name="alarm_geo">Location</string>
     <string name="alarm_type">Set an alarm?</string>
-    <string name="alarm_type_text">Pick a suitable alarm type</string>
+    <string name="alarm_type_text">Select an alarm type</string>
     <string name="unsupported_device">Unsupported for this device</string>
     <string name="alarm_already_set">Alarm already set</string>
-    <string name="alarm_already_set_geofence">Location based alarm already set. Please remove that alarm and try again.</string>
-    <string name="alarm_already_set_time">Time based alarm already set. Please remove that alarm and try again.</string>
+    <string name="alarm_already_set_geofence">Please remove the location alarm and try again.</string>
+    <string name="alarm_already_set_time">Please remove the time alarm and try again.</string>
     <string name="pick_geofence">Select a location</string>
     <string name="no_geofence">No location</string>
     <string name="create_new_geofence">Create new</string>
@@ -61,6 +61,7 @@
     <string name="name_geofence_hint">The name of your location</string>
     <string name="save_geofence">Save location (%sm radius)</string>
     <string name="no_address_available">No address available</string>
+    <string name="recent_locations">Recent locations</string>
     <!-- Utils -->
     <string name="no_loc_providers_enabled_ok">Enable Location Services</string>
     <string name="no_loc_providers_enabled_title">No Location Services Enabled</string>
