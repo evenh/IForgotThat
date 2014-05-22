@@ -35,7 +35,6 @@ public class DetailedReminderActivity extends Activity {
 	private ListHelper listHelper;
 	private String desc;
 
-
 	// For logging
 	public static final String TAG = "DetailedReminderActivity";
 
@@ -81,7 +80,7 @@ public class DetailedReminderActivity extends Activity {
 			reminder = listElementHelper.getListElement(id);
 			Log.d(TAG, "Got the following reminder: " + reminder.toString());
 			listID = bundle.getInt("listID");
-			desc = bundle.getString("desc");
+			desc = reminder.getDescription();
 
 			// Check for a completed item + description
 			if (listID != ListElementHelper.COMPLETED_LIST_ID) {

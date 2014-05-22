@@ -104,7 +104,6 @@ public class ListWithElementsActivity extends Activity {
 				Intent intent = new Intent(getApplicationContext(), DetailedReminderActivity.class);
 				intent.putExtra("id", reminder.getId());
 				intent.putExtra("listID", listID);
-				intent.putExtra("desc", reminder.getDescription());
 
 				startActivity(intent);
 
