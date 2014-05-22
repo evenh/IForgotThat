@@ -6,9 +6,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ehpefi.iforgotthat.swipelistview.BaseSwipeListViewListener;
 import com.ehpefi.iforgotthat.swipelistview.SwipeListView;
@@ -41,6 +43,9 @@ public class ListWithElementsActivity extends Activity {
 
 	// Used for logging
 	private static final String TAG = "ListWithElementsActivity";
+
+	// Notification
+	Toast toast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -185,9 +190,11 @@ public class ListWithElementsActivity extends Activity {
 
 		if (listID != ListElementHelper.COMPLETED_LIST_ID) {
 			listElementHelper.setListElementComplete(reminderObject.getId(), true);
+			displayToast(getResources().getString(R.string.reminder_completed));
 		} else {
 			// We are in the completed section
 			listElementHelper.setListElementComplete(reminderObject.getId(), false);
+			displayToast(getResources().getString(R.string.reminder_uncompleted));
 		}
 
 		// Refresh view
@@ -240,6 +247,25 @@ public class ListWithElementsActivity extends Activity {
 		startActivityForResult(intent, 0);
 		// Transition animation
 		overridePendingTransition(R.anim.left_in, R.anim.right_out);
+	}
+
+	/**
+	 * Convenience method for displaying a toast message
+	 * 
+	 * @param message The message to display
+	 * @since 1.0.0
+	 */
+	private void displayToast(String message) {
+		// If there is an active toast, cancel it
+		if (toast != null) {
+			toast.cancel();
+		}
+
+		// Create a toast
+		toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+		// Set the position to right above the keyboard (on Nexus S at least)
+		toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -50);
+		toast.show();
 	}
 
 	/**

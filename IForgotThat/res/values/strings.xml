@@ -32,6 +32,8 @@
     <string name="has_no_description">No description</string>
     <string name="has_no_alarm">No alarm specified</string>
     <string name="list_belonging">List: %s</string>
+    <string name="reminder_completed">Reminder marked as complete</string>
+    <string name="reminder_uncompleted">Reminder marked as not completed</string>
     <!-- NewReminderActivity -->
     <string name="are_you_sure">Are you sure?</string>
     <string name="discard_changes">Discard changes?</string>
