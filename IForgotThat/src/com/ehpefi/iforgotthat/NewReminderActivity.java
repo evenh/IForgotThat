@@ -224,7 +224,7 @@ public class NewReminderActivity extends Activity {
 
 			// Time based alarm
 			alarmPreview.setVisibility(View.VISIBLE);
-			alarmPreview.setText(localizedDateFormat.format(reminder) + " " + localizedTimeFormat.format(reminder));
+			alarmPreview.setText(localizedTimeFormat.format(reminder) + " " + localizedDateFormat.format(reminder));
 			alarmPreview.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_alarms, 0);
 		}
 	}

@@ -257,7 +257,7 @@ public class ListElementObject {
 		java.text.DateFormat localizedTimeFormat = android.text.format.DateFormat.getTimeFormat(context);
 
 		try {
-			return localizedDateFormat.format(alarm) + " " + localizedTimeFormat.format(alarm);
+			return localizedTimeFormat.format(alarm) + " " + localizedDateFormat.format(alarm);
 		} catch (NullPointerException npe) {
 			return noAlarmString;
 		}
